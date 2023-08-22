@@ -30,7 +30,7 @@ class MatchResult:
 
     @property
     def confidence(self) -> float:
-        # TODO: Not sure if 1 is max value
+        """Turn min_val into percentage confidence."""
         if self.found():
             return 100.0
 
