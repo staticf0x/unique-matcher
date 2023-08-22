@@ -1,0 +1,10 @@
+__pycache__/
+.venv
+.env
+.coverage
+*.egg-info
+.mypy_cache/
+.ruff_cache/
+.tox/
+generated/
+screenshots/

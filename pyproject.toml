@@ -1,0 +1,101 @@
+[tool.poetry]
+name = "unique-matcher"
+version = "0.1.0"
+description = ""
+authors = ["staticf0x <staticf0x@pm.me>"]
+readme = "README.md"
+packages = [{include = "unique_matcher"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+numpy = "^1.25.1"
+opencv-python = "^4.8.0.74"
+pillow = "^10.0.0"
+rich = "^13.5.2"
+loguru = "^0.7.0"
+
+
+[tool.poetry.group.dev.dependencies]
+devtools = {extras = ["pygments"], version = "^0.11.0"}
+
+
+[tool.poetry.group.benchmark.dependencies]
+texttable = "^1.6.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+# For rule groups and specific rules, see:
+# https://beta.ruff.rs/docs/rules/
+select = [
+    "A",  # Builtins
+    "ANN",  # Type annotation
+    "ARG",  # Unused arguments
+    "B",  # Bugbear
+    "BLE",  # Blind except
+    "C4",  # Comprehension
+    "C90",  # Complexity (mccabe)
+    "COM",  # Commas
+    "D",  # Docstyle
+    "DTZ",  # Datetime without tzs
+    "E",  # pycodestyle errors
+    "ERA",  # Commented-out code
+    "EXE",  # Executable scripts shebangs
+    "F",  # pyflakes
+    "FBT",  # Boolean trap
+    "G",  # Logging format
+    "ICN",  # Import conventions
+    "ISC",  # Implicit string concatenation
+    "PIE",  # dict, enum, class fields duplication
+    "PL",  # pylint
+    "PT",  # pytest style
+    "PTH",  # Use pathlib
+    "PYI",  # flake8-pyi
+    "Q",  # Quotes
+    "RET",  # Unnecessary returns
+    "RSE",  # Unnecessary () on raise
+    "RUF",  # Ruff specific rules
+    "S",  # Bandit
+    "SIM",  # Simplify rules
+    "T10",  # Debugger
+    "TCH",  # Type checking
+    "TID",  # Tidy imports
+    "UP",  # pyupgrade
+    "W",  # pycodestyle warnings
+    "YTT",  # sys.version rules
+]
+
+ignore = [
+    "ANN101",  # Missing type annotation for `self` in method
+    "COM812",  # Trailing comma missing
+    "D406",  # Section name should end with a newline
+    "D407",  # Missing dashed underline after section
+    "D203",  # 1 blank line required before class docstring (incompatible with D211)
+    "D213",  # Multi-line docstring summary should start at the second line (incompatible with D212)
+]
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.ruff.per-file-ignores]
+"src/tests/*" = [
+    "ANN",  # All type annotations
+    "D100",  # Missing docstring in public module
+    "D101",  # Missing docstring in public class
+    "D102",  # Missing docstring in public method
+    "D103",  # Missing docstring in public function
+    "S101",  # Use of `assert` detected
+    "PLR2004",  # Magic value used in comparison
+]
