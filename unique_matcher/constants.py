@@ -9,5 +9,6 @@ SOCKET_ICON_PATH: str = "socket/socket.png"
 ITEM_MAX_SIZE: tuple[int, int] = (99, 200)
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
+ITEM_DIR = ROOT_DIR / "items"
 
 DEBUG: bool = True

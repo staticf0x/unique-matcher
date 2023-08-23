@@ -1,26 +1,17 @@
 import os
 from dataclasses import dataclass
+from pathlib import Path
 
 import cv2
 import numpy as np
 from loguru import logger
 from PIL import Image
 
-from unique_matcher.constants import DEBUG, ROOT_DIR
+from unique_matcher.constants import DEBUG, ITEM_DIR
 from unique_matcher.generator import ItemGenerator
+from unique_matcher.items import Item
 
 THRESHOLD = 0.33
-ITEM_DIR = ROOT_DIR / "items"
-
-
-@dataclass
-class Item:
-    """Represent a single item."""
-
-    name: str
-    icon: str
-    sockets: int = 6
-    cols: int = 2
 
 
 @dataclass
@@ -90,9 +81,6 @@ class Matcher:
             )
             variants.append(template)
 
-            if DEBUG:
-                template.image.save(f"debug/{item.name}_{template.sockets}s.png")
-
         return variants
 
     def check_one(self, screen: np.ndarray, item: Item) -> MatchResult:
@@ -128,9 +116,9 @@ class Matcher:
         # This is useful mainly for benchmarking and tests
         return self.get_best_result(results)
 
-    def load_screen(self, screenshot: str) -> np.ndarray:
+    def load_screen(self, screenshot: str | Path) -> np.ndarray:
         """Load a screenshot from file into OpenCV format."""
-        screen = cv2.imread(screenshot)
+        screen = cv2.imread(str(screenshot))
         screen = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
 
         if DEBUG:
