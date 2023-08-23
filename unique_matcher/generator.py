@@ -14,16 +14,20 @@ class ItemGenerator:
     def __init__(self) -> None:
         self.socket = Image.open(SOCKET_ICON_PATH)
 
-    def generate_sockets(self, sockets: int) -> Image:
+    def generate_sockets(self, sockets: int, columns: int) -> Image:
+        """Generate a socket overlay."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")
 
-        rows = math.ceil(sockets / 2)
-        columns = 2  # TODO: Calculate this
+        if columns == 1:
+            rows = sockets
+        elif columns == 2:
+            rows = math.ceil(sockets / 2)
 
         if sockets == 1:
             columns = 1
 
+        # Blank image
         new_image = Image.new(
             "RGBA",
             (
@@ -35,12 +39,16 @@ class ItemGenerator:
         left_offset = 0
 
         for n in range(sockets):
-            col = n % 2
-            row = n // 2
+            if columns == 1:
+                col = 0
+                row = n
+            elif columns == 2:
+                col = n % 2
+                row = n // 2
 
             logger.debug("Adding socket {}, row={}, col={}", n + 1, row, col)
 
-            if sockets == 3 and n == 2:
+            if sockets == 3 and n == 2 and columns == 2:
                 # TODO: Hack for middle row for 3 sockets, because the socket
                 #       goes to the *right*
                 left_offset = self.socket.width + LINK_WIDTH
@@ -53,7 +61,7 @@ class ItemGenerator:
 
         return new_image
 
-    def generate_image(self, base_path: str, sockets: int) -> Image:
+    def generate_image(self, base_path: str, sockets: int, columns: int) -> Image:
         """Generate an image of a base item with N sockets."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")
@@ -67,7 +75,8 @@ class ItemGenerator:
         new_image = Image.new("RGBA", base.size)
         new_image.paste(base, (0, 0), base)
 
-        socket_image = self.generate_sockets(sockets)
+        # Generate the socket overlay and place onto the base
+        socket_image = self.generate_sockets(sockets, columns)
         offset_x = int((base.width - socket_image.width) / 2)
         offset_y = int((base.height - socket_image.height) / 2)
 

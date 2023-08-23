@@ -20,6 +20,7 @@ class Item:
     name: str
     icon: str
     sockets: int = 6
+    cols: int = 2
 
 
 @dataclass
@@ -84,7 +85,7 @@ class Matcher:
         for sockets in range(item.sockets, 0, -1):
             # Generate item with sockets in memory
             template = ItemTemplate(
-                image=self.generator.generate_image(item.icon, sockets),
+                image=self.generator.generate_image(item.icon, sockets, item.cols),
                 sockets=sockets,
             )
             variants.append(template)

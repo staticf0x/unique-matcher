@@ -13,12 +13,13 @@ logger.remove()
 BENCH_DIR = Path(__file__).parent.resolve()
 
 
-def _get_item(name: str, sockets: int = 6) -> Item:
+def _get_item(name: str, sockets: int = 6, cols: int = 2) -> Item:
     """Get an Item object for item name."""
     return Item(
         name=name,
         icon=os.path.join(ITEM_DIR, f"{name}.png"),
         sockets=sockets,
+        cols=cols,
     )
 
 
@@ -32,9 +33,9 @@ def _get_test_set(name: str) -> list[str]:
     return files
 
 
-def benchmark_item(matcher: Matcher, name: str, sockets: int = 6) -> None:
+def benchmark_item(matcher: Matcher, name: str, sockets: int = 6, cols: int = 2) -> None:
     """Run a benchmark for a single item."""
-    item = _get_item(name, sockets)
+    item = _get_item(name, sockets, cols)
     print(f"\n=== {item.name} ===")
 
     table = Texttable()
@@ -83,6 +84,8 @@ def run() -> None:
     benchmark_item(matcher, "Mindspiral", 4)
     benchmark_item(matcher, "Ngamahus_Flame", 6)
     benchmark_item(matcher, "Nomics_Storm", 4)
+    benchmark_item(matcher, "Fencoil", 3, 1)
+    benchmark_item(matcher, "Death_and_Taxes", 0)
 
 
 if __name__ == "__main__":
