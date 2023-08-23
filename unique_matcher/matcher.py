@@ -15,6 +15,8 @@ ITEM_DIR = ROOT_DIR / "items"
 
 @dataclass
 class Item:
+    """Represent a single item."""
+
     name: str
     icon: str
     sockets: int = 6
@@ -22,6 +24,8 @@ class Item:
 
 @dataclass
 class MatchResult:
+    """A class for the item/screenshot match result."""
+
     item: Item
     loc: tuple[int, int]
     min_val: float
@@ -40,16 +44,20 @@ class MatchResult:
 
 @dataclass
 class ItemTemplate:
+    """Helper class for the image template."""
+
     image: Image
     sockets: int
 
 
 class Matcher:
+    """Main class for matching items in a screenshot."""
+
     def __init__(self) -> None:
         self.generator = ItemGenerator()
         self.items = self.load_items()
 
-    def load_items(self) -> None:
+    def load_items(self) -> list[Item]:
         """Load all items."""
         items = []
 

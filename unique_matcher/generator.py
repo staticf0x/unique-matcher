@@ -53,12 +53,12 @@ class ItemGenerator:
 
         return new_image
 
-    def generate_image(self, base: str, sockets: int) -> Image:
+    def generate_image(self, base_path: str, sockets: int) -> Image:
         """Generate an image of a base item with N sockets."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")
 
-        base = Image.open(base)
+        base = Image.open(base_path)
 
         # Resize to max size, keep aspect ratio
         base.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BICUBIC)

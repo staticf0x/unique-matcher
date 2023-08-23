@@ -13,14 +13,11 @@ opencv-python = "^4.8.0.74"
 pillow = "^10.0.0"
 rich = "^13.5.2"
 loguru = "^0.7.0"
-
+texttable = "^1.6.7"
 
 [tool.poetry.group.dev.dependencies]
 devtools = {extras = ["pygments"], version = "^0.11.0"}
-
-
-[tool.poetry.group.benchmark.dependencies]
-texttable = "^1.6.7"
+types-pillow = "^10.0.0.2"
 
 [build-system]
 requires = ["poetry-core"]
