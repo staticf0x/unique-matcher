@@ -7,11 +7,25 @@ import numpy as np
 from loguru import logger
 from PIL import Image
 
-from unique_matcher.constants import DEBUG, ITEM_DIR
+from unique_matcher.constants import (
+    ITEM_DIR,
+    OPT_CROP_SCREEN,
+    OPT_EARLY_FOUND,
+    ROOT_DIR,
+)
 from unique_matcher.generator import ItemGenerator
 from unique_matcher.items import Item
 
 THRESHOLD = 0.33
+THRESHOLD_CONTROL = 0.1
+
+
+@dataclass
+class ItemTemplate:
+    """Helper class for the image template."""
+
+    image: Image
+    sockets: int
 
 
 @dataclass
@@ -21,6 +35,7 @@ class MatchResult:
     item: Item
     loc: tuple[int, int]
     min_val: float
+    template: ItemTemplate | None = None
 
     def found(self) -> bool:
         return self.min_val <= THRESHOLD
@@ -34,20 +49,16 @@ class MatchResult:
         return -100 / (1 - THRESHOLD) * (self.min_val - THRESHOLD) + 100
 
 
-@dataclass
-class ItemTemplate:
-    """Helper class for the image template."""
-
-    image: Image
-    sockets: int
-
-
 class Matcher:
     """Main class for matching items in a screenshot."""
 
     def __init__(self) -> None:
         self.generator = ItemGenerator()
         self.items = self.load_items()
+        self.unique_one_line = cv2.imread(str(ROOT_DIR / "templates" / "unique-one-line.png"))
+        self.unique_one_line = cv2.cvtColor(self.unique_one_line, cv2.COLOR_RGB2GRAY)
+        self.unique_two_line = cv2.imread(str(ROOT_DIR / "templates" / "unique-two-line.png"))
+        self.unique_two_line = cv2.cvtColor(self.unique_two_line, cv2.COLOR_RGB2GRAY)
 
     def load_items(self) -> list[Item]:
         """Load all items."""
@@ -96,9 +107,9 @@ class Matcher:
             result = cv2.matchTemplate(screen, template_cv, cv2.TM_SQDIFF_NORMED)
             min_val, _, min_loc, _ = cv2.minMaxLoc(result)
 
-            match_result = MatchResult(item, min_loc, min_val)
+            match_result = MatchResult(item, min_loc, min_val, template)
 
-            if match_result.found():
+            if OPT_EARLY_FOUND and match_result.found():
                 # Optimization, sort of... We're only interested in finding
                 # the item itself, not how many sockets it has, so it's
                 # fine to return early
@@ -121,20 +132,64 @@ class Matcher:
         screen = cv2.imread(str(screenshot))
         screen = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
 
-        if DEBUG:
-            screen = screen[:, 1920 // 2 :]
+        if OPT_CROP_SCREEN:
+            screen = screen[1080 // 4 :, 1920 // 2 :]
 
         return screen
+
+    def _find_unique_control(self, screen: np.ndarray) -> tuple[int, int] | None:
+        """Find the control point of a unique item.
+
+        Return None if neither identified nor unidentified control point
+        can be found.
+        """
+        result = cv2.matchTemplate(screen, self.unique_one_line, cv2.TM_SQDIFF_NORMED)
+        min_val, _, min_loc, _ = cv2.minMaxLoc(result)
+
+        if min_val <= THRESHOLD_CONTROL:
+            return min_loc
+
+        result = cv2.matchTemplate(screen, self.unique_two_line, cv2.TM_SQDIFF_NORMED)
+        min_val, _, min_loc, _ = cv2.minMaxLoc(result)
+
+        if min_val <= THRESHOLD_CONTROL:
+            return min_loc
+
+        return None
+
+    def find_unique(self, screenshot: str | Path) -> np.ndarray:
+        """Return a cropped part of the screenshot with the unique.
+
+        If it cannot be found, returns the original screenshot.
+        """
+        source_screen = Image.open(str(screenshot))  # Original screenshot
+        screen = self.load_screen(screenshot)  # CV2 screenshot
+
+        min_loc = self._find_unique_control(screen)
+
+        if min_loc is None:
+            # Return original screenshot in CV2 format
+            return screen
+
+        # Crop out the item image
+        source_screen = source_screen.crop(
+            (min_loc[0] - 100, min_loc[1], min_loc[0], min_loc[1] + 200)
+        )
+
+        cropped = np.array(source_screen)
+        cropped = cv2.cvtColor(cropped, cv2.COLOR_RGBA2GRAY)
+
+        return cropped
 
     def find_item(self, screenshot: str) -> MatchResult | None:
         """Find an item in a screenshot.
 
         Returns None if no item was found in the screenshot.
         """
-        screen = self.load_screen(screenshot)
+        screen_crop = self.find_unique(screenshot)
 
         for item in self.items:
-            result = self.check_one(screen, item)
+            result = self.check_one(screen_crop, item)
 
             if result.found():
                 logger.success(

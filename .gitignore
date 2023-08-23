@@ -10,3 +10,4 @@ generated/
 screenshots/
 debug/
 items/
+*.log
