@@ -31,7 +31,7 @@ target-version = ["py311"]
 profile = "black"
 
 [tool.ruff]
-line-length = 88
+line-length = 100
 target-version = "py311"
 
 # For rule groups and specific rules, see:
