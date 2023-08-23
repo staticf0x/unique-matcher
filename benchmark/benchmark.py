@@ -1,8 +1,8 @@
 import os
+import time
 from pathlib import Path
 
 import rich
-from devtools import Timer
 from loguru import logger
 from texttable import Texttable
 
@@ -45,16 +45,18 @@ def benchmark_item(matcher: Matcher, name: str, sockets: int = 6) -> None:
     results_all = []
 
     for screen in _get_test_set(name):
-        with Timer(verbose=False) as timer:
-            result = matcher.check_one(matcher.load_screen(screen), item)
-            results_all.append(result)
+        t_start = time.perf_counter()
+        result = matcher.check_one(matcher.load_screen(screen), item)
+        t_end = time.perf_counter()
+
+        results_all.append(result)
 
         table.add_row(
             [
                 os.path.basename(screen),
                 result.min_val,
                 "Yes" if result.min_val <= THRESHOLD else "No",
-                timer.results[0].elapsed() * 1e3,
+                (t_end - t_start) * 1e3,
             ]
         )
 
