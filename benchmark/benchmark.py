@@ -2,6 +2,7 @@ import os
 import time
 from pathlib import Path
 
+import numpy as np
 import rich
 from loguru import logger
 from texttable import Texttable
@@ -22,6 +23,8 @@ class Benchmark:
         self.item_loader = ItemLoader()
         self.item_loader.load()
         self.to_benchmark: list[Item] = []
+        self._report = []
+        self._times = []
 
     def add(self, name: str) -> None:
         """Add item to benchmark suite."""
@@ -37,6 +40,9 @@ class Benchmark:
 
         return files
 
+    def report(self, found: int, total: int) -> None:
+        self._report.append((found, total))
+
     def _run_one(self, item: Item) -> None:
         """Run benchmark for one item."""
         print(f"\n=== {item.name} ===")
@@ -47,8 +53,9 @@ class Benchmark:
         table.set_cols_dtype(["t", "f", "t", lambda v: f"{v:.1f}"])
 
         results_all = []
+        test_set = self._get_test_set(item.name)
 
-        for screen in self._get_test_set(item.name):
+        for screen in test_set:
             t_start = time.perf_counter()
             result = self.matcher.check_one(self.matcher.load_screen(screen), item)
             t_end = time.perf_counter()
@@ -64,6 +71,12 @@ class Benchmark:
                 ]
             )
 
+            self._times.append((t_end - t_start) * 1e3)
+
+        # Add to global report
+        self.report(sum(result.found() for result in results_all), len(test_set))
+
+        # Draw the result table
         print(table.draw())
 
         if any(result.found() for result in results_all):
@@ -75,8 +88,25 @@ class Benchmark:
 
     def run(self) -> None:
         """Run the whole benchmark suite."""
+        self._report = []
+        self._times = []
+
         for item in self.to_benchmark:
             self._run_one(item)
+
+        found = sum(res[0] for res in self._report)
+        total = sum(res[1] for res in self._report)
+
+        print("\n***** Summary *****")
+        print(f"Found:    {found}")
+        print(f"Tests:    {total}")
+        print(f"Accuracy: {found/total:.2%}")
+
+        print()
+        print(f"Average time:   {np.mean(self._times):.2f} ms")
+        print(f"Fastest:        {np.min(self._times):.2f} ms")
+        print(f"Slowest:        {np.max(self._times):.2f} ms")
+        print(f"Std:            {np.std(self._times):.2f} ms")
 
 
 def run() -> None:
