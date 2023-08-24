@@ -57,7 +57,12 @@ class Benchmark:
 
         for screen in test_set:
             t_start = time.perf_counter()
-            result = self.matcher.check_one(self.matcher.find_unique(screen), item)
+            result = self.matcher.check_one(
+                self.matcher._image_to_cv(
+                    self.matcher.find_unique(screen),
+                ),
+                item,
+            )
             t_end = time.perf_counter()
 
             results_all.append(result)

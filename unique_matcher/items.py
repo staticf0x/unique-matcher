@@ -1,6 +1,7 @@
 """Item handling."""
 import csv
 from dataclasses import dataclass
+from pathlib import Path
 
 from unique_matcher.constants import ITEM_DIR, ROOT_DIR
 
@@ -10,7 +11,7 @@ class Item:
     """Represent a single item."""
 
     name: str
-    icon: str
+    icon: str | Path
     sockets: int = 6
     cols: int = 2
 
@@ -44,3 +45,6 @@ class ItemLoader:
 
     def get(self, name: str) -> Item:
         return self.items[name]
+
+    def __iter__(self):
+        return self.items.values().__iter__()

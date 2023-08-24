@@ -1,4 +1,3 @@
-import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -8,16 +7,16 @@ from loguru import logger
 from PIL import Image
 
 from unique_matcher.constants import (
-    ITEM_DIR,
+    ITEM_MAX_SIZE,
     OPT_CROP_SCREEN,
     OPT_EARLY_FOUND,
     ROOT_DIR,
 )
 from unique_matcher.generator import ItemGenerator
-from unique_matcher.items import Item
+from unique_matcher.items import Item, ItemLoader
 
-THRESHOLD = 0.33
-THRESHOLD_CONTROL = 0.1
+THRESHOLD = 0.01
+THRESHOLD_CONTROL = 0.25
 
 
 @dataclass
@@ -54,24 +53,13 @@ class Matcher:
 
     def __init__(self) -> None:
         self.generator = ItemGenerator()
-        self.items = self.load_items()
+        self.item_loader = ItemLoader()
+        self.item_loader.load()
+
         self.unique_one_line = cv2.imread(str(ROOT_DIR / "templates" / "unique-one-line.png"))
         self.unique_one_line = cv2.cvtColor(self.unique_one_line, cv2.COLOR_RGB2GRAY)
         self.unique_two_line = cv2.imread(str(ROOT_DIR / "templates" / "unique-two-line.png"))
         self.unique_two_line = cv2.cvtColor(self.unique_two_line, cv2.COLOR_RGB2GRAY)
-
-    def load_items(self) -> list[Item]:
-        """Load all items."""
-        items = []
-
-        for file in sorted(os.listdir(ITEM_DIR)):
-            item = Item(
-                name=file.replace(".png", ""),
-                icon=os.path.join(ITEM_DIR, file),
-            )
-            items.append(item)
-
-        return items
 
     def get_best_result(self, results: list[MatchResult]) -> MatchResult:
         """Find the best result (min(min_val))."""
@@ -82,7 +70,10 @@ class Matcher:
         variants = []
 
         if item.sockets == 0:
-            return [ItemTemplate(image=Image.open(item.icon), sockets=0)]
+            icon = Image.open(item.icon)
+            icon.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BICUBIC)
+
+            return [ItemTemplate(image=icon, sockets=0)]
 
         for sockets in range(item.sockets, 0, -1):
             # Generate item with sockets in memory
@@ -97,31 +88,42 @@ class Matcher:
     def check_one(self, screen: np.ndarray, item: Item) -> MatchResult:
         """Check one screenshot against one item."""
         results = []
+
         item_variants = self.get_item_variants(item)
 
         for template in item_variants:
-            template_cv = np.array(template.image)
-            template_cv = cv2.cvtColor(template_cv, cv2.COLOR_RGBA2GRAY)
-
-            # Match against the screenshot
-            result = cv2.matchTemplate(screen, template_cv, cv2.TM_SQDIFF_NORMED)
-            min_val, _, min_loc, _ = cv2.minMaxLoc(result)
-
-            match_result = MatchResult(item, min_loc, min_val, template)
-
-            if OPT_EARLY_FOUND and match_result.found():
-                # Optimization, sort of... We're only interested in finding
-                # the item itself, not how many sockets it has, so it's
-                # fine to return early
-                logger.success(
-                    "Found item {} early, sockets={}, min_val={}",
-                    match_result.item.name,
-                    template.sockets,
-                    match_result.min_val,
+            for fraction in range(100, 0, -5):
+                resized = template.image.copy()
+                resized.thumbnail(
+                    (
+                        int(ITEM_MAX_SIZE[0] * fraction / 100),
+                        int(ITEM_MAX_SIZE[1] * fraction / 100),
+                    ),
+                    Image.Resampling.BICUBIC,
                 )
-                return match_result
 
-            results.append(match_result)
+                template_cv = np.array(resized)
+                template_cv = cv2.cvtColor(template_cv, cv2.COLOR_RGBA2GRAY)
+
+                # Match against the screenshot
+                result = cv2.matchTemplate(screen, template_cv, cv2.TM_SQDIFF_NORMED)
+                min_val, _, min_loc, _ = cv2.minMaxLoc(result)
+
+                match_result = MatchResult(item, min_loc, min_val, template)
+
+                if OPT_EARLY_FOUND and match_result.found():
+                    # Optimization, sort of... We're only interested in finding
+                    # the item itself, not how many sockets it has, so it's
+                    # fine to return early
+                    logger.success(
+                        "Found item {} early, sockets={}, min_val={}",
+                        match_result.item.name,
+                        template.sockets,
+                        match_result.min_val,
+                    )
+                    return match_result
+
+                results.append(match_result)
 
         # If we couldn't find the item immediately, return the best result
         # This is useful mainly for benchmarking and tests
@@ -136,6 +138,9 @@ class Matcher:
             screen = screen[1080 // 4 :, 1920 // 2 :]
 
         return screen
+
+    def load_screen_as_image(self, screenshot: str | Path) -> Image:
+        return Image.open(str(screenshot))
 
     def _find_unique_control(self, screen: np.ndarray) -> tuple[int, int] | None:
         """Find the control point of a unique item.
@@ -157,15 +162,21 @@ class Matcher:
 
         return None
 
-    def find_unique(self, screenshot: str | Path) -> np.ndarray:
+    def _image_to_cv(self, image: Image) -> np.ndarray:
+        image_cv = np.array(image)
+        image_cv = cv2.cvtColor(image_cv, cv2.COLOR_RGB2GRAY)
+
+        return image_cv
+
+    def find_unique(self, screenshot: str | Path) -> Image:
         """Return a cropped part of the screenshot with the unique.
 
         If it cannot be found, returns the original screenshot.
         """
         source_screen = Image.open(str(screenshot))  # Original screenshot
-        screen = self.load_screen(screenshot)  # CV2 screenshot
+        screen = self.load_screen_as_image(screenshot)  # CV2 screenshot
 
-        min_loc = self._find_unique_control(screen)
+        min_loc = self._find_unique_control(self._image_to_cv(screen))
 
         if min_loc is None:
             # Return original screenshot in CV2 format
@@ -175,27 +186,22 @@ class Matcher:
         source_screen = source_screen.crop(
             (min_loc[0] - 100, min_loc[1], min_loc[0], min_loc[1] + 200)
         )
+        source_screen.show()
 
-        cropped = np.array(source_screen)
-        cropped = cv2.cvtColor(cropped, cv2.COLOR_RGBA2GRAY)
-
-        return cropped
+        return source_screen
 
     def find_item(self, screenshot: str) -> MatchResult | None:
         """Find an item in a screenshot.
 
         Returns None if no item was found in the screenshot.
         """
-        screen_crop = self.find_unique(screenshot)
+        screen_crop = self._image_to_cv(self.find_unique(screenshot))
 
-        for item in self.items:
+        results_all = []
+
+        for item in self.item_loader:
             result = self.check_one(screen_crop, item)
 
-            if result.found():
-                logger.success(
-                    "Found item {} in {}, min_val={}", result.item.name, screenshot, result.min_val
-                )
+            results_all.append(result)
 
-                return result
-
-        return None
+        return self.get_best_result(results_all)

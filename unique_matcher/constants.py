@@ -13,9 +13,9 @@ SOCKET_ICON_PATH = SOCKET_DIR / "socket.png"
 
 # Maximum size of an item image for comparison
 # (might differ from artwork found on wiki)
-ITEM_MAX_SIZE: tuple[int, int] = (99, 200)
+ITEM_MAX_SIZE: tuple[int, int] = (100, 200)
 
 DEBUG: bool = False
 
 OPT_CROP_SCREEN = False
-OPT_EARLY_FOUND = True
+OPT_EARLY_FOUND = False
