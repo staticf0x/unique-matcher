@@ -7,10 +7,10 @@ from loguru import logger
 from PIL import Image
 
 from unique_matcher.constants import (
-    FEATURE_CROP_SHADE,
     ITEM_MAX_SIZE,
     OPT_ALLOW_NON_FULLHD,
     OPT_CROP_SCREEN,
+    OPT_CROP_SHADE,
     OPT_EARLY_FOUND,
     ROOT_DIR,
 )
@@ -323,8 +323,8 @@ class Matcher:
         )
         size_orig = source_screen.size
 
-        if FEATURE_CROP_SHADE:
-            logger.debug("FEATURE_CROP_SHADE is enabled")
+        if OPT_CROP_SHADE:
+            logger.debug("OPT_CROP_SHADE is enabled")
             source_screen = self.crop_out_unique(source_screen)
 
         logger.debug(
@@ -333,10 +333,8 @@ class Matcher:
             source_screen.height,
         )
 
-        if FEATURE_CROP_SHADE and source_screen.size == size_orig:
-            logger.error(
-                "Cropped out unique is the same size as original even with FEATURE_CROP_SHADE"
-            )
+        if OPT_CROP_SHADE and source_screen.size == size_orig:
+            logger.error("Cropped out unique is the same size as original even with OPT_CROP_SHADE")
 
         return source_screen
 
