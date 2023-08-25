@@ -9,11 +9,12 @@ from PIL import Image
 from unique_matcher.constants import (
     FEATURE_CROP_SHADE,
     ITEM_MAX_SIZE,
+    OPT_ALLOW_NON_FULLHD,
     OPT_CROP_SCREEN,
     OPT_EARLY_FOUND,
     ROOT_DIR,
 )
-from unique_matcher.exceptions import CannotFindUniqueItem
+from unique_matcher.exceptions import CannotFindUniqueItem, NotInFullHD
 from unique_matcher.generator import ItemGenerator
 from unique_matcher.items import Item, ItemLoader
 
@@ -296,6 +297,20 @@ class Matcher:
         """
         source_screen = Image.open(str(screenshot))  # Original screenshot
         screen = self.load_screen(screenshot)  # CV2 screenshot
+
+        if source_screen.size != (1920, 1080):
+            logger.warning(
+                "Screenshot size is not 1920x1080px, accuracy will be impacted"
+                " (real size is {}x{}px)",
+                source_screen.width,
+                source_screen.height,
+            )
+
+            if not OPT_ALLOW_NON_FULLHD:
+                logger.error(
+                    "OPT_ALLOW_NON_FULLHD is disabled and screenshot isn't 1920x1080px, aborting"
+                )
+                raise NotInFullHD
 
         min_loc = self._find_unique_control(screen)
 
