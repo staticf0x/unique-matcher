@@ -46,8 +46,6 @@ class ItemGenerator:
                 col = n % 2
                 row = n // 2
 
-            logger.debug("Adding socket {}, row={}, col={}", n + 1, row, col)
-
             if sockets == 3 and n == 2 and columns == 2:
                 # TODO: Hack for middle row for 3 sockets, because the socket
                 #       goes to the *right*

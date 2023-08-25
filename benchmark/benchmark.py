@@ -7,6 +7,7 @@ import rich
 from loguru import logger
 from texttable import Texttable
 
+from unique_matcher.exceptions import CannotFindUniqueItem
 from unique_matcher.items import Item, ItemLoader
 from unique_matcher.matcher import THRESHOLD, Matcher
 
@@ -57,12 +58,16 @@ class Benchmark:
 
         for screen in test_set:
             t_start = time.perf_counter()
-            result = self.matcher.check_one(
-                self.matcher._image_to_cv(
-                    self.matcher.find_unique(screen),
-                ),
-                item,
-            )
+            try:
+                result = self.matcher.check_one(
+                    self.matcher._image_to_cv(
+                        self.matcher.find_unique(screen),
+                    ),
+                    item,
+                )
+            except CannotFindUniqueItem:
+                continue
+
             t_end = time.perf_counter()
 
             results_all.append(result)
@@ -117,18 +122,10 @@ class Benchmark:
 def run() -> None:
     """Run the benchmark."""
     benchmark = Benchmark()
-    benchmark.add("Bramblejack")
-    benchmark.add("Briskwrap")
-    benchmark.add("Bereks_Grip")
-    benchmark.add("Bereks_Pass")
-    benchmark.add("Bereks_Respite")
-    benchmark.add("Chernobogs_Pillar")
-    benchmark.add("Dusktoe")
-    benchmark.add("Mindspiral")
-    benchmark.add("Ngamahus_Flame")
-    benchmark.add("Nomics_Storm")
-    benchmark.add("Fencoil")
-    benchmark.add("Death_and_Taxes")
+
+    for name in os.listdir(BENCH_DIR / "screenshots"):
+        benchmark.add(name)
+
     benchmark.run()
 
 

@@ -19,3 +19,5 @@ DEBUG: bool = False
 
 OPT_CROP_SCREEN = False
 OPT_EARLY_FOUND = False
+
+FEATURE_CROP_SHADE = True

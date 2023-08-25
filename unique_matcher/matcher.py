@@ -7,15 +7,17 @@ from loguru import logger
 from PIL import Image
 
 from unique_matcher.constants import (
+    FEATURE_CROP_SHADE,
     ITEM_MAX_SIZE,
     OPT_CROP_SCREEN,
     OPT_EARLY_FOUND,
     ROOT_DIR,
 )
+from unique_matcher.exceptions import CannotFindUniqueItem
 from unique_matcher.generator import ItemGenerator
 from unique_matcher.items import Item, ItemLoader
 
-THRESHOLD = 0.01
+THRESHOLD = 0.2
 THRESHOLD_CONTROL = 0.25
 
 
@@ -91,13 +93,15 @@ class Matcher:
 
         item_variants = self.get_item_variants(item)
 
+        logger.info("Item {} has {} variants", item.name, len(item_variants))
+
         for template in item_variants:
             for fraction in range(100, 0, -5):
                 resized = template.image.copy()
                 resized.thumbnail(
                     (
-                        int(ITEM_MAX_SIZE[0] * fraction / 100),
-                        int(ITEM_MAX_SIZE[1] * fraction / 100),
+                        int(min(ITEM_MAX_SIZE[0], len(screen)) * fraction / 100),
+                        int(min(ITEM_MAX_SIZE[1], len(screen[0])) * fraction / 100),
                     ),
                     Image.Resampling.BICUBIC,
                 )
@@ -135,7 +139,8 @@ class Matcher:
         screen = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
 
         if OPT_CROP_SCREEN:
-            screen = screen[1080 // 4 :, 1920 // 2 :]
+            logger.debug("OPT_CROP_SCREEN is enabled")
+            screen = screen[:, 1920 // 2 :]
 
         return screen
 
@@ -149,16 +154,27 @@ class Matcher:
         can be found.
         """
         result = cv2.matchTemplate(screen, self.unique_one_line, cv2.TM_SQDIFF_NORMED)
-        min_val, _, min_loc, _ = cv2.minMaxLoc(result)
+        min_val1, _, min_loc, _ = cv2.minMaxLoc(result)
 
-        if min_val <= THRESHOLD_CONTROL:
+        logger.debug("Finding unique control 1: min_val={}", min_val1)
+
+        if min_val1 <= THRESHOLD_CONTROL:
             return min_loc
 
         result = cv2.matchTemplate(screen, self.unique_two_line, cv2.TM_SQDIFF_NORMED)
-        min_val, _, min_loc, _ = cv2.minMaxLoc(result)
+        min_val2, _, min_loc, _ = cv2.minMaxLoc(result)
 
-        if min_val <= THRESHOLD_CONTROL:
+        logger.debug("Finding unique control 2: min_val={}", min_val2)
+
+        if min_val2 <= THRESHOLD_CONTROL:
             return min_loc
+
+        logger.error(
+            "Couldn't find unique control, threshold is {}, line1_min={}, line2_min={}",
+            THRESHOLD_CONTROL,
+            min_val1,
+            min_val2,
+        )
 
         return None
 
@@ -168,25 +184,144 @@ class Matcher:
 
         return image_cv
 
+    def _get_crop_threshold(self, arr: np.ndarray) -> int:
+        """Return the threshold (pixel value) where the shade should be cut off."""
+        # Number of pixels in image for normalization
+        pixels = len(arr) * len(arr[0])
+
+        # Convert to grayscale for simplification
+        arr = cv2.cvtColor(arr, cv2.COLOR_RGB2GRAY)
+
+        # Calculate histogram into 5 bins (51 values per bin)
+        hist = cv2.calcHist([arr], [0], None, [5], (0, 256), accumulate=True)
+
+        # Normalize to [0, 1]
+        hist_perc = hist / pixels
+
+        if hist_perc[0] >= 0.8:
+            # Very dark
+            logger.debug("Item is on a very dark background")
+            return 15
+
+        if hist_perc[0] >= 0.6:
+            # Dark
+            logger.debug("Item is on a mildly dark background")
+            return 20
+
+        if hist_perc[1] >= 0.5:
+            # Bright
+            logger.debug("Item is on a bright background")
+            return 50
+
+        return 50
+
+    def _is_shade(self, row: np.ndarray, threshold: int) -> bool:
+        """Return True if a row is a shade."""
+        count_r = len([px for px in row[:, 0] if px < threshold])
+        count_g = len([px for px in row[:, 1] if px < threshold])
+        count_b = len([px for px in row[:, 2] if px < threshold])
+
+        # At least 30px, the smallest items (rings, etc...) are at least 50px
+        return min(count_r, count_g, count_b) > 25
+
+    def _crop_vertical(self, arr: np.ndarray, threshold: int) -> tuple[int, int]:
+        """Return (first, last) positions of lines that contain the shade."""
+        first = last = None
+        arr = np.rot90(arr, 1)
+
+        logger.debug("Running vertical crop")
+
+        for row in range(len(arr)):
+            is_it = self._is_shade(arr[row, :], threshold)
+
+            if is_it and first is None:
+                first = row
+
+            if first and is_it:
+                last = row
+
+        return first, last
+
+    def _crop_horizontal(self, arr: np.ndarray, threshold: int) -> tuple[int, int]:
+        """Return (first, last) positions of lines that contain the shade."""
+        first = last = None
+
+        logger.debug("Running horizontal crop")
+
+        for row in range(len(arr)):
+            is_it = self._is_shade(arr[row, :], threshold)
+
+            if is_it and first is None:
+                first = row
+
+            if first and is_it:
+                last = row
+
+        return first, last
+
+    def crop_out_unique(self, image: Image) -> Image:
+        """Crop out the unique item.
+
+        This will remove extra background, so that only
+        the actual item artwork is returned.
+        """
+        arr = np.array(image)
+        threshold = self._get_crop_threshold(arr)
+
+        logger.debug("Crop value threshold: {}", threshold)
+
+        subimg = image.copy()
+        first, last = self._crop_horizontal(arr, threshold)
+
+        logger.debug("Horizontal crop limits: first={}, last={}", first, last)
+
+        if first and last:
+            subimg = subimg.crop((0, 0, subimg.width, last + 2))
+        else:
+            logger.warning("Horizontal crop failed, will attempt vertical")
+
+        first, last = self._crop_vertical(arr, threshold)
+
+        logger.debug("Vertical crop limits: first={}, last={}", first, last)
+
+        if first and last:
+            subimg = subimg.crop((subimg.width - last - 2, 0, subimg.width - first, subimg.height))
+
+        return subimg
+
     def find_unique(self, screenshot: str | Path) -> Image:
         """Return a cropped part of the screenshot with the unique.
 
         If it cannot be found, returns the original screenshot.
         """
         source_screen = Image.open(str(screenshot))  # Original screenshot
-        screen = self.load_screen_as_image(screenshot)  # CV2 screenshot
+        screen = self.load_screen(screenshot)  # CV2 screenshot
 
-        min_loc = self._find_unique_control(self._image_to_cv(screen))
+        min_loc = self._find_unique_control(screen)
 
         if min_loc is None:
-            # Return original screenshot in CV2 format
-            return screen
+            raise CannotFindUniqueItem
 
         # Crop out the item image
         source_screen = source_screen.crop(
             (min_loc[0] - 100, min_loc[1], min_loc[0], min_loc[1] + 200)
         )
-        source_screen.show()
+        size_orig = source_screen.size
+
+        if FEATURE_CROP_SHADE:
+            logger.debug("FEATURE_CROP_SHADE is enabled")
+            source_screen = self.crop_out_unique(source_screen)
+
+        logger.debug(
+            "Unique item area size: {}x{}px",
+            source_screen.width,
+            source_screen.height,
+        )
+
+        if FEATURE_CROP_SHADE and source_screen.size == size_orig:
+            logger.error(
+                "Cropped out unique is the same size as original even with FEATURE_CROP_SHADE"
+            )
 
         return source_screen
 
@@ -195,6 +330,7 @@ class Matcher:
 
         Returns None if no item was found in the screenshot.
         """
+        logger.info("Finding item in screenshot: {}", screenshot)
         screen_crop = self._image_to_cv(self.find_unique(screenshot))
 
         results_all = []
