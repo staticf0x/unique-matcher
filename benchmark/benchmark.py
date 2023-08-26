@@ -113,17 +113,22 @@ class Benchmark:
         print(f"Accuracy: {found/total:.2%}")
 
         print()
-        print(f"Average time:   {np.mean(self._times):.2f} ms")
-        print(f"Fastest:        {np.min(self._times):.2f} ms")
-        print(f"Slowest:        {np.max(self._times):.2f} ms")
-        print(f"Std:            {np.std(self._times):.2f} ms")
+        print(f"Average time: {np.mean(self._times):6.2f} ms")
+        print(f"Fastest:      {np.min(self._times):6.2f} ms")
+        print(f"Slowest:      {np.max(self._times):6.2f} ms")
+        print(f"Std:          {np.std(self._times):6.2f} ms")
 
 
 def run() -> None:
     """Run the benchmark."""
     benchmark = Benchmark()
 
-    for name in os.listdir(BENCH_DIR / "screenshots"):
+    for name in sorted(os.listdir(BENCH_DIR / "screenshots")):
+        if name.startswith("_"):
+            # Skip underscored items to help development
+            # if they're misbehaving
+            continue
+
         benchmark.add(name)
 
     benchmark.run()
