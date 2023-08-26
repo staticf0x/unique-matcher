@@ -9,7 +9,7 @@ SOCKET_DIR = ROOT_DIR / "socket"
 
 # Other paths
 # Path to the image that contains image of an empty socket
-SOCKET_ICON_PATH = SOCKET_DIR / "socket.png"
+SOCKET_ICON_PATH = SOCKET_DIR / "socket-src.png"
 
 # Maximum size of an item image for comparison
 # (might differ from artwork found on wiki)

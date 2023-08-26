@@ -5,7 +5,7 @@ from PIL import Image
 
 from unique_matcher.constants import ITEM_MAX_SIZE, SOCKET_ICON_PATH
 
-LINK_WIDTH = 16
+LINK_WIDTH = 18
 
 
 class ItemGenerator:
@@ -13,6 +13,7 @@ class ItemGenerator:
 
     def __init__(self) -> None:
         self.socket = Image.open(SOCKET_ICON_PATH)
+        self.socket.thumbnail((36, 36), Image.Resampling.BILINEAR)
 
     def generate_sockets(self, sockets: int, columns: int) -> Image:
         """Generate a socket overlay."""
@@ -51,7 +52,7 @@ class ItemGenerator:
                 #       goes to the *right*
                 left_offset = self.socket.width + LINK_WIDTH
 
-            offset_x = left_offset + col * (self.socket.width + LINK_WIDTH)
+            offset_x = left_offset + col * (self.socket.width + LINK_WIDTH) + 1
             offset_y = row * (self.socket.height + LINK_WIDTH)
 
             # Pass the second socket image as a mask to allow transparency
@@ -67,7 +68,7 @@ class ItemGenerator:
         base = Image.open(base_path)
 
         # Resize to max size, keep aspect ratio
-        base.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BICUBIC)
+        base.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BILINEAR)
 
         # Prepare new image and paste the item base
         new_image = Image.new("RGBA", base.size)
