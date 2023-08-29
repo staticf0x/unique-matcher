@@ -28,7 +28,7 @@ class ItemLoader:
         """Load items from CSV."""
         self.items = {}
 
-        with open(ROOT_DIR / "items-with-bases.csv") as fread:
+        with open(ROOT_DIR / "items.csv") as fread:
             reader = csv.DictReader(fread)
 
             for row in reader:
@@ -49,7 +49,16 @@ class ItemLoader:
                 self.items[file] = item
 
     def get(self, name: str) -> Item:
+        """Find an item by normalized name."""
         return self.items[name]
+
+    def bases(self) -> set[str]:
+        """Return a list of all item bases."""
+        return {item.base for item in self}
+
+    def filter(self, base: str) -> list[Item]:
+        """Filter items by their base name."""
+        return [item for item in self if item.base == base]
 
     def __iter__(self):
         return self.items.values().__iter__()

@@ -3,7 +3,7 @@ import math
 from loguru import logger
 from PIL import Image
 
-from unique_matcher.constants import ITEM_MAX_SIZE, SOCKET_ICON_PATH
+from unique_matcher.constants import ITEM_MAX_SIZE, SOCKET_DIR
 
 LINK_WIDTH = 18
 
@@ -12,7 +12,7 @@ class ItemGenerator:
     """Generator for item sockets."""
 
     def __init__(self) -> None:
-        self.socket = Image.open(SOCKET_ICON_PATH)
+        self.socket = Image.open(SOCKET_DIR / "socket-src.png")
         self.socket.thumbnail((36, 36), Image.Resampling.BILINEAR)
 
     def generate_sockets(self, sockets: int, columns: int) -> Image:
@@ -60,12 +60,10 @@ class ItemGenerator:
 
         return new_image
 
-    def generate_image(self, base_path: str, sockets: int, columns: int) -> Image:
+    def generate_image(self, base: Image, sockets: int, columns: int) -> Image:
         """Generate an image of a base item with N sockets."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")
-
-        base = Image.open(base_path)
 
         # Resize to max size, keep aspect ratio
         base.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BILINEAR)

@@ -11,3 +11,4 @@ screenshots/
 debug/
 items/
 *.log
+training_data/

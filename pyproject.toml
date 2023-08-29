@@ -14,10 +14,12 @@ pillow = "^10.0.0"
 rich = "^13.5.2"
 loguru = "^0.7.0"
 texttable = "^1.6.7"
+pytesseract = "^0.3.10"
 
 [tool.poetry.group.dev.dependencies]
 devtools = {extras = ["pygments"], version = "^0.11.0"}
 types-pillow = "^10.0.0.2"
+pytest = "^7.4.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -87,7 +89,7 @@ ignore = [
 max-complexity = 10
 
 [tool.ruff.per-file-ignores]
-"src/tests/*" = [
+"tests/*" = [
     "ANN",  # All type annotations
     "D100",  # Missing docstring in public module
     "D101",  # Missing docstring in public class
