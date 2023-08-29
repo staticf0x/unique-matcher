@@ -3,6 +3,8 @@ import csv
 from dataclasses import dataclass
 from pathlib import Path
 
+from loguru import logger
+
 from unique_matcher.constants import ITEM_DIR, ROOT_DIR
 
 
@@ -32,6 +34,10 @@ class ItemLoader:
             reader = csv.DictReader(fread)
 
             for row in reader:
+                if int(row["enabled"]) == 0:
+                    logger.debug("Skipping drop-disabled item: {}", row["name"])
+                    continue
+
                 name = row["name"]
                 file = row["file"]
 
