@@ -510,11 +510,8 @@ class Matcher:
 
         return item_img, self.get_base_name(title_img, is_identified)
 
-    def find_item(self, screenshot: str) -> MatchResult | None:
-        """Find an item in a screenshot.
-
-        Returns None if no item was found in the screenshot.
-        """
+    def find_item(self, screenshot: str) -> MatchResult:
+        """Find an item in a screenshot."""
         logger.info("Finding item in screenshot: {}", screenshot)
 
         image, base = self.find_unique(screenshot)
@@ -522,9 +519,18 @@ class Matcher:
 
         results_all = []
 
-        for item in self.item_loader.filter(base):
+        filtered_bases = self.item_loader.filter(base)
+        logger.info("Searching through {} item base variants", len(filtered_bases))
+
+        for item in filtered_bases:
             result = self.check_one(screen_crop, item)
 
             results_all.append(result)
 
-        return self.get_best_result(results_all)
+        best_result = self.get_best_result(results_all)
+
+        if best_result.min_val > 0.99:
+            logger.error("Coulnd't identify a unique item, even the best result had min_val == 1.0")
+            raise CannotFindUniqueItem
+
+        return best_result
