@@ -1,4 +1,3 @@
-import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -14,12 +13,12 @@ from unique_matcher.constants import (
     OPT_CROP_SCREEN,
     OPT_CROP_SHADE,
     OPT_EARLY_FOUND,
-    ROOT_DIR,
     TEMPLATES_DIR,
 )
 from unique_matcher.exceptions import (
     CannotFindItemBase,
     CannotFindUniqueItem,
+    CannotIdentifyUniqueItem,
     NotInFullHD,
 )
 from unique_matcher.generator import ItemGenerator
@@ -92,7 +91,7 @@ class Matcher:
             # Generate item with sockets in memory
             icon = Image.open(item.icon)
             template = ItemTemplate(
-                image=self.generator.generate_image(icon, sockets, item.cols),
+                image=self.generator.generate_image(icon, item, sockets),
                 sockets=sockets,
             )
             variants.append(template)
@@ -531,6 +530,6 @@ class Matcher:
 
         if best_result.min_val > 0.99:
             logger.error("Couldn't identify a unique item, even the best result had min_val == 1.0")
-            raise CannotFindUniqueItem
+            raise CannotIdentifyUniqueItem
 
         return best_result

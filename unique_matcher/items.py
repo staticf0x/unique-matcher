@@ -18,6 +18,8 @@ class Item:
     base: str
     sockets: int = 6
     cols: int = 2
+    width: int = 2
+    height: int = 4
 
 
 class ItemLoader:
@@ -51,6 +53,8 @@ class ItemLoader:
                     base=row["base"],
                     sockets=int(row["sockets"]),
                     cols=int(row["columns"]),
+                    width=int(row["width"] or 2),
+                    height=int(row["height"] or 4),
                 )
                 self.items[file] = item
 

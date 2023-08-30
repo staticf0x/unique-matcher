@@ -4,6 +4,7 @@ from loguru import logger
 from PIL import Image
 
 from unique_matcher.constants import ITEM_MAX_SIZE, SOCKET_DIR
+from unique_matcher.items import Item
 
 LINK_WIDTH = 18
 
@@ -60,7 +61,7 @@ class ItemGenerator:
 
         return new_image
 
-    def generate_image(self, base: Image, sockets: int, columns: int) -> Image:
+    def generate_image(self, base: Image, item: Item, sockets: int) -> Image:
         """Generate an image of a base item with N sockets."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")
@@ -68,12 +69,22 @@ class ItemGenerator:
         # Resize to max size, keep aspect ratio
         base.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BILINEAR)
 
+        if item.width != 2 or item.height != 4:
+            logger.debug("Changing item base image dimensions")
+            base.thumbnail(
+                (
+                    int(ITEM_MAX_SIZE[0] * (item.width / 2)),
+                    int(ITEM_MAX_SIZE[1] * (item.height / 4)),
+                ),
+                Image.Resampling.BILINEAR,
+            )
+
         # Prepare new image and paste the item base
         new_image = Image.new("RGBA", base.size)
         new_image.paste(base, (0, 0), base)
 
         # Generate the socket overlay and place onto the base
-        socket_image = self.generate_sockets(sockets, columns)
+        socket_image = self.generate_sockets(sockets, item.cols)
         offset_x = int((base.width - socket_image.width) / 2)
         offset_y = int((base.height - socket_image.height) / 2)
 
