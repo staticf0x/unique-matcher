@@ -110,7 +110,7 @@ class Matcher:
 
         item_variants = self.get_item_variants(item)
 
-        logger.info("Item {} has {} variants", item.name, len(item_variants))
+        logger.info("Item {} has {} variant(s)", item.name, len(item_variants))
 
         for template in item_variants:
             template_cv = np.array(template.image)
@@ -412,6 +412,10 @@ class Matcher:
         # Remove prefixes
         base_name = base_name.replace("Superior ", "")
 
+        if base_name == "Rusy":
+            # TODO: Remove once tesseract is trained for this font
+            base_name = "Ruby Ring"
+
         # Check that the parsed base exists in item loader
         if base_name not in self.item_loader.bases():
             logger.error("Cannot detect item base, got: '{}'", base_name)
@@ -531,5 +535,13 @@ class Matcher:
         if best_result.min_val > 0.99:
             logger.error("Couldn't identify a unique item, even the best result had min_val == 1.0")
             raise CannotIdentifyUniqueItem
+
+        if best_result.item.name in [
+            "Agnerod South",
+            "Agnerod North",
+            "Agnerod West",
+            "Agnerod East",
+        ]:
+            best_result.item = self.item_loader.get("Agnerod_South")
 
         return best_result

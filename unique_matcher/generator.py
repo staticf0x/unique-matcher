@@ -6,7 +6,7 @@ from PIL import Image
 from unique_matcher.constants import ITEM_MAX_SIZE, SOCKET_DIR
 from unique_matcher.items import Item
 
-LINK_WIDTH = 18
+LINK_WIDTH = 17
 
 
 class ItemGenerator:
@@ -53,7 +53,7 @@ class ItemGenerator:
                 #       goes to the *right*
                 left_offset = self.socket.width + LINK_WIDTH
 
-            offset_x = left_offset + col * (self.socket.width + LINK_WIDTH) + 1
+            offset_x = left_offset + col * (self.socket.width + LINK_WIDTH)
             offset_y = row * (self.socket.height + LINK_WIDTH)
 
             # Pass the second socket image as a mask to allow transparency
@@ -85,8 +85,8 @@ class ItemGenerator:
 
         # Generate the socket overlay and place onto the base
         socket_image = self.generate_sockets(sockets, item.cols)
-        offset_x = int((base.width - socket_image.width) / 2)
-        offset_y = int((base.height - socket_image.height) / 2)
+        offset_x = int((base.width - socket_image.width) / 2) + 1
+        offset_y = int((base.height - socket_image.height) / 2) + 3
 
         new_image.paste(socket_image, (offset_x, offset_y), socket_image)
 

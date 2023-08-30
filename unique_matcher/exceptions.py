@@ -12,3 +12,7 @@ class NotInFullHD(BaseUMException):
 
 class CannotFindItemBase(BaseUMException):
     pass
+
+
+class CannotIdentifyUniqueItem(BaseUMException):
+    pass
