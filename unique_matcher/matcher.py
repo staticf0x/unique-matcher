@@ -530,7 +530,7 @@ class Matcher:
         best_result = self.get_best_result(results_all)
 
         if best_result.min_val > 0.99:
-            logger.error("Coulnd't identify a unique item, even the best result had min_val == 1.0")
+            logger.error("Couldn't identify a unique item, even the best result had min_val == 1.0")
             raise CannotFindUniqueItem
 
         return best_result
