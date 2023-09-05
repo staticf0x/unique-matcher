@@ -19,6 +19,7 @@ from unique_matcher.exceptions import (
     CannotFindItemBase,
     CannotFindUniqueItem,
     CannotIdentifyUniqueItem,
+    InvalidTemplateDimensions,
     NotInFullHD,
 )
 from unique_matcher.generator import ItemGenerator
@@ -85,6 +86,16 @@ class Matcher:
             icon = Image.open(item.icon)
             icon.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BILINEAR)
 
+            if item.width != 2 or item.height != 4:
+                logger.debug("Changing item base image dimensions")
+                icon.thumbnail(
+                    (
+                        int(ITEM_MAX_SIZE[0] * (item.width / 2)),
+                        int(ITEM_MAX_SIZE[1] * (item.height / 4)),
+                    ),
+                    Image.Resampling.BILINEAR,
+                )
+
             return [ItemTemplate(image=icon, sockets=0)]
 
         for sockets in range(item.sockets, 0, -1):
@@ -116,6 +127,23 @@ class Matcher:
         screen = self._image_to_cv(image)
 
         for template in item_variants:
+            if template.image.width > image.width or template.image.height > image.height:
+                logger.error(
+                    "Template image is larger than unique item: {}x{}px vs {}x{}px",
+                    template.image.width,
+                    template.image.height,
+                    image.width,
+                    image.height,
+                )
+                raise InvalidTemplateDimensions(
+                    "Template image is larger than unique item: {}x{}px vs {}x{}px".format(
+                        template.image.width,
+                        template.image.height,
+                        image.width,
+                        image.height,
+                    )
+                )
+
             template_cv = np.array(template.image)
             template_cv = cv2.cvtColor(template_cv, cv2.COLOR_RGBA2GRAY)
 

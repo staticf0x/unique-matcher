@@ -16,3 +16,7 @@ class CannotFindItemBase(BaseUMException):
 
 class CannotIdentifyUniqueItem(BaseUMException):
     pass
+
+
+class InvalidTemplateDimensions(BaseUMException):
+    pass
