@@ -427,7 +427,12 @@ class Matcher:
         base = "".join([c for c in base if c.isalpha() or c in [" ", "\n", "-"]])
 
         # Remove bases with fewer than 3 characters
-        base = " ".join([w for w in base.split() if len(w) > 2])
+        lines = base.split("\n")
+        lines = [" ".join([w for w in line.split() if len(w) > 2]) for line in lines]
+        base = "\n".join(lines)
+
+        if base == "UNSET":
+            base = "UNSET RING"
 
         return base
 
@@ -463,6 +468,12 @@ class Matcher:
 
         # Remove prefixes
         base_name = base_name.replace("Superior ", "")
+
+        if base_name == "Unset":
+            base_name = "Unset Ring"
+
+        if base_name == "Tronscale Gauntlets":
+            base_name = "Ironscale Gauntlets"
 
         # Check that the parsed base exists in item loader
         if base_name not in self.item_loader.bases():

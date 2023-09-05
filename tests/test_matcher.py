@@ -20,7 +20,7 @@ logger.add(
 def _load_data(folder: pathlib.Path) -> list[str]:
     data = []
 
-    for item in os.listdir(folder):
+    for item in sorted(os.listdir(folder)):
         screenshots = [folder / item / file for file in os.listdir(folder / item)]
         data.append((item, screenshots))
 
