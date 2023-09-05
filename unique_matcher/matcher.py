@@ -98,7 +98,7 @@ class Matcher:
 
         return variants
 
-    def check_one(self, screen: np.ndarray, item: Item) -> MatchResult:
+    def check_one(self, image: Image, item: Item) -> MatchResult:
         """Check one screenshot against one item."""
         results = []
 
@@ -111,6 +111,9 @@ class Matcher:
         item_variants = self.get_item_variants(item)
 
         logger.info("Item {} has {} variant(s)", item.name, len(item_variants))
+
+        image = self.crop_out_unique_by_dimensions(image, item)
+        screen = self._image_to_cv(image)
 
         for template in item_variants:
             template_cv = np.array(template.image)
@@ -366,16 +369,28 @@ class Matcher:
 
         return subimg
 
+    def crop_out_unique_by_dimensions(self, image: Image, item: Item) -> Image:
+        """Crop out the unique item image based on its inventory w/h."""
+        if item.width != 2 or item.height != 4:
+            logger.debug("Cropping image based on item width and height")
+            image = image.crop(
+                (
+                    int(image.width * (1 - item.width / 2)),
+                    0,
+                    image.width,
+                    int(image.height * item.height / 4),
+                )
+            )
+
+        return image
+
     def _clean_base_name(self, base: str) -> str:
         """Clean the raw base name as received from tesseract."""
         # Remove non-letter characters
         base = "".join([c for c in base if c.isalpha() or c in [" ", "\n", "-"]])
 
-        # Remove bases with less than 3 characters
+        # Remove bases with fewer than 3 characters
         base = " ".join([w for w in base.split() if len(w) > 2])
-
-        if base == "CARNALMITTS":
-            base = "CARNAL MITTS"
 
         return base
 
@@ -514,7 +529,6 @@ class Matcher:
         logger.info("Finding item in screenshot: {}", screenshot)
 
         image, base = self.find_unique(screenshot)
-        screen_crop = self._image_to_cv(image)
 
         results_all = []
 
@@ -522,7 +536,7 @@ class Matcher:
         logger.info("Searching through {} item base variants", len(filtered_bases))
 
         for item in filtered_bases:
-            result = self.check_one(screen_crop, item)
+            result = self.check_one(image, item)
 
             results_all.append(result)
 

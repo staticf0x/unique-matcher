@@ -20,3 +20,9 @@ Refer to the [official installation guide](https://tesseract-ocr.github.io/tessd
 ### Running tests
 
 Run `tox -e pytest` to run unit tests. It *will* take a long time.
+
+To run a single test, you can do for example:
+
+```bash
+pytest -v tests/test_matcher.py::test_get_base_name
+```
