@@ -25,9 +25,14 @@ from unique_matcher.exceptions import (
 from unique_matcher.generator import ItemGenerator
 from unique_matcher.items import Item, ItemLoader
 
+# Threshold for finding the items. Doesn't actually have
+# significance besides calling item.found() and item.confidence().
 THRESHOLD = 0.3
-THRESHOLD_CONTROL = 0.20
-THRESHOLD_CONTROL_STRICT = 0.1
+
+# Threshold for the control guides (item title decorations).
+# Has to be low enough to not allow other clutter to get in.
+# Typically the min_val of guides is ~0.06.
+THRESHOLD_CONTROL = 0.16
 
 
 @dataclass
