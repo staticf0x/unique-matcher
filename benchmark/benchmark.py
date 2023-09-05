@@ -54,29 +54,26 @@ class Benchmark:
         table.set_cols_dtype(["t", "f", "t", lambda v: f"{v:.1f}"])
 
         results_all = []
-        test_set = self._get_test_set(item.name)
+        test_set = self._get_test_set(item.file)
 
         for screen in test_set:
             t_start = time.perf_counter()
             try:
                 result = self.matcher.check_one(
-                    self.matcher._image_to_cv(
-                        self.matcher.find_unique(screen),
-                    ),
+                    self.matcher.find_unique(screen)[0],
                     item,
                 )
             except CannotFindUniqueItem:
                 continue
 
             t_end = time.perf_counter()
-
             results_all.append(result)
 
             table.add_row(
                 [
                     screen.name,
                     result.min_val,
-                    "Yes" if result.min_val <= THRESHOLD else "No",
+                    "Yes" if result.item == item else "No",
                     (t_end - t_start) * 1e3,
                 ]
             )
@@ -84,12 +81,12 @@ class Benchmark:
             self._times.append((t_end - t_start) * 1e3)
 
         # Add to global report
-        self.report(sum(result.found() for result in results_all), len(test_set))
+        self.report(sum(result.item == item for result in results_all), len(test_set))
 
         # Draw the result table
         print(table.draw())
 
-        if any(result.found() for result in results_all):
+        if any(result.item == item for result in results_all):
             found = "[green]Yes[/green]"
         else:
             found = "[red]No[/red]"
