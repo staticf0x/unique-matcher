@@ -29,6 +29,10 @@ from unique_matcher.items import Item, ItemLoader
 # significance besides calling item.found() and item.confidence().
 THRESHOLD = 0.3
 
+# Threshold at which we must discard the result because it's inconclusive
+# even amongst the already filtered bases.
+THRESHOLD_DISCARD = 0.99
+
 # Threshold for the control guides (item title decorations).
 # Has to be low enough to not allow other clutter to get in.
 # Typically the min_val of guides is ~0.06.
@@ -575,8 +579,12 @@ class Matcher:
 
         best_result = self.get_best_result(results_all)
 
-        if best_result.min_val > 0.99:
-            logger.error("Couldn't identify a unique item, even the best result had min_val == 1.0")
+        if best_result.min_val > THRESHOLD_DISCARD:
+            logger.error(
+                "Couldn't identify a unique item, even the best result "
+                "was above THRESHOLD_DISCARD (min_val={})",
+                result.min_val,
+            )
             raise CannotIdentifyUniqueItem
 
         if best_result.item.name in [
