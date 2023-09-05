@@ -395,9 +395,9 @@ class Matcher:
 
                 # In case tesseract cannot read the name
                 possibilities = [
-                    " ".join(base_name_spl[0].split(" ")[-1:]),
-                    " ".join(base_name_spl[0].split(" ")[-2:]),
                     " ".join(base_name_spl[0].split(" ")[-3:]),
+                    " ".join(base_name_spl[0].split(" ")[-2:]),
+                    " ".join(base_name_spl[0].split(" ")[-1:]),
                 ]
 
                 for possibility in possibilities:
@@ -411,10 +411,6 @@ class Matcher:
 
         # Remove prefixes
         base_name = base_name.replace("Superior ", "")
-
-        if base_name == "Rusy":
-            # TODO: Remove once tesseract is trained for this font
-            base_name = "Ruby Ring"
 
         # Check that the parsed base exists in item loader
         if base_name not in self.item_loader.bases():
@@ -504,10 +500,10 @@ class Matcher:
         # anything at all
         title_img = source_screen.crop(
             (
-                min_loc_start[0] + control_width - 24,
-                min_loc_start[1] - 4,
-                min_loc_end[0] + 24,
-                min_loc_end[1] + control_height + 10,
+                min_loc_start[0] + control_width,
+                min_loc_start[1] + 6,
+                min_loc_end[0],
+                min_loc_end[1] + control_height - 6,
             )
         )
 
