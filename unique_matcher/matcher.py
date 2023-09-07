@@ -3,10 +3,10 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-import pytesseract
 from loguru import logger
 from PIL import Image
 
+from unique_matcher.bases import BaseDetector
 from unique_matcher.constants import (
     ITEM_MAX_SIZE,
     OPT_ALLOW_NON_FULLHD,
@@ -16,7 +16,6 @@ from unique_matcher.constants import (
     TEMPLATES_DIR,
 )
 from unique_matcher.exceptions import (
-    CannotFindItemBase,
     CannotFindUniqueItem,
     CannotIdentifyUniqueItem,
     InvalidTemplateDimensions,
@@ -77,6 +76,7 @@ class Matcher:
         self.generator = ItemGenerator()
         self.item_loader = ItemLoader()
         self.item_loader.load()
+        self.base_detector = BaseDetector(self.item_loader)
 
         self.unique_one_line = Image.open(str(TEMPLATES_DIR / "unique-one-line-fullhd.png"))
         self.unique_two_line = Image.open(str(TEMPLATES_DIR / "unique-two-line-fullhd.png"))
@@ -421,69 +421,6 @@ class Matcher:
 
         return image
 
-    def _clean_base_name(self, base: str) -> str:
-        """Clean the raw base name as received from tesseract."""
-        # Remove non-letter characters
-        base = "".join([c for c in base if c.isalpha() or c in [" ", "\n", "-"]])
-
-        # Remove bases with fewer than 3 characters
-        lines = base.split("\n")
-        lines = [" ".join([w for w in line.split() if len(w) > 2]) for line in lines]
-        base = "\n".join(lines)
-
-        if base == "UNSET":
-            base = "UNSET RING"
-
-        return base
-
-    def get_base_name(self, title_img: Image, is_identified: bool) -> str:
-        """Get the item base name from the cropped out title image."""
-        base_name_raw = pytesseract.image_to_string(title_img, "eng")
-        base_name_raw = self._clean_base_name(base_name_raw)
-
-        if is_identified:
-            # Get only the second line if identified
-            base_name_spl = base_name_raw.rstrip("\n").split("\n")
-
-            if len(base_name_spl) > 1:
-                base_name = base_name_spl[1].title()
-            else:
-                logger.warning("Failed to properly parse identified item name and base")
-
-                # In case tesseract cannot read the name
-                possibilities = [
-                    " ".join(base_name_spl[0].split(" ")[-3:]),
-                    " ".join(base_name_spl[0].split(" ")[-2:]),
-                    " ".join(base_name_spl[0].split(" ")[-1:]),
-                ]
-
-                for possibility in possibilities:
-                    if possibility.title() in self.item_loader.bases():
-                        base_name = possibility.title()
-                        break
-                else:
-                    base_name = "undefined"
-        else:
-            base_name = base_name_raw.replace("\n", "").title()
-
-        # Remove prefixes
-        base_name = base_name.replace("Superior ", "")
-
-        if base_name == "Unset":
-            base_name = "Unset Ring"
-
-        if base_name == "Tronscale Gauntlets":
-            base_name = "Ironscale Gauntlets"
-
-        # Check that the parsed base exists in item loader
-        if base_name not in self.item_loader.bases():
-            logger.error("Cannot detect item base, got: '{}'", base_name)
-            raise CannotFindItemBase(f"Base '{base_name}' doesn't exist")
-
-        logger.info("Item base: {}", base_name)
-
-        return base_name
-
     def find_unique(self, screenshot: str | Path) -> tuple[Image, str]:
         """Return a cropped part of the screenshot with the unique.
 
@@ -563,14 +500,14 @@ class Matcher:
         # anything at all
         title_img = source_screen.crop(
             (
-                min_loc_start[0] + control_width,
-                min_loc_start[1] + 6,
-                min_loc_end[0],
+                min_loc_start[0] + control_width - 6,
+                min_loc_start[1] + 4,
+                min_loc_end[0] + 6,
                 min_loc_end[1] + control_height - 6,
             )
         )
 
-        return item_img, self.get_base_name(title_img, is_identified)
+        return item_img, self.base_detector.get_base_name(title_img, is_identified)
 
     def find_item(self, screenshot: str) -> MatchResult:
         """Find an item in a screenshot."""

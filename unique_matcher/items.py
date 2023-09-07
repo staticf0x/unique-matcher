@@ -50,7 +50,7 @@ class ItemLoader:
                     name=name,
                     file=file,
                     icon=ITEM_DIR / f"{file}.png",
-                    base=row["base"],
+                    base=row["base"].replace("'", ""),
                     sockets=int(row["sockets"]),
                     cols=int(row["columns"]),
                     width=int(row["width"] or 2),
