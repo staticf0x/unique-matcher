@@ -21,6 +21,10 @@ class Item:
     width: int = 2
     height: int = 4
 
+    def is_smaller_than_full(self) -> bool:
+        """Return True if the item is smaller than full dimensions (for cropping)."""
+        return self.width < 2 or self.height < 4
+
 
 class ItemLoader:
     """Class for loading item data."""

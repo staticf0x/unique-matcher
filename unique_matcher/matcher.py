@@ -1,3 +1,4 @@
+"""Module for matching unique items."""
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -6,6 +7,7 @@ import numpy as np
 from loguru import logger
 from PIL import Image
 
+from unique_matcher import utils
 from unique_matcher.bases import BaseDetector
 from unique_matcher.constants import ITEM_MAX_SIZE, OPT_ALLOW_NON_FULLHD, TEMPLATES_DIR
 from unique_matcher.exceptions import (
@@ -16,10 +18,6 @@ from unique_matcher.exceptions import (
 )
 from unique_matcher.generator import ItemGenerator
 from unique_matcher.items import Item, ItemLoader
-
-# Threshold for finding the items. Doesn't actually have
-# significance besides calling item.found() and item.confidence().
-THRESHOLD = 0.3
 
 # Threshold at which we must discard the result because it's inconclusive
 # even amongst the already filtered bases.
@@ -49,17 +47,6 @@ class MatchResult:
     loc: tuple[int, int]
     min_val: float
     template: ItemTemplate | None = None
-
-    def found(self) -> bool:
-        return self.min_val <= THRESHOLD
-
-    @property
-    def confidence(self) -> float:
-        """Turn min_val into percentage confidence."""
-        if self.found():
-            return 100.0
-
-        return -100 / (1 - THRESHOLD) * (self.min_val - THRESHOLD) + 100
 
 
 class Matcher:
@@ -126,7 +113,7 @@ class Matcher:
         logger.info("Item {} has {} variant(s)", item.name, len(item_variants))
 
         image = self.crop_out_unique_by_dimensions(image, item)
-        screen = self._image_to_cv(image)
+        screen = utils.image_to_cv(image)
 
         for template in item_variants:
             if template.image.width > image.width or template.image.height > image.height:
@@ -163,19 +150,14 @@ class Matcher:
     def load_screen(self, screenshot: str | Path) -> np.ndarray:
         """Load a screenshot from file into OpenCV format."""
         screen = cv2.imread(str(screenshot))
-        screen = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
-
-        return screen
-
-    def load_screen_as_image(self, screenshot: str | Path) -> Image.Image:
-        return Image.open(str(screenshot))
+        return cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
 
     def _find_without_resizing(
         self, image: Image.Image, screen: np.ndarray
     ) -> tuple[float, tuple[int, int]]:
         result = cv2.matchTemplate(
             screen,
-            self._image_to_cv(image),
+            utils.image_to_cv(image),
             cv2.TM_SQDIFF_NORMED,
         )
         min_val, _, min_loc, _ = cv2.minMaxLoc(result)
@@ -247,15 +229,9 @@ class Matcher:
 
         return None
 
-    def _image_to_cv(self, image: Image.Image) -> np.ndarray:
-        image_cv: np.ndarray = np.array(image)
-        image_cv = cv2.cvtColor(image_cv, cv2.COLOR_RGB2GRAY)
-
-        return image_cv
-
     def crop_out_unique_by_dimensions(self, image: Image.Image, item: Item) -> Image.Image:
         """Crop out the unique item image based on its inventory w/h."""
-        if item.width != 2 or item.height != 4:
+        if item.is_smaller_than_full():
             logger.debug("Cropping image based on item width and height")
             image = image.crop(
                 (
@@ -302,8 +278,7 @@ class Matcher:
             # TODO: Different exception
             raise CannotFindUniqueItem
 
-        # Crop out the item image
-        # (left, top, right, bottom)
+        # Crop out the item image: (left, top, right, bottom)
         # Left is: position of guide - item width - space
         # Top is: position of guide + space
         # Right is: position of guide - space
@@ -317,7 +292,6 @@ class Matcher:
                 min_loc_start[1] + ITEM_MAX_SIZE[1],
             )
         )
-        size_orig = item_img.size
 
         logger.debug(
             "Unique item area has size: {}x{}px",

@@ -32,7 +32,7 @@ CONTAINS_NOT = _load_data(DATA_DIR / "contains_not")
 BASES = _load_data(DATA_DIR / "bases")
 
 
-@pytest.mark.parametrize(["name", "screenshots"], CONTAINS)
+@pytest.mark.parametrize(("name", "screenshots"), CONTAINS)
 def test_find_item_contains_item(name, screenshots, matcher):
     """Test that a screenshot contains a specified item."""
     for screenshot in screenshots:
@@ -40,7 +40,7 @@ def test_find_item_contains_item(name, screenshots, matcher):
         assert result.item.file == name
 
 
-@pytest.mark.parametrize(["name", "screenshots"], CONTAINS_NOT)
+@pytest.mark.parametrize(("name", "screenshots"), CONTAINS_NOT)
 def test_find_item_doesnt_contain_item(name, screenshots, matcher):
     """Test that a screenshot does NOT contain a specified item."""
     # TODO: Can we just invert the CONTAINS data set?
@@ -49,7 +49,7 @@ def test_find_item_doesnt_contain_item(name, screenshots, matcher):
         assert result.item.file != name
 
 
-@pytest.mark.parametrize(["base", "screenshots"], BASES)
+@pytest.mark.parametrize(("base", "screenshots"), BASES)
 def test_get_base_name(base, screenshots, matcher):
     for screenshot in screenshots:
         _, base_name = matcher.find_unique(screenshot)

@@ -1,3 +1,4 @@
+"""Module for generating item sockets."""
 import math
 
 from loguru import logger
@@ -69,7 +70,7 @@ class ItemGenerator:
         # Resize to max size, keep aspect ratio
         base.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BILINEAR)
 
-        if item.width != 2 or item.height != 4:
+        if item.is_smaller_than_full():
             logger.debug("Changing item base image dimensions")
             base.thumbnail(
                 (

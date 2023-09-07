@@ -2,6 +2,12 @@
 
 A project aimed at detecting unique items on screen for PoE research purposes.
 
+## A note on accuracy and resolution
+
+For the best accuracy, you have to play PoE in 1920x1080px. If you supply
+unique matcher with a slightly different image dimension (say 1924x1072px)
+it will still likely work. Other resolutions are currently not supported.
+
 ## Installation
 
 You need Python 3.11+ and [Poetry](https://github.com/python-poetry/poetry).
