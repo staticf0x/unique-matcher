@@ -14,4 +14,4 @@ ITEM_MAX_SIZE: tuple[int, int] = (104, 208)
 
 DEBUG: bool = False
 
-OPT_ALLOW_NON_FULLHD = True
+OPT_ALLOW_NON_FULLHD: bool = True

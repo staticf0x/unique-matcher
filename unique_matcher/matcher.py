@@ -35,7 +35,7 @@ THRESHOLD_CONTROL = 0.16
 class ItemTemplate:
     """Helper class for the image template."""
 
-    image: Image
+    image: Image.Image
     sockets: int
     fraction: int = 100
     size: tuple[int, int] = (0, 0)
@@ -80,7 +80,7 @@ class Matcher:
         """Find the best result (min(min_val))."""
         return min(results, key=lambda res: res.min_val)
 
-    def get_item_variants(self, item: Item) -> list[Image]:
+    def get_item_variants(self, item: Item) -> list[ItemTemplate]:
         """Get a list of images for all socket variants of an item."""
         variants = []
 
@@ -111,7 +111,7 @@ class Matcher:
 
         return variants
 
-    def check_one(self, image: Image, item: Item) -> MatchResult:
+    def check_one(self, image: Image.Image, item: Item) -> MatchResult:
         """Check one screenshot against one item."""
         results = []
 
@@ -167,10 +167,12 @@ class Matcher:
 
         return screen
 
-    def load_screen_as_image(self, screenshot: str | Path) -> Image:
+    def load_screen_as_image(self, screenshot: str | Path) -> Image.Image:
         return Image.open(str(screenshot))
 
-    def _find_without_resizing(self, image: Image, screen: np.ndarray) -> tuple[int, int] | None:
+    def _find_without_resizing(
+        self, image: Image.Image, screen: np.ndarray
+    ) -> tuple[float, tuple[int, int]]:
         result = cv2.matchTemplate(
             screen,
             self._image_to_cv(image),
@@ -245,13 +247,13 @@ class Matcher:
 
         return None
 
-    def _image_to_cv(self, image: Image) -> np.ndarray:
-        image_cv = np.array(image)
+    def _image_to_cv(self, image: Image.Image) -> np.ndarray:
+        image_cv: np.ndarray = np.array(image)
         image_cv = cv2.cvtColor(image_cv, cv2.COLOR_RGB2GRAY)
 
         return image_cv
 
-    def crop_out_unique_by_dimensions(self, image: Image, item: Item) -> Image:
+    def crop_out_unique_by_dimensions(self, image: Image.Image, item: Item) -> Image.Image:
         """Crop out the unique item image based on its inventory w/h."""
         if item.width != 2 or item.height != 4:
             logger.debug("Cropping image based on item width and height")
@@ -266,7 +268,7 @@ class Matcher:
 
         return image
 
-    def find_unique(self, screenshot: str | Path) -> tuple[Image, str]:
+    def find_unique(self, screenshot: str | Path) -> tuple[Image.Image, str]:
         """Return a cropped part of the screenshot with the unique.
 
         If it cannot be found, returns the original screenshot.
@@ -288,11 +290,12 @@ class Matcher:
                 )
                 raise NotInFullHD
 
-        min_loc_start, is_identified = self._find_unique_control_start(screen)
+        res = self._find_unique_control_start(screen)
 
-        if min_loc_start is None:
+        if res is None:
             raise CannotFindUniqueItem
 
+        min_loc_start, is_identified = res
         min_loc_end = self._find_unique_control_end(screen, is_identified)
 
         if min_loc_end is None:

@@ -16,7 +16,7 @@ class ItemGenerator:
         self.socket = Image.open(SOCKET_DIR / "socket-src.png")
         self.socket.thumbnail((36, 36), Image.Resampling.BILINEAR)
 
-    def generate_sockets(self, sockets: int, columns: int) -> Image:
+    def generate_sockets(self, sockets: int, columns: int) -> Image.Image:
         """Generate a socket overlay."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")
@@ -61,7 +61,7 @@ class ItemGenerator:
 
         return new_image
 
-    def generate_image(self, base: Image, item: Item, sockets: int) -> Image:
+    def generate_image(self, base: Image.Image, item: Item, sockets: int) -> Image.Image:
         """Generate an image of a base item with N sockets."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")

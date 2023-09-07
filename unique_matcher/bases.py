@@ -71,7 +71,7 @@ class BaseDetector:
 
         return base_name
 
-    def get_base_name(self, title_img: Image, is_identified: bool) -> str:
+    def get_base_name(self, title_img: Image.Image, is_identified: bool) -> str:
         """Get the item base name from the cropped out title image."""
         # Add 1px white border to help tesseract
         title_img = ImageOps.expand(title_img, border=1, fill="white")
