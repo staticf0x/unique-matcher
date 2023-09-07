@@ -344,12 +344,11 @@ class Matcher:
             )
             raise CannotIdentifyUniqueItem
 
-        if best_result.item.name in [
-            "Agnerod South",
-            "Agnerod North",
-            "Agnerod West",
-            "Agnerod East",
-        ]:
-            best_result.item = self.item_loader.get("Agnerod_South")
+        if aliases := self.item_loader.item_aliases(best_result.item):
+            logger.warning(
+                "Found aliased item: {}, aliases:\n{}",
+                best_result.item.name,
+                "\n".join([item.name for item in aliases]),
+            )
 
         return best_result

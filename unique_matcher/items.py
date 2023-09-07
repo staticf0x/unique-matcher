@@ -14,6 +14,7 @@ class Item:
 
     name: str
     file: str
+    alias: str
     icon: str | Path
     base: str
     sockets: int = 6
@@ -53,6 +54,7 @@ class ItemLoader:
                 item = Item(
                     name=name,
                     file=file,
+                    alias=row["alias"],
                     icon=ITEM_DIR / f"{file}.png",
                     base=row["base"].replace("'", ""),
                     sockets=int(row["sockets"]),
@@ -72,7 +74,11 @@ class ItemLoader:
 
     def filter(self, base: str) -> list[Item]:
         """Filter items by their base name."""
-        return [item for item in self if item.base == base]
+        return [item for item in self if item.base == base and not item.alias]
+
+    def item_aliases(self, item: Item) -> list[Item]:
+        """Get item aliases."""
+        return [i for i in self if i.alias == item.file]
 
     def __iter__(self):
         return self.items.values().__iter__()
