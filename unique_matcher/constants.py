@@ -14,7 +14,4 @@ ITEM_MAX_SIZE: tuple[int, int] = (104, 208)
 
 DEBUG: bool = False
 
-OPT_CROP_SCREEN = False
-OPT_EARLY_FOUND = False
-OPT_CROP_SHADE = False
 OPT_ALLOW_NON_FULLHD = True

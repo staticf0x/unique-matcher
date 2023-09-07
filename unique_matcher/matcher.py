@@ -7,14 +7,7 @@ from loguru import logger
 from PIL import Image
 
 from unique_matcher.bases import BaseDetector
-from unique_matcher.constants import (
-    ITEM_MAX_SIZE,
-    OPT_ALLOW_NON_FULLHD,
-    OPT_CROP_SCREEN,
-    OPT_CROP_SHADE,
-    OPT_EARLY_FOUND,
-    TEMPLATES_DIR,
-)
+from unique_matcher.constants import ITEM_MAX_SIZE, OPT_ALLOW_NON_FULLHD, TEMPLATES_DIR
 from unique_matcher.exceptions import (
     CannotFindUniqueItem,
     CannotIdentifyUniqueItem,
@@ -161,19 +154,6 @@ class Matcher:
             min_val, _, min_loc, _ = cv2.minMaxLoc(result)
 
             match_result = MatchResult(item, min_loc, min_val, template)
-
-            if OPT_EARLY_FOUND and match_result.found():
-                # Optimization, sort of... We're only interested in finding
-                # the item itself, not how many sockets it has, so it's
-                # fine to return early
-                logger.success(
-                    "Found item {} early, sockets={}, min_val={}",
-                    match_result.item.name,
-                    template.sockets,
-                    match_result.min_val,
-                )
-                return match_result
-
             results.append(match_result)
 
         # If we couldn't find the item immediately, return the best result
@@ -184,10 +164,6 @@ class Matcher:
         """Load a screenshot from file into OpenCV format."""
         screen = cv2.imread(str(screenshot))
         screen = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
-
-        if OPT_CROP_SCREEN:
-            logger.debug("OPT_CROP_SCREEN is enabled")
-            screen = screen[:, 1920 // 2 :]
 
         return screen
 
@@ -275,137 +251,6 @@ class Matcher:
 
         return image_cv
 
-    def _get_crop_threshold(self, arr: np.ndarray) -> int:
-        """Return the threshold (pixel value) where the shade should be cut off."""
-        # Number of pixels in image for normalization
-        pixels = len(arr) * len(arr[0])
-
-        # Convert to grayscale for simplification
-        arr = cv2.cvtColor(arr, cv2.COLOR_RGB2GRAY)
-
-        # Calculate histogram into 5 bins (51 values per bin)
-        hist = cv2.calcHist([arr], [0], None, [5], (0, 256), accumulate=True)
-
-        # Normalize to [0, 1]
-        hist_perc = hist / pixels
-
-        if hist_perc[0] >= 0.8:
-            # Very dark
-            logger.debug("Item is on a very dark background")
-            return 15
-
-        if hist_perc[0] >= 0.6:
-            # Dark
-            logger.debug("Item is on a mildly dark background")
-            return 20
-
-        if hist_perc[1] >= 0.5:
-            # Bright
-            logger.debug("Item is on a bright background")
-            return 50
-
-        return 50
-
-    def _is_shade(self, row: np.ndarray, threshold: int) -> bool:
-        """Return True if a row is a shade."""
-        count_r = len([px for px in row[:, 0] if px < threshold])
-        count_g = len([px for px in row[:, 1] if px < threshold])
-        count_b = len([px for px in row[:, 2] if px < threshold])
-
-        # At least 30px, the smallest items (rings, etc...) are at least 50px
-        return min(count_r, count_g, count_b) > 25
-
-    def _crop_vertical(self, arr: np.ndarray, threshold: int) -> tuple[int, int]:
-        """Return (first, last) positions of lines that contain the shade."""
-        first = last = None
-        arr = np.rot90(arr, 1)
-
-        logger.debug("Running vertical crop")
-
-        for row in range(len(arr)):
-            is_it = self._is_shade(arr[row, :], threshold)
-
-            if is_it and first is None:
-                first = row
-
-            if first and is_it:
-                last = row
-
-        if first is not None:
-            if first > 10:
-                logger.warning("Correcting vertical_crop.first, was {}", first)
-                first = 0
-
-            if first < 7:
-                logger.warning("Correcting vertical_crop.first, was {}", first)
-                first = 0
-
-        if last is not None and last < 50:
-            logger.warning("Correcting vertical_crop.last, was {}", last)
-            last = len(arr)
-
-        return first, last
-
-    def _crop_horizontal(self, arr: np.ndarray, threshold: int) -> tuple[int, int]:
-        """Return (first, last) positions of lines that contain the shade."""
-        first = last = None
-
-        logger.debug("Running horizontal crop")
-
-        for row in range(len(arr)):
-            is_it = self._is_shade(arr[row, :], threshold)
-
-            if is_it and first is None:
-                first = row
-
-            if first and is_it:
-                last = row
-
-        if first is not None:
-            if first > 10:
-                logger.warning("Correcting horizontal_crop.first, was {}", first)
-                first = 0
-
-            if first < 7:
-                logger.warning("Correcting horizontal_crop.first, was {}", first)
-                first = 0
-
-        if last is not None and last < 50:
-            logger.warning("Correcting horizontal_crop.last, was {}", last)
-            last = len(arr)
-
-        return first, last
-
-    def crop_out_unique(self, image: Image) -> Image:
-        """Crop out the unique item.
-
-        This will remove extra background, so that only
-        the actual item artwork is returned.
-        """
-        arr = np.array(image)
-        threshold = self._get_crop_threshold(arr)
-
-        logger.debug("Crop value threshold: {}", threshold)
-
-        subimg = image.copy()
-        first, last = self._crop_horizontal(arr, threshold)
-
-        logger.debug("Horizontal crop limits: first={}, last={}", first, last)
-
-        if first is not None and last is not None:
-            subimg = subimg.crop((0, 0, subimg.width, last + 4))
-        else:
-            logger.warning("Horizontal crop failed, will attempt vertical")
-
-        first, last = self._crop_vertical(arr, threshold)
-
-        logger.debug("Vertical crop limits: first={}, last={}", first, last)
-
-        if first is not None and last is not None:
-            subimg = subimg.crop((subimg.width - last - 4, 0, subimg.width - first, subimg.height))
-
-        return subimg
-
     def crop_out_unique_by_dimensions(self, image: Image, item: Item) -> Image:
         """Crop out the unique item image based on its inventory w/h."""
         if item.width != 2 or item.height != 4:
@@ -476,19 +321,6 @@ class Matcher:
             item_img.width,
             item_img.height,
         )
-
-        if OPT_CROP_SHADE:
-            logger.debug("OPT_CROP_SHADE is enabled")
-            item_img = self.crop_out_unique(item_img)
-
-            logger.debug(
-                "Unique item area cropped to size: {}x{}px",
-                item_img.width,
-                item_img.height,
-            )
-
-        if OPT_CROP_SHADE and item_img.size == size_orig:
-            logger.error("Cropped out unique is the same size as original even with OPT_CROP_SHADE")
 
         # Crop out item name + base
         if is_identified:
