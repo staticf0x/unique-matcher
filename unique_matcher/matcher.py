@@ -59,9 +59,17 @@ class Matcher:
         self.base_detector = BaseDetector(self.item_loader)
 
         self.unique_one_line = Image.open(str(TEMPLATES_DIR / "unique-one-line-fullhd.png"))
-        self.unique_two_line = Image.open(str(TEMPLATES_DIR / "unique-two-line-fullhd.png"))
         self.unique_one_line_end = Image.open(str(TEMPLATES_DIR / "unique-one-line-end-fullhd.png"))
+
+        self.unique_two_line = Image.open(str(TEMPLATES_DIR / "unique-two-line-fullhd.png"))
         self.unique_two_line_end = Image.open(str(TEMPLATES_DIR / "unique-two-line-end-fullhd.png"))
+
+        self.unique_two_line_cmp = Image.open(
+            str(TEMPLATES_DIR / "unique-two-line-fullhd-compressed.png")
+        )
+        self.unique_two_line_end_cmp = Image.open(
+            str(TEMPLATES_DIR / "unique-two-line-end-fullhd-compressed.png")
+        )
 
     def get_best_result(self, results: list[MatchResult]) -> MatchResult:
         """Find the best result (min(min_val))."""
@@ -193,6 +201,14 @@ class Matcher:
             logger.info("Found identified item")
             return min_loc, True
 
+        min_val2, min_loc = self._find_without_resizing(self.unique_two_line_cmp, screen)
+
+        logger.debug("Finding unique control start 2 (compressed): min_val={}", min_val2)
+
+        if min_val2 <= THRESHOLD_CONTROL:
+            logger.info("Found identified item")
+            return min_loc, True
+
         logger.error(
             "Couldn't find unique control start, threshold is {}, line1_min={}, line2_min={}",
             THRESHOLD_CONTROL,
@@ -214,6 +230,13 @@ class Matcher:
             min_val2, min_loc = self._find_without_resizing(self.unique_two_line_end, screen)
 
             logger.debug("Finding unique control end 2: min_val={}", min_val2)
+
+            if min_val2 <= THRESHOLD_CONTROL:
+                return min_loc
+
+            min_val2, min_loc = self._find_without_resizing(self.unique_two_line_end_cmp, screen)
+
+            logger.debug("Finding unique control end 2 (compressed): min_val={}", min_val2)
 
             if min_val2 <= THRESHOLD_CONTROL:
                 return min_loc
