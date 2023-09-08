@@ -395,7 +395,7 @@ class Matcher:
 
         best_result = self.get_best_result(results_all)
 
-        if best_result.min_val > THRESHOLD_DISCARD:
+        if best_result.min_val > THRESHOLD_DISCARD and best_result.hist_val == 0:
             logger.error(
                 "Couldn't identify a unique item, even the best result "
                 "was above THRESHOLD_DISCARD (min_val={})",
