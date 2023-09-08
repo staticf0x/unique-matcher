@@ -52,8 +52,14 @@ if args.all:
     table.add_column("s/c")
     table.add_column("WxH")
     table.add_column("min_val")
+    table.add_column("hist_val")
 
-    for i, res in enumerate(sorted(matcher.debug_info["results_all"], key=lambda r: r.min_val)):
+    if any(res.hist_val for res in matcher.debug_info["results_all"]):
+        sort_lambda = lambda r: r.hist_val
+    else:
+        sort_lambda = lambda r: r.min_val
+
+    for i, res in enumerate(sorted(matcher.debug_info["results_all"], key=sort_lambda)):
         style = None
 
         if i == 0:
@@ -68,6 +74,7 @@ if args.all:
             f"{res.item.sockets}/{res.item.cols}",
             f"{res.item.width}x{res.item.height}",
             f"{res.min_val:.3f}",
+            f"{res.hist_val:.3f}",
             style=style,
         )
 

@@ -52,6 +52,7 @@ class MatchResult:
     item: Item
     loc: tuple[int, int]
     min_val: float
+    hist_val: float = 0.0
     template: ItemTemplate | None = None
 
 
@@ -80,7 +81,11 @@ class Matcher:
         self.debug_info: dict[str, Any] = {}
 
     def get_best_result(self, results: list[MatchResult]) -> MatchResult:
-        """Find the best result (min(min_val))."""
+        """Find the best result (min(min_val) or min(hist_val))."""
+        if any(res.hist_val > 0 for res in results):
+            # Comparing histograms
+            return min(results, key=lambda res: res.hist_val)
+
         return min(results, key=lambda res: res.min_val)
 
     def get_item_variants(self, item: Item) -> list[ItemTemplate]:
@@ -127,7 +132,7 @@ class Matcher:
 
         if len(possible_items) == 1:
             logger.success("Only one possible unique for base {}", item.base)
-            return MatchResult(item, (0, 0), 0)
+            return MatchResult(item, (0, 0), 0, 0.0)
 
         item_variants = self.get_item_variants(item)
 
@@ -136,7 +141,17 @@ class Matcher:
         image = self.crop_out_unique_by_dimensions(image, item)
         screen = utils.image_to_cv(image)
 
+        if item.base == "Two-Stone Ring":
+            hist_base = utils.calc_normalized_histogram(image)
+
         for template in item_variants:
+            hist_val = 0
+
+            if item.base == "Two-Stone Ring":
+                hist = utils.calc_normalized_histogram(template.image)
+
+                hist_val = cv2.compareHist(hist_base, hist, cv2.HISTCMP_BHATTACHARYYA)
+
             if template.image.width > image.width or template.image.height > image.height:
                 logger.error(
                     "Template image is larger than unique item: {}x{}px vs {}x{}px",
@@ -161,10 +176,9 @@ class Matcher:
             result = cv2.matchTemplate(screen, template_cv, cv2.TM_SQDIFF_NORMED)
             min_val, _, min_loc, _ = cv2.minMaxLoc(result)
 
-            match_result = MatchResult(item, min_loc, min_val, template)
+            match_result = MatchResult(item, min_loc, min_val, hist_val, template)
             results.append(match_result)
 
-        # If we couldn't find the item immediately, return the best result
         return self.get_best_result(results)
 
     def load_screen(self, screenshot: str | Path) -> np.ndarray:
