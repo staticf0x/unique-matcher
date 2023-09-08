@@ -21,7 +21,7 @@ from unique_matcher.items import Item, ItemLoader
 
 # Threshold at which we must discard the result because it's inconclusive
 # even amongst the already filtered bases.
-THRESHOLD_DISCARD = 0.99
+THRESHOLD_DISCARD = 0.96
 
 # Threshold for the control guides (item title decorations).
 # Has to be low enough to not allow other clutter to get in.
