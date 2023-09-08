@@ -90,6 +90,11 @@ class Matcher:
         for sockets in range(item.sockets, 0, -1):
             # Generate item with sockets in memory
             icon = Image.open(item.icon)
+
+            if not item.is_smaller_than_full():
+                # TODO: This is a hack to make large items work. Find a better solution.
+                icon.thumbnail((100, 200), Image.Resampling.BILINEAR)
+
             template = ItemTemplate(
                 image=self.generator.generate_image(icon, item, sockets),
                 sockets=sockets,
