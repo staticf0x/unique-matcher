@@ -1,6 +1,7 @@
 """Module for matching unique items."""
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import cv2
 import numpy as np
@@ -9,7 +10,12 @@ from PIL import Image
 
 from unique_matcher import utils
 from unique_matcher.bases import BaseDetector
-from unique_matcher.constants import ITEM_MAX_SIZE, OPT_ALLOW_NON_FULLHD, TEMPLATES_DIR
+from unique_matcher.constants import (
+    DEBUG,
+    ITEM_MAX_SIZE,
+    OPT_ALLOW_NON_FULLHD,
+    TEMPLATES_DIR,
+)
 from unique_matcher.exceptions import (
     CannotFindUniqueItem,
     CannotIdentifyUniqueItem,
@@ -62,6 +68,8 @@ class Matcher:
         self.unique_two_line = Image.open(str(TEMPLATES_DIR / "unique-two-line-fullhd.png"))
         self.unique_one_line_end = Image.open(str(TEMPLATES_DIR / "unique-one-line-end-fullhd.png"))
         self.unique_two_line_end = Image.open(str(TEMPLATES_DIR / "unique-two-line-end-fullhd.png"))
+
+        self.debug_info: dict[str, Any] = {}
 
     def get_best_result(self, results: list[MatchResult]) -> MatchResult:
         """Find the best result (min(min_val))."""
@@ -333,6 +341,9 @@ class Matcher:
 
         image, base = self.find_unique(screenshot)
 
+        if DEBUG:
+            self.debug_info["unique_image"] = image
+
         results_all = []
 
         filtered_bases = self.item_loader.filter(base)
@@ -342,6 +353,9 @@ class Matcher:
             result = self.check_one(image, item)
 
             results_all.append(result)
+
+        if DEBUG:
+            self.debug_info["results_all"] = results_all
 
         best_result = self.get_best_result(results_all)
 
