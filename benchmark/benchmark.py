@@ -9,7 +9,7 @@ from texttable import Texttable
 
 from unique_matcher.exceptions import CannotFindUniqueItem
 from unique_matcher.items import Item, ItemLoader
-from unique_matcher.matcher import THRESHOLD, Matcher
+from unique_matcher.matcher import Matcher
 
 logger.remove()
 
