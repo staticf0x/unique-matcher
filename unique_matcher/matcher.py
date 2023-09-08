@@ -157,7 +157,6 @@ class Matcher:
             results.append(match_result)
 
         # If we couldn't find the item immediately, return the best result
-        # This is useful mainly for benchmarking and tests
         return self.get_best_result(results)
 
     def load_screen(self, screenshot: str | Path) -> np.ndarray:
