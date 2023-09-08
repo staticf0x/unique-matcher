@@ -212,6 +212,12 @@ class Matcher:
 
             if min_val2 <= THRESHOLD_CONTROL:
                 return min_loc
+
+            logger.error(
+                "Couldn't find unique control end, threshold is {}, line2_min={}",
+                THRESHOLD_CONTROL,
+                min_val2,
+            )
         else:
             min_val1, min_loc = self._find_without_resizing(self.unique_one_line_end, screen)
 
@@ -220,12 +226,11 @@ class Matcher:
             if min_val1 <= THRESHOLD_CONTROL:
                 return min_loc
 
-        logger.error(
-            "Couldn't find unique control end, threshold is {}, line1_min={}, line2_min={}",
-            THRESHOLD_CONTROL,
-            min_val1,
-            min_val2,
-        )
+            logger.error(
+                "Couldn't find unique control end, threshold is {}, line1_min={}",
+                THRESHOLD_CONTROL,
+                min_val1,
+            )
 
         return None
 
@@ -269,14 +274,13 @@ class Matcher:
         res = self._find_unique_control_start(screen)
 
         if res is None:
-            raise CannotFindUniqueItem
+            raise CannotFindUniqueItem("Unique control guide start not found")
 
         min_loc_start, is_identified = res
         min_loc_end = self._find_unique_control_end(screen, is_identified)
 
         if min_loc_end is None:
-            # TODO: Different exception
-            raise CannotFindUniqueItem
+            raise CannotFindUniqueItem("Unique control guide end not found")
 
         # Crop out the item image: (left, top, right, bottom)
         # Left is: position of guide - item width - space
