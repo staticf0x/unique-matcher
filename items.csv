@@ -103,7 +103,7 @@ Blackheart,Blackheart,,0,0,Iron Ring,1,1,1
 Blasphemer's Grasp,Blasphemers_Grasp,,4,2,Assassin's Mitts,1,2,2
 Blightwell,Blightwell,,0,0,Clutching Talisman,1,,
 Blood of Corruption,Blood_of_Corruption,,0,0,Amber Amulet,1,1,1
-Blood of Summer,Blood_of_Summer,,3,1,Rusted Sword,1,,
+Blood of Summer,Blood_of_Summer,,3,1,Rusted Sword,1,1,3
 Blood of the Karui,Blood_of_the_Karui,,0,0,Sanctified Life Flask,1,1,2
 Blood Price,Blood_Price,,4,2,Reaver Helmet,1,2,2
 Blood Sacrifice,Blood_Sacrifice,,0,0,Crimson Jewel,0,1,1
@@ -275,7 +275,7 @@ Doryani's Invitation,Doryanis_Invitation,,0,0,Heavy Belt,1,2,1
 Doryani's Machinarium,Doryanis_Machinarium,,0,0,Maze Map,1,1,1
 Doryani's Prototype,Doryanis_Prototype,,6,2,Saint's Hauberk,1,,
 Dreadarc,Dreadarc,,3,2,Cleaver,1,,
-Dreadbeak,Dreadbeak,,3,1,Rusted Sword,0,,
+Dreadbeak,Dreadbeak,,3,1,Rusted Sword,0,1,3
 Dreadsurge,Dreadsurge,,3,2,Cleaver,0,,
 Dream Fragments,Dream_Fragments,,0,0,Sapphire Ring,1,1,1
 Dreamfeather,Dreamfeather,,3,1,Eternal Sword,1,,
@@ -688,7 +688,7 @@ Reaper's Pursuit,Reapers_Pursuit,,6,2,Shadow Axe,1,,
 Rearguard,Rearguard,,0,0,Blunt Arrow Quiver,1,2,3
 Rebuke of the Vaal,Rebuke_of_the_Vaal,,3,1,Vaal Blade,1,,
 Reckless Defence,Reckless_Defence,,0,0,Cobalt Jewel,1,1,1
-Redbeak,Redbeak,,3,1,Rusted Sword,1,,
+Redbeak,Redbeak,,3,1,Rusted Sword,1,1,3
 Redblade Band,Redblade_Band,,0,0,Unset Ring,1,1,1
 Redblade Banner,Redblade_Banner,,3,2,Painted Tower Shield,1,,
 Redblade Tramplers,Redblade_Tramplers,,4,2,Ancient Greaves,1,2,2
@@ -1105,6 +1105,7 @@ Witchfire Brew,Witchfire_Brew,,0,0,Stibnite Flask,1,1,2
 Witchhunter's Judgment,Witchhunters_Judgment,,6,2,Highborn Staff,1,,
 Wondertrap,Wondertrap,,4,2,Velvet Slippers,1,2,2
 Wraithlord,Wraithlord,,4,2,Bone Circlet,1,2,2
+Wreath of Phrecia,Wreath_of_Phrecia,,4,2,Iron Circlet,1,2,2
 Wurm's Molt,Wurms_Molt,,0,0,Leather Belt,1,2,1
 Wyrmsign,Wyrmsign,,4,2,Wyrmscale Gauntlets,1,2,2
 Xirgil's Crank,Xirgils_Crank,,6,2,Coiled Staff,1,,
