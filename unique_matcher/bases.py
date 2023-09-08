@@ -16,6 +16,8 @@ class BaseDetector:
         "Rusy Ring": "Ruby Ring",
         "Tronscale Gauntlets": "Ironscale Gauntlets",
         "Twoo-Point Arrow Quiver": "Two-Point Arrow Quiver",
+        "Twwo-Stone Ring": "Two-Stone Ring",
+        "Unsset Ring": "Unset Ring",
     }
 
     def __init__(self, item_loader: ItemLoader) -> None:
