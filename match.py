@@ -22,10 +22,16 @@ parser.add_argument(
     action="store_true",
     help="Display the item template that was used to match the item",
 )
+parser.add_argument(
+    "--show-screenshot", action="store_true", help="Display the original screenshot"
+)
 parser.add_argument("--check-one", type=str, help="Item name to check against")
 args = parser.parse_args()
 
 matcher = Matcher()
+
+if args.show_screenshot:
+    Image.open(args.screenshot).show()
 
 if args.check_one:
     result = matcher.check_one(
