@@ -1,5 +1,6 @@
 """Module for generating item sockets."""
 import math
+from typing import Literal
 
 from loguru import logger
 from PIL import Image
@@ -14,13 +15,24 @@ class ItemGenerator:
     """Generator for item sockets."""
 
     def __init__(self) -> None:
-        self.socket = Image.open(SOCKET_DIR / "socket-src.png")
-        self.socket.thumbnail((36, 36), Image.Resampling.BILINEAR)
+        self.sockets = {
+            "r": Image.open(SOCKET_DIR / "socket-src-r.png"),
+            "g": Image.open(SOCKET_DIR / "socket-src-g.png"),
+            "b": Image.open(SOCKET_DIR / "socket-src-b.png"),
+            "w": Image.open(SOCKET_DIR / "socket-src-w.png"),
+        }
 
-    def generate_sockets(self, sockets: int, columns: int) -> Image.Image:
+        for img in self.sockets.values():
+            img.thumbnail((36, 36), Image.Resampling.BILINEAR)
+
+    def generate_sockets(
+        self, sockets: int, columns: int, color: Literal["r", "g", "b", "w"]
+    ) -> Image.Image:
         """Generate a socket overlay."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")
+
+        socket_img = self.sockets[color]
 
         if columns == 1:
             rows = sockets
@@ -34,8 +46,8 @@ class ItemGenerator:
         new_image = Image.new(
             "RGBA",
             (
-                columns * self.socket.width + (columns - 1) * LINK_WIDTH,
-                rows * self.socket.height + (rows - 1) * LINK_WIDTH,
+                columns * socket_img.width + (columns - 1) * LINK_WIDTH,
+                rows * socket_img.height + (rows - 1) * LINK_WIDTH,
             ),
         )
 
@@ -52,17 +64,19 @@ class ItemGenerator:
             if sockets == 3 and n == 2 and columns == 2:
                 # TODO: Hack for middle row for 3 sockets, because the socket
                 #       goes to the *right*
-                left_offset = self.socket.width + LINK_WIDTH
+                left_offset = socket_img.width + LINK_WIDTH
 
-            offset_x = left_offset + col * (self.socket.width + LINK_WIDTH)
-            offset_y = row * (self.socket.height + LINK_WIDTH)
+            offset_x = left_offset + col * (socket_img.width + LINK_WIDTH)
+            offset_y = row * (socket_img.height + LINK_WIDTH)
 
             # Pass the second socket image as a mask to allow transparency
-            new_image.paste(self.socket, (offset_x, offset_y), self.socket)
+            new_image.paste(socket_img, (offset_x, offset_y), socket_img)
 
         return new_image
 
-    def generate_image(self, base: Image.Image, item: Item, sockets: int) -> Image.Image:
+    def generate_image(
+        self, base: Image.Image, item: Item, sockets: int, color: Literal["r", "g", "b", "w"] = "r"
+    ) -> Image.Image:
         """Generate an image of a base item with N sockets."""
         if sockets < 1 or sockets > 6:
             raise ValueError("Item can only have 1-6 sockets")
@@ -85,7 +99,7 @@ class ItemGenerator:
         new_image.paste(base, (0, 0), base)
 
         # Generate the socket overlay and place onto the base
-        socket_image = self.generate_sockets(sockets, item.cols)
+        socket_image = self.generate_sockets(sockets, item.cols, color)
         offset_x = int((base.width - socket_image.width) / 2) + 1
         offset_y = int((base.height - socket_image.height) / 2) + 3
 
