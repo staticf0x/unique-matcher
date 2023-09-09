@@ -28,23 +28,23 @@ parser.add_argument(
     "--show-screenshot", action="store_true", help="Display the original screenshot"
 )
 parser.add_argument("--check-one", type=str, help="Item name to check against")
-parser.add_argument("--all", action="store_true", help="Display all results, not only the best one")
 args = parser.parse_args()
 
 matcher = Matcher()
+result = None
 
 if args.show_screenshot:
     Image.open(args.screenshot).show()
 
 if args.check_one:
     result = matcher.check_one(
-        Image.open(args.screenshot),
+        matcher.find_unique(args.screenshot)[0],
         matcher.item_loader.get(args.check_one),
     )
 else:
     result = matcher.find_item(args.screenshot)
 
-if args.all:
+if result and matcher.debug_info.get("results_all"):
     table = Table()
 
     table.add_column("Item")
@@ -84,7 +84,9 @@ if args.all:
     console.print(table)
     print()
 
-debug(result)
+if result:
+    debug(result)
 
-if args.show_template:
-    result.template.image.show()
+    if args.show_template:
+        result.template.image.show()
+
