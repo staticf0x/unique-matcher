@@ -1,12 +1,16 @@
 import argparse
 import sys
+import tempfile
+import webbrowser
 
+import jinja2
 from devtools import debug
 from loguru import logger
 from PIL import Image
 from rich.console import Console
 from rich.table import Table
 
+from unique_matcher.exceptions import BaseUMException
 from unique_matcher.matcher import THRESHOLD_DISCARD, Matcher
 
 logger.remove()
@@ -27,11 +31,18 @@ parser.add_argument(
 parser.add_argument(
     "--show-screenshot", action="store_true", help="Display the original screenshot"
 )
+parser.add_argument(
+    "--show-unique", action="store_true", help="Display the unique item used for matching"
+)
 parser.add_argument("--check-one", type=str, help="Item name to check against")
+parser.add_argument("--html", action="store_true", help="Open a debug html page")
 args = parser.parse_args()
 
 matcher = Matcher()
 result = None
+
+environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+template = environment.get_template("debug.html")
 
 if args.show_screenshot:
     Image.open(args.screenshot).show()
@@ -42,7 +53,10 @@ if args.check_one:
         matcher.item_loader.get(args.check_one),
     )
 else:
-    result = matcher.find_item(args.screenshot)
+    try:
+        result = matcher.find_item(args.screenshot)
+    except BaseUMException as e:
+        pass
 
 if result and matcher.debug_info.get("results_all"):
     table = Table()
@@ -84,9 +98,39 @@ if result and matcher.debug_info.get("results_all"):
     console.print(table)
     print()
 
+    if args.html:
+        with tempfile.NamedTemporaryFile("w", delete=False) as unique_image_tmp:
+            matcher.debug_info["unique_image"].save(f"{unique_image_tmp.name}.png")
+
+        with tempfile.NamedTemporaryFile("w", delete=False) as cropped_unique_tmp:
+            matcher.debug_info["cropped_uniques"][0].save(f"{cropped_unique_tmp.name}.png")
+
+        with tempfile.NamedTemporaryFile("w", delete=False) as template_tmp:
+            result.template.image.save(f"{template_tmp.name}.png")
+
+        context = {
+            "result": result,
+            "results_all": sorted(
+                matcher.debug_info["results_all"],
+                key=lambda r: r.min_val,
+            ),
+            "screenshot": args.screenshot,
+            "unique_image": f"{unique_image_tmp.name}.png",
+            "cropped_unique": f"{cropped_unique_tmp.name}.png",
+            "template": f"{template_tmp.name}.png",
+        }
+
+        with open("debug.html", "w") as fwrite:
+            fwrite.write(template.render(**context))
+
+        webbrowser.open_new_tab("debug.html")
+
 if result:
     debug(result)
 
     if args.show_template:
         result.template.image.show()
 
+if args.show_unique:
+    matcher.debug_info["unique_image"].show()
+    matcher.debug_info["cropped_uniques"][0].show()

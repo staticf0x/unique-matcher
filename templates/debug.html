@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Debug output</title>
+
+    <link rel="stylesheet" href="templates/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Best result</h1>
+
+            <p>
+                Screenshot: <code>{{ screenshot }}</code>
+            </p>
+
+            <br>
+
+            <table class="table is-bordered is-hoverable is-striped">
+                <tbody>
+                    <tr>
+                        <td class="has-text-weight-bold">Name</td>
+                        <td>{{ result.item.name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">Base</td>
+                        <td>{{ result.item.base }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">s/c</td>
+                        <td>{{ result.item.sockets }}/{{ result.item.cols }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">WxH</td>
+                        <td>{{ result.item.width }}x{{ result.item.height }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">min_val</td>
+                        <td{% if result.min_val > 0.96 %} class="is-danger"{% endif %}>{{ result.min_val }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">hist_val</td>
+                        <td>{{ result.hist_val }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">Image</td>
+                        <td><img src="{{ result.item.icon }}" alt="{{ result.item.name }}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h1 class="title">Results</h1>
+
+            <table class="table is-bordered is-hoverable is-striped">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Item</th>
+                        <th>Base</th>
+                        <th>s/c</th>
+                        <th>WxH</th>
+                        <th>min_val</th>
+                        <th>hist_val</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for res in results_all %}
+                    <tr>
+                        <td><img src="{{ res.item.icon }}" alt="{{ res.item.name }}"></td>
+                        <td><a href="https://www.poewiki.net/wiki/{{ res.item.name|replace(' ', '_') }}" target="_blank">{{ res.item.name }}</a></td>
+                        <td>{{ res.item.base }}</td>
+                        <td>{{ res.item.sockets }}/{{ res.item.cols }}</td>
+                        <td>{{ res.item.width }}x{{ res.item.height }}</td>
+                        <td{% if res.min_val > 0.96 %} class="is-danger"{% endif %}>{{ res.min_val|round(3) }}</td>
+                        <td>{{ res.hist_val|round(3) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h1 class="title">Debug info</h1>
+
+            <table class="table is-bordered">
+                <tr>
+                    <td>Unique item to match</td>
+                    <td>Cropped unique</td>
+                    <td>Best result template</td>
+                </tr>
+                <tr>
+                    <td><img src="{{ unique_image }}" alt="Unique image"></td>
+                    <td><img src="{{ cropped_unique }}" alt="Cropped unique"></td>
+                    <td><img src="{{ template }}" alt="Best result template"></td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</body>

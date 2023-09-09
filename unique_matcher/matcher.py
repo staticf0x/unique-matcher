@@ -139,6 +139,11 @@ class Matcher:
         logger.info("Item {} has {} variant(s)", item.name, len(item_variants))
 
         image = self.crop_out_unique_by_dimensions(image, item)
+
+        if DEBUG:
+            self.debug_info.setdefault("cropped_uniques", [])
+            self.debug_info["cropped_uniques"].append(image)
+
         screen = utils.image_to_cv(image)
 
         if item.base == "Two-Stone Ring":

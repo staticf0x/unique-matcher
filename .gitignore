@@ -16,3 +16,4 @@ tests/test_data/contains/*
 tests/test_data/contains_not/*
 tests/test_data/bases/*
 !tests/test_data/contains/example
+debug.html
