@@ -1,7 +1,8 @@
 """Module for matching unique items."""
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
-from typing import Any
+from typing import Any, ClassVar
 
 import cv2
 import numpy as np
@@ -56,8 +57,20 @@ class MatchResult:
     template: ItemTemplate | None = None
 
 
+class MatchingAlgorithm(Enum):
+    """Enum for matching algorithm during get_best_result."""
+
+    DEFAULT = 0
+    VARIANTS_ONLY = 1
+    HISTOGRAM = 2
+
+
 class Matcher:
     """Main class for matching items in a screenshot."""
+
+    FORCE_HISTOGRAM_MATCHING: ClassVar[list[str]] = [
+        "Two-Stone Ring",
+    ]
 
     def __init__(self) -> None:
         self.generator = ItemGenerator()
@@ -80,11 +93,25 @@ class Matcher:
 
         self.debug_info: dict[str, Any] = {}
 
-    def get_best_result(self, results: list[MatchResult]) -> MatchResult:
+    def get_best_result(
+        self,
+        results: list[MatchResult],
+        algorithm: MatchingAlgorithm = MatchingAlgorithm.DEFAULT,
+    ) -> MatchResult:
         """Find the best result (min(min_val) or min(hist_val))."""
-        if any(res.hist_val > 0 for res in results):
-            # Comparing histograms
-            return min(results, key=lambda res: res.hist_val)
+        logger.debug("Matching algorithm: {}", algorithm)
+
+        match algorithm:
+            case MatchingAlgorithm.VARIANTS_ONLY:
+                if any(res.template.sockets > 0 for res in results):
+                    # Socketable items will always have min_val matching first
+                    return min(results, key=lambda res: res.min_val)
+
+            case MatchingAlgorithm.HISTOGRAM:
+                return min(results, key=lambda res: res.hist_val)
+
+            case MatchingAlgorithm.DEFAULT:
+                return min(results, key=lambda res: res.min_val)
 
         return min(results, key=lambda res: res.min_val)
 
@@ -146,18 +173,9 @@ class Matcher:
             self.debug_info["cropped_uniques"].append(image)
 
         screen = utils.image_to_cv(image)
-
-        if item.base == "Two-Stone Ring":
-            hist_base = utils.calc_normalized_histogram(image)
+        hist_base = utils.calc_normalized_histogram(image)
 
         for template in item_variants:
-            hist_val = 0
-
-            if item.base == "Two-Stone Ring":
-                hist = utils.calc_normalized_histogram(template.image)
-
-                hist_val = cv2.compareHist(hist_base, hist, cv2.HISTCMP_BHATTACHARYYA)
-
             if template.image.width > image.width or template.image.height > image.height:
                 logger.error(
                     "Template image is larger than unique item: {}x{}px vs {}x{}px",
@@ -175,6 +193,11 @@ class Matcher:
                     )
                 )
 
+            hist = utils.calc_normalized_histogram(template.image)
+
+            hist_val = cv2.compareHist(hist_base, hist, cv2.HISTCMP_BHATTACHARYYA)
+            logger.debug("Comparing histograms, hist_val={}", hist_val)
+
             template_cv = np.array(template.image)
             template_cv = cv2.cvtColor(template_cv, cv2.COLOR_RGBA2GRAY)
 
@@ -182,10 +205,14 @@ class Matcher:
             result = cv2.matchTemplate(screen, template_cv, cv2.TM_SQDIFF_NORMED)
             min_val, _, min_loc, _ = cv2.minMaxLoc(result)
 
+            logger.debug("Sockets: {}, min_val: {}", template.sockets, min_val)
+
             match_result = MatchResult(item, min_loc, min_val, hist_val, template)
             results.append(match_result)
 
-        return self.get_best_result(results)
+        algo = MatchingAlgorithm.VARIANTS_ONLY
+
+        return self.get_best_result(results, algo)
 
     def load_screen(self, screenshot: str | Path) -> np.ndarray:
         """Load a screenshot from file into OpenCV format."""
@@ -399,7 +426,13 @@ class Matcher:
         if DEBUG:
             self.debug_info["results_all"] = results_all
 
-        best_result = self.get_best_result(results_all)
+        algo = MatchingAlgorithm.DEFAULT
+
+        if base in self.FORCE_HISTOGRAM_MATCHING:
+            # Force histogram matching on these bases
+            algo = MatchingAlgorithm.HISTOGRAM
+
+        best_result = self.get_best_result(results_all, algo)
 
         if best_result.min_val > THRESHOLD_DISCARD and best_result.hist_val == 0:
             logger.error(
