@@ -37,7 +37,7 @@ To specify the testing data set to use, set `DATA_SET` environment variable
 to the desired name. For example, to run the `example` data set:
 
 ```bash
-DATA_SET=example pytest -v -n auto tests/test_matcher.py::test_get_base_name
+DATA_SET=example pytest -v -n auto tests/test_matcher.py::test_find_item_contains_item
 ```
 
 ### Obtaining test data
