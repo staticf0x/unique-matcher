@@ -119,6 +119,7 @@ if result and matcher.debug_info.get("results_all"):
             "unique_image": f"{unique_image_tmp.name}.png",
             "cropped_unique": f"{cropped_unique_tmp.name}.png",
             "template": f"{template_tmp.name}.png",
+            "is_the_only_unique": len(matcher.debug_info["results_all"]) <= 1,
         }
 
         with open("debug.html", "w") as fwrite:
