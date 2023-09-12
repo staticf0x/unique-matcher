@@ -55,6 +55,17 @@ class MatchedBy(Enum):
     ONLY_UNIQUE_FOR_BASE = 2
     ITEM_NAME = 3
 
+    def __str__(self) -> str:
+        match self:
+            case self.TEMPLATE_MATCH:
+                return "Template matching"
+            case self.HISTOGRAM_MATCH:
+                return "Histogram comparison"
+            case self.ONLY_UNIQUE_FOR_BASE:
+                return "Only unique for the base"
+            case self.ITEM_NAME:
+                return "Item name"
+
 
 @dataclass
 class MatchResult:

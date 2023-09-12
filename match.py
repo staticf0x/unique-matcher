@@ -107,7 +107,6 @@ if result and "results_all" in matcher.debug_info:
                 key=lambda r: r.min_val,
             ),
             "screenshot": args.screenshot,
-            "is_the_only_unique": len(matcher.debug_info["results_all"]) <= 1,
         }
 
         with tempfile.NamedTemporaryFile("w", delete=False) as unique_image_tmp:
