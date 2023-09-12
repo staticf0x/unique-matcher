@@ -5,6 +5,11 @@ import numpy as np
 from PIL import Image
 
 
+def normalize_item_name(name: str) -> str:
+    """Convert item name to file."""
+    return name.replace("'", "").replace(" ", "_").replace(",", "")
+
+
 def image_to_cv(image: Image.Image) -> np.ndarray:
     """Convert a PIL image into CV2 format."""
     image_cv: np.ndarray = np.array(image)

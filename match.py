@@ -59,7 +59,7 @@ else:
     except BaseUMException as e:
         pass
 
-if result and matcher.debug_info.get("results_all"):
+if result and "results_all" in matcher.debug_info:
     table = Table()
 
     table.add_column("Item")

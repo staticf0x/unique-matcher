@@ -10,11 +10,11 @@ from loguru import logger
 from PIL import Image
 
 from unique_matcher import utils
-from unique_matcher.bases import BaseDetector
 from unique_matcher.constants import (
     DEBUG,
     ITEM_MAX_SIZE,
     OPT_ALLOW_NON_FULLHD,
+    OPT_FIND_ID_BY_NAME,
     TEMPLATES_DIR,
 )
 from unique_matcher.exceptions import (
@@ -25,6 +25,7 @@ from unique_matcher.exceptions import (
 )
 from unique_matcher.generator import ItemGenerator
 from unique_matcher.items import Item, ItemLoader
+from unique_matcher.title import TitleParser
 
 # Threshold at which we must discard the result because it's inconclusive
 # even amongst the already filtered bases.
@@ -76,7 +77,7 @@ class Matcher:
         self.generator = ItemGenerator()
         self.item_loader = ItemLoader()
         self.item_loader.load()
-        self.base_detector = BaseDetector(self.item_loader)
+        self.title_parser = TitleParser(self.item_loader)
 
         self.unique_one_line = Image.open(str(TEMPLATES_DIR / "unique-one-line-fullhd.png"))
         self.unique_one_line_end = Image.open(str(TEMPLATES_DIR / "unique-one-line-end-fullhd.png"))
@@ -155,12 +156,6 @@ class Matcher:
     def check_one(self, image: Image.Image, item: Item) -> MatchResult:
         """Check one screenshot against one item."""
         results = []
-
-        possible_items = self.item_loader.filter(item.base)
-
-        if len(possible_items) == 1:
-            logger.success("Only one possible unique for base {}", item.base)
-            return MatchResult(item, (0, 0), 0, 0.0)
 
         item_variants = self.get_item_variants(item)
 
@@ -331,7 +326,7 @@ class Matcher:
 
         return image
 
-    def find_unique(self, screenshot: str | Path) -> tuple[Image.Image, str]:
+    def find_unique(self, screenshot: str | Path) -> tuple[Image.Image, str, str]:
         """Return a cropped part of the screenshot with the unique.
 
         If it cannot be found, returns the original screenshot.
@@ -402,21 +397,43 @@ class Matcher:
             )
         )
 
-        return item_img, self.base_detector.get_base_name(title_img, is_identified)
+        base, name = self.title_parser.parse_title(title_img, is_identified=is_identified)
+
+        return item_img, base, name
 
     def find_item(self, screenshot: str) -> MatchResult:
         """Find an item in a screenshot."""
         logger.info("Finding item in screenshot: {}", screenshot)
 
-        image, base = self.find_unique(screenshot)
+        image, base, name = self.find_unique(screenshot)
 
         if DEBUG:
             self.debug_info["unique_image"] = image
+            self.debug_info["results_all"] = []
+
+        if name and OPT_FIND_ID_BY_NAME:
+            item = self.item_loader.get(name)
+
+            if item.alias:
+                logger.warning(
+                    "Found aliased item: {}, recording parent: {}",
+                    item.name,
+                    item.alias,
+                )
+                item = self.item_loader.get(item.alias)
+
+            logger.success("Found identified item by name")
+            return MatchResult(item, (0, 0), 0, 0)
 
         results_all = []
 
         filtered_bases = self.item_loader.filter(base)
         logger.info("Searching through {} item base variants", len(filtered_bases))
+
+        if len(filtered_bases) == 1:
+            item = filtered_bases[0]
+            logger.success("Only one possible unique for base {}", item.base)
+            return MatchResult(item, (0, 0), 0, 0)
 
         for item in filtered_bases:
             result = self.check_one(image, item)
