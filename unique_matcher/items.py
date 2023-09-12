@@ -26,6 +26,10 @@ class Item:
         """Return True if the item is smaller than full dimensions (for cropping)."""
         return self.width < 2 or self.height < 4
 
+    def __hash__(self) -> int:
+        """Hash by name (it's unique)."""
+        return hash(self.name)
+
 
 class ItemLoader:
     """Class for loading item data."""
