@@ -100,15 +100,6 @@ if result and matcher.debug_info.get("results_all"):
     print()
 
     if args.html:
-        with tempfile.NamedTemporaryFile("w", delete=False) as unique_image_tmp:
-            matcher.debug_info["unique_image"].save(f"{unique_image_tmp.name}.png")
-
-        with tempfile.NamedTemporaryFile("w", delete=False) as cropped_unique_tmp:
-            matcher.debug_info["cropped_uniques"][0].save(f"{cropped_unique_tmp.name}.png")
-
-        with tempfile.NamedTemporaryFile("w", delete=False) as template_tmp:
-            result.template.image.save(f"{template_tmp.name}.png")
-
         context = {
             "result": result,
             "results_all": sorted(
@@ -116,11 +107,22 @@ if result and matcher.debug_info.get("results_all"):
                 key=lambda r: r.min_val,
             ),
             "screenshot": args.screenshot,
-            "unique_image": f"{unique_image_tmp.name}.png",
-            "cropped_unique": f"{cropped_unique_tmp.name}.png",
-            "template": f"{template_tmp.name}.png",
             "is_the_only_unique": len(matcher.debug_info["results_all"]) <= 1,
         }
+
+        with tempfile.NamedTemporaryFile("w", delete=False) as unique_image_tmp:
+            matcher.debug_info["unique_image"].save(f"{unique_image_tmp.name}.png")
+            context["unique_image"] = f"{unique_image_tmp.name}.png"
+
+        if "cropped_uniques" in matcher.debug_info:
+            with tempfile.NamedTemporaryFile("w", delete=False) as cropped_unique_tmp:
+                matcher.debug_info["cropped_uniques"][0].save(f"{cropped_unique_tmp.name}.png")
+                context["cropped_unique"] = f"{cropped_unique_tmp.name}.png"
+
+        if result.template:
+            with tempfile.NamedTemporaryFile("w", delete=False) as template_tmp:
+                result.template.image.save(f"{template_tmp.name}.png")
+                context["template"] = f"{template_tmp.name}.png"
 
         with open("debug.html", "w") as fwrite:
             fwrite.write(template.render(**context))
@@ -135,4 +137,6 @@ if result:
 
 if args.show_unique:
     matcher.debug_info["unique_image"].show()
-    matcher.debug_info["cropped_uniques"][0].show()
+
+    if "cropped_uniques" in matcher.debug_info:
+        matcher.debug_info["cropped_uniques"][0].show()
