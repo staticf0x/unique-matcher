@@ -47,6 +47,15 @@ class ItemTemplate:
     size: tuple[int, int] = (0, 0)
 
 
+class MatchedBy(Enum):
+    """How the item was matched."""
+
+    TEMPLATE_MATCH = 0
+    HISTOGRAM_MATCH = 1
+    ONLY_UNIQUE_FOR_BASE = 2
+    ITEM_NAME = 3
+
+
 @dataclass
 class MatchResult:
     """A class for the item/screenshot match result."""
@@ -54,6 +63,7 @@ class MatchResult:
     item: Item
     loc: tuple[int, int]
     min_val: float
+    matched_by: MatchedBy
     hist_val: float = 0.0
     template: ItemTemplate | None = None
 
@@ -202,7 +212,14 @@ class Matcher:
 
             logger.debug("Sockets: {}, min_val: {}", template.sockets, min_val)
 
-            match_result = MatchResult(item, min_loc, min_val, hist_val, template)
+            match_result = MatchResult(
+                item=item,
+                loc=min_loc,
+                min_val=min_val,
+                matched_by=MatchedBy.TEMPLATE_MATCH,
+                hist_val=hist_val,
+                template=template,
+            )
             results.append(match_result)
 
         algo = MatchingAlgorithm.VARIANTS_ONLY
@@ -423,7 +440,14 @@ class Matcher:
                 item = self.item_loader.get(item.alias)
 
             logger.success("Found identified item by name")
-            return MatchResult(item, (0, 0), 0, 0)
+            return MatchResult(
+                item=item,
+                loc=(0, 0),
+                min_val=0,
+                matched_by=MatchedBy.ITEM_NAME,
+                hist_val=0,
+                template=None,
+            )
 
         results_all = []
 
@@ -433,7 +457,14 @@ class Matcher:
         if len(filtered_bases) == 1:
             item = filtered_bases[0]
             logger.success("Only one possible unique for base {}", item.base)
-            return MatchResult(item, (0, 0), 0, 0)
+            return MatchResult(
+                item=item,
+                loc=(0, 0),
+                min_val=0,
+                matched_by=MatchedBy.ONLY_UNIQUE_FOR_BASE,
+                hist_val=0,
+                template=None,
+            )
 
         for item in filtered_bases:
             result = self.check_one(image, item)
@@ -443,13 +474,12 @@ class Matcher:
         if DEBUG:
             self.debug_info["results_all"] = results_all
 
-        algo = MatchingAlgorithm.DEFAULT
-
         if base in self.FORCE_HISTOGRAM_MATCHING:
             # Force histogram matching on these bases
-            algo = MatchingAlgorithm.HISTOGRAM
-
-        best_result = self.get_best_result(results_all, algo)
+            best_result = self.get_best_result(results_all, MatchingAlgorithm.HISTOGRAM)
+            best_result.matched_by = MatchedBy.HISTOGRAM_MATCH
+        else:
+            best_result = self.get_best_result(results_all, MatchingAlgorithm.DEFAULT)
 
         if best_result.min_val > THRESHOLD_DISCARD and best_result.hist_val == 0:
             logger.error(
