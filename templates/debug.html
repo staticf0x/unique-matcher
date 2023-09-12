@@ -23,7 +23,7 @@
                 <tbody>
                     <tr>
                         <td class="has-text-weight-bold">Name</td>
-                        <td>{{ result.item.name }}</td>
+                        <td><a href="https://www.poewiki.net/wiki/{{ result.item.name|replace(' ', '_') }}" target="_blank">{{ result.item.name }}</a></td>
                     </tr>
                     <tr>
                         <td class="has-text-weight-bold">Base</td>
