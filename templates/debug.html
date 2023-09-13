@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <td class="has-text-weight-bold">Base</td>
-                        <td>{{ result.item.base }}</td>
+                        <td><a href="https://www.poewiki.net/wiki/{{ result.item.base|replace(' ', '_') }}" target="_blank">{{ result.item.base }}</a></td>
                     </tr>
                     <tr>
                         <td class="has-text-weight-bold">s/c</td>
@@ -95,8 +95,8 @@
                 </tr>
                 <tr>
                     <td><img src="{{ unique_image }}" alt="Unique image"></td>
-                    <td><img src="{{ cropped_unique }}" alt="Cropped unique"></td>
-                    <td><img src="{{ template }}" alt="Best result template"></td>
+                    <td>{% if cropped_unique %}<img src="{{ cropped_unique }}" alt="Cropped unique">{% else %}-{% endif %}</td>
+                    <td>{% if template %}<img src="{{ template }}" alt="Best result template">{% else %}-{% endif %}</td>
                 </tr>
             </table>
         </div>
