@@ -7,10 +7,10 @@ from typing import Any, ClassVar
 
 import cv2
 import numpy as np
+from devtools import debug
 from loguru import logger
 from PIL import Image
 
-from unique_matcher import utils
 from unique_matcher.constants import (
     DEBUG,
     ITEM_MAX_SIZE,
@@ -18,15 +18,16 @@ from unique_matcher.constants import (
     OPT_FIND_ID_BY_NAME,
     TEMPLATES_DIR,
 )
-from unique_matcher.exceptions import (
+from unique_matcher.matcher import utils
+from unique_matcher.matcher.exceptions import (
     CannotFindUniqueItem,
     CannotIdentifyUniqueItem,
     InvalidTemplateDimensions,
     NotInFullHD,
 )
-from unique_matcher.generator import ItemGenerator
-from unique_matcher.items import Item, ItemLoader
-from unique_matcher.title import TitleParser
+from unique_matcher.matcher.generator import ItemGenerator
+from unique_matcher.matcher.items import Item, ItemLoader
+from unique_matcher.matcher.title import TitleParser
 
 # Threshold at which we must discard the result because it's inconclusive
 # even amongst the already filtered bases.

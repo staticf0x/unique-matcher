@@ -62,5 +62,5 @@ def test_find_item_doesnt_contain_item(name, screenshots, matcher):
 @pytest.mark.parametrize(("base", "screenshots"), BASES)
 def test_get_base_name(base, screenshots, matcher):
     for screenshot in screenshots:
-        _, base_name = matcher.find_unique(screenshot)
+        _, base_name, _ = matcher.find_unique(screenshot)
         assert base_name == base

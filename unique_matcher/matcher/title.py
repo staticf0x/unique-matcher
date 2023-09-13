@@ -3,13 +3,12 @@ import re
 from typing import ClassVar
 
 import pytesseract
-from devtools import debug
 from loguru import logger
 from PIL import Image, ImageOps
 
-from unique_matcher.exceptions import CannotFindItemBase
-from unique_matcher.items import ItemLoader
-from unique_matcher.utils import normalize_item_name
+from unique_matcher.matcher.exceptions import CannotFindItemBase
+from unique_matcher.matcher.items import ItemLoader
+from unique_matcher.matcher.utils import normalize_item_name
 
 
 class TitleParser:

@@ -1,7 +1,7 @@
 import pytest
 
-from unique_matcher.items import ItemLoader
-from unique_matcher.title import TitleParser
+from unique_matcher.matcher.items import ItemLoader
+from unique_matcher.matcher.title import TitleParser
 
 
 @pytest.fixture(scope="session")

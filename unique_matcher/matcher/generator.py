@@ -6,7 +6,7 @@ from loguru import logger
 from PIL import Image
 
 from unique_matcher.constants import ITEM_MAX_SIZE, SOCKET_DIR
-from unique_matcher.items import Item
+from unique_matcher.matcher.items import Item
 
 LINK_WIDTH = 17
 

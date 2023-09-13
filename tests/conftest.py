@@ -1,6 +1,6 @@
 import pytest
 
-from unique_matcher.matcher import Matcher
+from unique_matcher.matcher.matcher import Matcher
 
 
 @pytest.fixture(scope="session")

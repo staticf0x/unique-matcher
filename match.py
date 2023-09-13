@@ -11,8 +11,8 @@ from PIL import Image
 from rich.console import Console
 from rich.table import Table
 
-from unique_matcher.exceptions import BaseUMException
-from unique_matcher.matcher import THRESHOLD_DISCARD, Matcher
+from unique_matcher.matcher.exceptions import BaseUMException
+from unique_matcher.matcher.matcher import THRESHOLD_DISCARD, Matcher
 
 logger.remove()
 logger.add(
