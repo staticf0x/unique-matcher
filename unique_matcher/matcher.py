@@ -1,4 +1,5 @@
 """Module for matching unique items."""
+import math
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -35,6 +36,13 @@ THRESHOLD_DISCARD = 0.96
 # Has to be low enough to not allow other clutter to get in.
 # Typically the min_val of guides is ~0.06.
 THRESHOLD_CONTROL = 0.16
+
+# Threshold for discarding results based on the distance
+# in either min_val or hist_val between the best result
+# and the second best result.
+# If the distance is too low (lower than THRESHOLD_RESULT_DISTANCE),
+# the result will be discarded for the detection not being accurate enough.
+THRESHOLD_RESULT_DISTANCE = 0.02
 
 
 @dataclass
@@ -115,6 +123,37 @@ class Matcher:
 
         self.debug_info: dict[str, Any] = {}
 
+    def _get_distance_from_best(self, results: list[MatchResult]) -> tuple[float, float]:
+        """Get the distance in min_val and hist_val between 1st and 2nd result.
+
+        If there is <= 1 result, return (1.0, 1.0).
+        """
+        if len(results) <= 1:
+            return 1.0, 1.0
+
+        # Sort the results lowest to highest
+        min_val = sorted(results, key=lambda res: res.min_val)
+        hist_val = sorted(results, key=lambda res: res.min_val)
+
+        # Calculate distances between 1st and 2nd result
+        dist_min_val = abs(min_val[0].min_val - min_val[1].min_val)
+        dist_hist_val = abs(hist_val[0].hist_val - hist_val[1].hist_val)
+
+        # Warn if under threshold
+        if dist_min_val < THRESHOLD_RESULT_DISTANCE:
+            logger.warning("min_val distance too low: {}", dist_min_val)
+
+        if dist_hist_val < THRESHOLD_RESULT_DISTANCE:
+            logger.warning("hist_val distance too low: {}", dist_hist_val)
+
+        # Compare which method is more accurate
+        if dist_min_val < dist_hist_val:
+            logger.debug("Histogram comparison seems to be more precise than template matching")
+        else:
+            logger.debug("Template matching seems to be more precise than histogram comparison")
+
+        return dist_min_val, dist_hist_val
+
     def get_best_result(
         self,
         results: list[MatchResult],
@@ -123,11 +162,30 @@ class Matcher:
         """Find the best result (min(min_val) or min(hist_val))."""
         logger.debug("Matching algorithm: {}", algorithm)
 
+        dist_min_val, dist_hist_val = self._get_distance_from_best(results)
+
+        if math.isclose(dist_min_val, 0) and algorithm == MatchingAlgorithm.DEFAULT:
+            # If neither result is good by min_val, try to switch to histogram matching
+            if dist_hist_val < THRESHOLD_RESULT_DISTANCE:
+                # But if the hist_val distance is too low as well, terminate here
+                # because we value data correctness rather than guessing
+                logger.error(
+                    "Neither template matching nor histogram comparison is accurate enough"
+                )
+                raise CannotIdentifyUniqueItem(
+                    "Neither template matching nor histogram comparison is accurate enough"
+                )
+
+            logger.warning("Switching matching algorithm to HISTOGRAM because dist_min_val=0")
+            algorithm = MatchingAlgorithm.HISTOGRAM
+
         match algorithm:
             case MatchingAlgorithm.VARIANTS_ONLY:
                 if any(res.template.sockets > 0 for res in results):
                     # Socketable items will always have min_val matching first
                     return min(results, key=lambda res: res.min_val)
+
+                logger.warning("Using VARIANTS_ONLY when sockets=0 defaults to DEFAULT")
 
             case MatchingAlgorithm.HISTOGRAM:
                 return min(results, key=lambda res: res.hist_val)
@@ -135,6 +193,7 @@ class Matcher:
             case MatchingAlgorithm.DEFAULT:
                 return min(results, key=lambda res: res.min_val)
 
+        # Same as DEFAULT
         return min(results, key=lambda res: res.min_val)
 
     def get_item_variants(self, item: Item) -> list[ItemTemplate]:
@@ -233,9 +292,7 @@ class Matcher:
             )
             results.append(match_result)
 
-        algo = MatchingAlgorithm.VARIANTS_ONLY
-
-        return self.get_best_result(results, algo)
+        return self.get_best_result(results, MatchingAlgorithm.VARIANTS_ONLY)
 
     def load_screen(self, screenshot: str | Path) -> np.ndarray:
         """Load a screenshot from file into OpenCV format."""
