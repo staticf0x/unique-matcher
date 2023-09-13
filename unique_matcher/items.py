@@ -5,7 +5,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from unique_matcher.constants import ITEM_DIR, ROOT_DIR
+from unique_matcher.constants import ITEM_DIR, OPT_IGNORE_NON_GLOBAL_ITEMS, ROOT_DIR
 
 
 @dataclass
@@ -47,6 +47,10 @@ class ItemLoader:
             for row in reader:
                 if int(row["enabled"]) == 0:
                     logger.debug("Skipping drop-disabled item: {}", row["name"])
+                    continue
+
+                if OPT_IGNORE_NON_GLOBAL_ITEMS and int(row["global"]) == 0:
+                    logger.debug("Skipping non-global item: {}", row["name"])
                     continue
 
                 name = row["name"]

@@ -15,6 +15,10 @@ list_group.add_argument(
     "--no-sc", action="store_true", help="Only list items without sockets/columns"
 )
 list_group.add_argument("--no-wh", action="store_true", help="Only list items without width/height")
+list_group.add_argument(
+    "--global", dest="yes_global", action="store_true", help="Only list items that can drop"
+)
+list_group.add_argument("--no-global", action="store_true", help="Hide items that can drop")
 
 edit_group = parser.add_argument_group("edit")
 edit_group.add_argument("--set-width", type=int, help="Width to set")
@@ -45,6 +49,12 @@ def filtered(line: dict) -> bool:
     if args.no_wh and not (line["width"] == "" or line["height"] == ""):
         return False
 
+    if args.yes_global and line["global"] == "0":
+        return False
+
+    if args.no_global and line["global"] == "1":
+        return False
+
     return True
 
 
@@ -58,6 +68,7 @@ if args.action == "list":
     table.add_column("s/c")
     table.add_column("WxH")
     table.add_column("Enabled")
+    table.add_column("Global")
 
     for line in reader:
         if not filtered(line):
@@ -71,6 +82,7 @@ if args.action == "list":
             f"{line['sockets']}/{line['columns']}",
             f"{line['width']}x{line['height']}",
             "Yes" if line["enabled"] == "1" else "No",
+            "Yes" if line["global"] == "1" else "No",
         )
 
     console = Console()
@@ -83,7 +95,18 @@ if args.action == "edit":
     fwrite = open("items-new.csv", "w")
     writer = csv.DictWriter(
         fwrite,
-        ["name", "file", "alias", "sockets", "columns", "base", "enabled", "width", "height"],
+        [
+            "name",
+            "file",
+            "alias",
+            "sockets",
+            "columns",
+            "base",
+            "enabled",
+            "global",
+            "width",
+            "height",
+        ],
     )
     writer.writeheader()
 
