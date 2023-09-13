@@ -16,10 +16,13 @@ ITEM_MAX_SIZE: tuple[int, int] = (104, 208)
 DEBUG: bool = True
 
 # Allow screenshots that are not 1920x1080px, it will reduce accuracy
+# Default: False
 OPT_ALLOW_NON_FULLHD: bool = True
 
 # Enable item name matching for identified items
+# Default: True
 OPT_FIND_ID_BY_NAME: bool = False
 
 # Ignore non-global drops, i.e. boss drops, metamorph drops, etc.
+# Default: True
 OPT_IGNORE_NON_GLOBAL_ITEMS: bool = True
