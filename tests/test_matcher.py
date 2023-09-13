@@ -28,7 +28,16 @@ def _load_data(folder: pathlib.Path) -> list[str]:
 
 
 TEST_SET = os.getenv("DATA_SET", "example")
-CONTAINS = _load_data(DATA_DIR / "contains" / TEST_SET)
+
+if TEST_SET == "all":
+    CONTAINS = [
+        sublist
+        for data_set in os.listdir(DATA_DIR / "contains")
+        for sublist in _load_data(DATA_DIR / "contains" / data_set)
+    ]
+else:
+    CONTAINS = _load_data(DATA_DIR / "contains" / TEST_SET)
+
 CONTAINS_NOT = _load_data(DATA_DIR / "contains_not")
 BASES = _load_data(DATA_DIR / "bases")
 
