@@ -17,7 +17,9 @@ DEBUG: bool = True
 
 # Allow screenshots that are not 1920x1080px, it will reduce accuracy
 OPT_ALLOW_NON_FULLHD: bool = True
-OPT_FIND_ID_BY_NAME: bool = True
+
+# Enable item name matching for identified items
+OPT_FIND_ID_BY_NAME: bool = False
 
 # Ignore non-global drops, i.e. boss drops, metamorph drops, etc.
 OPT_IGNORE_NON_GLOBAL_ITEMS: bool = True
