@@ -51,7 +51,7 @@
                     </tr>
                     <tr>
                         <td class="has-text-weight-bold">Image</td>
-                        <td><img src="{{ result.item.icon }}" alt="{{ result.item.name }}"></td>
+                        <td><img src="file:///{{ result.item.icon }}" alt="{{ result.item.name }}"></td>
                     </tr>
                 </tbody>
             </table>
@@ -94,9 +94,9 @@
                     <td>Best result template</td>
                 </tr>
                 <tr>
-                    <td><img src="{{ unique_image }}" alt="Unique image"></td>
-                    <td>{% if cropped_unique %}<img src="{{ cropped_unique }}" alt="Cropped unique">{% else %}-{% endif %}</td>
-                    <td>{% if template %}<img src="{{ template }}" alt="Best result template">{% else %}-{% endif %}</td>
+                    <td><img src="file:///{{ unique_image }}" alt="Unique image"></td>
+                    <td>{% if cropped_unique %}<img src="file:///{{ cropped_unique }}" alt="Cropped unique">{% else %}-{% endif %}</td>
+                    <td>{% if template %}<img src="file:///{{ template }}" alt="Best result template">{% else %}-{% endif %}</td>
                 </tr>
             </table>
         </div>
