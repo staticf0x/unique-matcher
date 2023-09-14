@@ -7,6 +7,7 @@ from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 from unique_matcher.constants import LOG_DIR, VERSION
 from unique_matcher.gui import QML_PATH
 from unique_matcher.gui.matcher import QmlMatcher
+from unique_matcher.gui.screenshot import QmlScreenshotter
 
 if __name__ == "__main__":
     logger.remove()
@@ -30,6 +31,7 @@ if __name__ == "__main__":
     engine.rootContext().setContextProperty("VERSION", VERSION)
 
     qmlRegisterType(QmlMatcher, "Matcher", 1, 0, "Matcher")
+    qmlRegisterType(QmlScreenshotter, "Screenshotter", 1, 0, "Screenshotter")
 
     engine.load(QML_PATH / "main.qml")  # Load main window
 

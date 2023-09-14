@@ -21,6 +21,11 @@ You need Python 3.11+ and [Poetry](https://github.com/python-poetry/poetry).
 This program requires `tesseract` to be available at your system.
 Refer to the [official installation guide](https://tesseract-ocr.github.io/tessdoc/Installation.html) to install it.
 
+### GNOME/Wayland
+
+On Gnome/Wayland you'll have to endure the constant flash effect during screenshotting
+until [this](https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/3866) is implemented.
+
 ## Development
 
 ### Running tests
