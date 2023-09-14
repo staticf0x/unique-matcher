@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 
+# Load version
 with open(ROOT_DIR / "pyproject.toml", "rb") as fread:
     _data = tomllib.load(fread)
     VERSION = _data["tool"]["poetry"]["version"]
@@ -12,6 +13,13 @@ with open(ROOT_DIR / "pyproject.toml", "rb") as fread:
 ITEM_DIR = ROOT_DIR / "items"
 SOCKET_DIR = ROOT_DIR / "socket"
 TEMPLATES_DIR = ROOT_DIR / "templates"
+
+DATA_DIR = ROOT_DIR / "data"
+QUEUE_DIR = DATA_DIR / "queue"
+ERROR_DIR = DATA_DIR / "errors"
+DONE_DIR = DATA_DIR / "done"
+LOG_DIR = DATA_DIR / "logs"
+RESULT_DIR = DATA_DIR / "results"
 
 # Maximum size of an item image for comparison
 # (might differ from artwork found on wiki)
