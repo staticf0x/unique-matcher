@@ -35,14 +35,18 @@ class ResultFile:
 
     def _load(self) -> dict[str, int]:
         """Load data from current CSV."""
-        with open(self.current_file, "r") as fread:
+        logger.debug("Loading CSV")
+
+        with open(self.current_file, "r", newline="") as fread:
             reader = csv.DictReader(fread)
 
             return {row["item"]: int(row["count"]) for row in reader}
 
     def _save(self, data: dict[str, int]) -> None:
         """Write data into current CSV."""
-        with open(self.current_file, "w") as fwrite:
+        logger.debug("Writing CSV")
+
+        with open(self.current_file, "w", newline="") as fwrite:
             writer = csv.DictWriter(fwrite, self.HEADER)
             writer.writeheader()
 

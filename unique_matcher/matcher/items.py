@@ -41,7 +41,7 @@ class ItemLoader:
         """Load items from CSV."""
         self.items = {}
 
-        with open(ROOT_DIR / "items.csv") as fread:
+        with open(ROOT_DIR / "items.csv", "r", newline="") as fread:
             reader = csv.DictReader(fread)
 
             for row in reader:
