@@ -432,17 +432,20 @@ class Matcher:
                 logger.error(
                     "OPT_ALLOW_NON_FULLHD is disabled and screenshot isn't 1920x1080px, aborting"
                 )
+                source_screen.close()
                 raise NotInFullHD
 
         res = self._find_unique_control_start(screen)
 
         if res is None:
+            source_screen.close()
             raise CannotFindUniqueItem("Unique control guide start not found")
 
         min_loc_start, is_identified = res
         min_loc_end = self._find_unique_control_end(screen, is_identified)
 
         if min_loc_end is None:
+            source_screen.close()
             raise CannotFindUniqueItem("Unique control guide end not found")
 
         # Crop out the item image: (left, top, right, bottom)
@@ -482,6 +485,8 @@ class Matcher:
                 min_loc_end[1] + control_height - 6,
             )
         )
+
+        source_screen.close()
 
         base, name = self.title_parser.parse_title(title_img, is_identified=is_identified)
 
