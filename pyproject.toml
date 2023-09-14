@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "unique_matcher"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "~3.11"
 numpy = "^1.25.1"
 opencv-python = "^4.8.0.74"
 pillow = "^10.0.0"
@@ -16,6 +16,7 @@ loguru = "^0.7.0"
 texttable = "^1.6.7"
 pytesseract = "^0.3.10"
 jinja2 = "^3.1.2"
+pyside6 = "^6.5.2"
 
 [tool.poetry.group.dev.dependencies]
 devtools = {extras = ["pygments"], version = "^0.11.0"}
