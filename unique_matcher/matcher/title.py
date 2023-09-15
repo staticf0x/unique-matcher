@@ -74,6 +74,7 @@ class TitleParser:
             .replace("_Of_", "_of_")
             .replace("_The_", "_the_")
             .replace("_And_", "_and_")
+            .replace("_From_", "_from_")
         )
 
         # Fix all "dash upper case" letters, like Three-Step -> Three-step
