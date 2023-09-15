@@ -78,6 +78,9 @@ TODO: Provide links to data sets
 
 #### Results
 
+You can obtain these numbers by running `tests/test_data/count.py`
+and accuracy data by running the Benchmark.
+
 | Data set      | Items | Screenshots | Accuracy   |
 | ------------- | ----- | ----------- | ---------- |
 | staticf0x     | 52    | 110         | 100%       |
@@ -85,6 +88,12 @@ TODO: Provide links to data sets
 | staticf0xElin | 126   | 278         | 100%       |
 | Elinvynia     | 6     | 9           | 100%       |
 | **Total**     | 320   | 670         | **99.85%** |
+
+### Benchmark
+
+You can run `python3 benchmark.py` to start a benchmark that will
+calculate the accuracy of a data set and timing data of the matching.
+The tool will let you pick which data set to run.
 
 ## Credits
 
