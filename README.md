@@ -75,3 +75,25 @@ A full HD png screenshot is anywhere from 2MB to 4MB, multiply by 100 screenshot
 you get 200MB+ of files.
 
 TODO: Provide links to data sets
+
+#### Results
+
+| Data set      | Items | Screenshots | Accuracy   |
+| ------------- | ----- | ----------- | ---------- |
+| staticf0x     | 52    | 110         | 100%       |
+| Krolya        | 136   | 273         | 99.27%     |
+| staticf0xElin | 126   | 278         | 100%       |
+| Elinvynia     | 6     | 9           | 100%       |
+| **Total**     | 320   | 670         | **99.70%** |
+
+## Credits
+
+### Research
+
+nerdyjoe
+
+### Testing
+
+### Test data, maps
+
+Elinvynia, Krolya
