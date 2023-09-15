@@ -10,6 +10,8 @@ it will still likely work. Other resolutions are currently not supported.
 
 ## Installation
 
+### Linux
+
 You need Python 3.11+ and [Poetry](https://github.com/python-poetry/poetry).
 
 1. Install poetry: `pip3 install --user poetry`
@@ -25,6 +27,27 @@ Refer to the [official installation guide](https://tesseract-ocr.github.io/tessd
 
 On Gnome/Wayland you'll have to endure the constant flash effect during screenshotting
 until [this](https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/3866) is implemented.
+
+### Windows
+
+#### 1. Install Python 3.11
+
+- Download and install https://www.python.org/ftp/python/3.11.5/python-3.11.5-amd64.exe
+- During installation, check the **"Add Python 3.11 to PATH"**
+
+![Python PATH](docs/img/python_path.png)
+
+You can verify the installation is correct by opening Command Prompt and running: `python --version`
+
+#### 2. Install Tesseract OCR
+
+- Download and install https://github.com/UB-Mannheim/tesseract/wiki#tesseract-installer-for-windows
+- You don't have to check any extra scripts or languages
+- Add Tesseract to PATH
+
+![Step 1](docs/img/env_var_1.png)
+![Step 2](docs/img/env_var_2.png)
+![Step 3](docs/img/env_var_3.png)
 
 ## Development
 

@@ -15,7 +15,7 @@ from unique_matcher.constants import (
     DEBUG,
     ITEM_MAX_SIZE,
     OPT_ALLOW_NON_FULLHD,
-    OPT_FIND_ID_BY_NAME,
+    OPT_FIND_ITEM_BY_NAME,
     TEMPLATES_DIR,
 )
 from unique_matcher.matcher import utils
@@ -432,17 +432,20 @@ class Matcher:
                 logger.error(
                     "OPT_ALLOW_NON_FULLHD is disabled and screenshot isn't 1920x1080px, aborting"
                 )
+                source_screen.close()
                 raise NotInFullHD
 
         res = self._find_unique_control_start(screen)
 
         if res is None:
+            source_screen.close()
             raise CannotFindUniqueItem("Unique control guide start not found")
 
         min_loc_start, is_identified = res
         min_loc_end = self._find_unique_control_end(screen, is_identified)
 
         if min_loc_end is None:
+            source_screen.close()
             raise CannotFindUniqueItem("Unique control guide end not found")
 
         # Crop out the item image: (left, top, right, bottom)
@@ -483,6 +486,8 @@ class Matcher:
             )
         )
 
+        source_screen.close()
+
         base, name = self.title_parser.parse_title(title_img, is_identified=is_identified)
 
         return item_img, base, name
@@ -497,7 +502,7 @@ class Matcher:
             self.debug_info["unique_image"] = image
             self.debug_info["results_all"] = []
 
-        if name and OPT_FIND_ID_BY_NAME:
+        if name and OPT_FIND_ITEM_BY_NAME:
             item = self.item_loader.get(name)
 
             if item.alias:
