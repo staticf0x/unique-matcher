@@ -15,7 +15,7 @@ from unique_matcher.constants import (
     DEBUG,
     ITEM_MAX_SIZE,
     OPT_ALLOW_NON_FULLHD,
-    OPT_FIND_ID_BY_NAME,
+    OPT_FIND_ITEM_BY_NAME,
     TEMPLATES_DIR,
 )
 from unique_matcher.matcher import utils
@@ -502,7 +502,7 @@ class Matcher:
             self.debug_info["unique_image"] = image
             self.debug_info["results_all"] = []
 
-        if name and OPT_FIND_ID_BY_NAME:
+        if name and OPT_FIND_ITEM_BY_NAME:
             item = self.item_loader.get(name)
 
             if item.alias:
