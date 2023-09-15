@@ -101,7 +101,7 @@ class Benchmark:
         for name in sorted(os.listdir(DATA_DIR / self.data_set)):
             self.add(name)
 
-        for item in track(self.to_benchmark, description="Gathering results..."):
+        for item in track(self.to_benchmark, description="Gathering results"):
             self._run_one(item)
 
         # Draw the result table
