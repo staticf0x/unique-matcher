@@ -30,6 +30,10 @@
                         <td><a href="https://www.poewiki.net/wiki/{{ result.item.base|replace(' ', '_') }}" target="_blank">{{ result.item.base }}</a></td>
                     </tr>
                     <tr>
+                        <td class="has-text-weight-bold">Identified</td>
+                        <td>{% if result.identified %}<span class="tag is-success">Yes</span>{% else %}<span class="tag is-danger">No</span>{% endif %}</td>
+                    </tr>
+                    <tr>
                         <td class="has-text-weight-bold">s/c</td>
                         <td>{{ result.item.sockets }}/{{ result.item.cols }}</td>
                     </tr>

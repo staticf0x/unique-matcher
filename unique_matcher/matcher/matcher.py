@@ -54,6 +54,16 @@ class ItemTemplate:
     sockets: int
 
 
+@dataclass
+class CroppedItemInfo:
+    """Helper class for the cropped out part with unique item info."""
+
+    image: Image.Image
+    base: str
+    name: str
+    identified: bool
+
+
 class MatchedBy(Enum):
     """How the item was matched."""
 
@@ -80,8 +90,9 @@ class MatchResult:
 
     item: Item
     loc: tuple[int, int]
-    min_val: float
+    identified: bool | None
     matched_by: MatchedBy
+    min_val: float
     hist_val: float = 0.0
     template: ItemTemplate | None = None
 
@@ -284,8 +295,9 @@ class Matcher:
             match_result = MatchResult(
                 item=item,
                 loc=min_loc,
-                min_val=min_val,
+                identified=None,
                 matched_by=MatchedBy.TEMPLATE_MATCH,
+                min_val=min_val,
                 hist_val=hist_val,
                 template=template,
             )
@@ -410,11 +422,8 @@ class Matcher:
 
         return image
 
-    def find_unique(self, screenshot: str | Path) -> tuple[Image.Image, str, str]:
-        """Return a cropped part of the screenshot with the unique.
-
-        If it cannot be found, returns the original screenshot.
-        """
+    def find_unique(self, screenshot: str | Path) -> CroppedItemInfo:
+        """Return CroppedItemInfo with data about the cropped part of a screenshot."""
         source_screen = Image.open(str(screenshot))  # Original screenshot
         screen = self.load_screen(screenshot)  # CV2 screenshot
 
@@ -488,20 +497,25 @@ class Matcher:
 
         base, name = self.title_parser.parse_title(title_img, is_identified=is_identified)
 
-        return item_img, base, name
+        return CroppedItemInfo(
+            image=item_img,
+            base=base,
+            name=name,
+            identified=is_identified,
+        )
 
     def find_item(self, screenshot: str) -> MatchResult:
         """Find an item in a screenshot."""
         logger.info("Finding item in screenshot: {}", screenshot)
 
-        image, base, name = self.find_unique(screenshot)
+        cropped_item = self.find_unique(screenshot)
 
         if DEBUG:
-            self.debug_info["unique_image"] = image
+            self.debug_info["unique_image"] = cropped_item.image
             self.debug_info["results_all"] = []
 
-        if name and OPT_FIND_ITEM_BY_NAME:
-            item = self.item_loader.get(name)
+        if cropped_item.name and OPT_FIND_ITEM_BY_NAME:
+            item = self.item_loader.get(cropped_item.name)
 
             if item.alias:
                 logger.warning(
@@ -515,15 +529,16 @@ class Matcher:
             return MatchResult(
                 item=item,
                 loc=(0, 0),
-                min_val=0,
                 matched_by=MatchedBy.ITEM_NAME,
+                identified=cropped_item.identified,
+                min_val=0,
                 hist_val=0,
                 template=None,
             )
 
         results_all = []
 
-        filtered_bases = self.item_loader.filter(base)
+        filtered_bases = self.item_loader.filter(cropped_item.base)
         logger.info("Searching through {} item base variants", len(filtered_bases))
 
         if len(filtered_bases) == 1:
@@ -532,21 +547,22 @@ class Matcher:
             return MatchResult(
                 item=item,
                 loc=(0, 0),
-                min_val=0,
                 matched_by=MatchedBy.ONLY_UNIQUE_FOR_BASE,
+                identified=cropped_item.identified,
+                min_val=0,
                 hist_val=0,
                 template=None,
             )
 
         for item in filtered_bases:
-            result = self.check_one(image, item)
+            result = self.check_one(cropped_item.image, item)
 
             results_all.append(result)
 
         if DEBUG:
             self.debug_info["results_all"] = results_all
 
-        if base in self.FORCE_HISTOGRAM_MATCHING:
+        if cropped_item.base in self.FORCE_HISTOGRAM_MATCHING:
             # Force histogram matching on these bases
             best_result = self.get_best_result(results_all, MatchingAlgorithm.HISTOGRAM)
             best_result.matched_by = MatchedBy.HISTOGRAM_MATCH
@@ -567,5 +583,7 @@ class Matcher:
                 best_result.item.name,
                 "\n".join([item.name for item in aliases]),
             )
+
+        best_result.identified = cropped_item.identified
 
         return best_result
