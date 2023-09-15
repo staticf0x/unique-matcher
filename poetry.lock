@@ -671,6 +671,17 @@ files = [
 ]
 
 [[package]]
+name = "simple-term-menu"
+version = "1.6.1"
+description = "A Python package which creates simple interactive menus on the command line."
+optional = false
+python-versions = "~=3.5"
+files = [
+    {file = "simple-term-menu-1.6.1.tar.gz", hash = "sha256:368b4158d1749b868552fb6c054b8301785086c71a7253dac8404cc3cb2d30e8"},
+    {file = "simple_term_menu-1.6.1-py3-none-any.whl", hash = "sha256:f12945d5c6998088e86a228e0aff12ff655f5bfad786c86677f23faa1d2afa50"},
+]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -679,17 +690,6 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
-]
-
-[[package]]
-name = "texttable"
-version = "1.6.7"
-description = "module to create simple ASCII tables"
-optional = false
-python-versions = "*"
-files = [
-    {file = "texttable-1.6.7-py2.py3-none-any.whl", hash = "sha256:b7b68139aa8a6339d2c320ca8b1dc42d13a7831a346b446cb9eb385f0c76310c"},
-    {file = "texttable-1.6.7.tar.gz", hash = "sha256:290348fb67f7746931bcdfd55ac7584ecd4e5b0846ab164333f0794b121760f2"},
 ]
 
 [[package]]
@@ -731,4 +731,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.11"
-content-hash = "44af6638ec6025b56794512bcda43b24037bddfd186c6c890871c94b008570df"
+content-hash = "9e55fc1f7660b6e062a3c7e656269718c23ca843b197b635bfe177f7fd79e149"

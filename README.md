@@ -81,10 +81,10 @@ TODO: Provide links to data sets
 | Data set      | Items | Screenshots | Accuracy   |
 | ------------- | ----- | ----------- | ---------- |
 | staticf0x     | 52    | 110         | 100%       |
-| Krolya        | 136   | 273         | 99.27%     |
+| Krolya        | 136   | 272         | 99.63%     |
 | staticf0xElin | 126   | 278         | 100%       |
 | Elinvynia     | 6     | 9           | 100%       |
-| **Total**     | 320   | 670         | **99.70%** |
+| **Total**     | 320   | 670         | **99.85%** |
 
 ## Credits
 
