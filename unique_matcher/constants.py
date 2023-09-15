@@ -39,3 +39,8 @@ OPT_FIND_ITEM_BY_NAME: bool = False
 # Ignore non-global drops, i.e. boss drops, metamorph drops, etc.
 # Default: True
 OPT_IGNORE_NON_GLOBAL_ITEMS: bool = True
+
+# Raise an exception if the parsed item name cannot be found in the DB
+# WARNING: This is a debugging tool that should be False in production
+# Default: False
+OPT_FIND_BY_NAME_RAISE: bool = False

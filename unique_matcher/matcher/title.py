@@ -6,6 +6,7 @@ import pytesseract
 from loguru import logger
 from PIL import Image, ImageOps
 
+from unique_matcher.constants import OPT_FIND_BY_NAME_RAISE
 from unique_matcher.matcher.exceptions import CannotFindItemBase
 from unique_matcher.matcher.items import ItemLoader
 from unique_matcher.matcher.utils import normalize_item_name
@@ -92,7 +93,10 @@ class TitleParser:
             return item.file
         except KeyError:
             logger.error("Couldn't find item name: {}", item_name)
-            raise
+
+            if OPT_FIND_BY_NAME_RAISE:
+                raise
+
             return ""
 
     def _parse_identified_title(self, title_raw: str) -> tuple[str, str]:
