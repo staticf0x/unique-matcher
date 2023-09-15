@@ -50,7 +50,7 @@ if args.show_screenshot:
 
 if args.check_one:
     result = matcher.check_one(
-        matcher.find_unique(args.screenshot)[0],
+        matcher.find_unique(args.screenshot).image,
         matcher.item_loader.get(args.check_one),
     )
 else:
