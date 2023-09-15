@@ -52,8 +52,6 @@ class ItemTemplate:
 
     image: Image.Image
     sockets: int
-    fraction: int = 100
-    size: tuple[int, int] = (0, 0)
 
 
 class MatchedBy(Enum):
