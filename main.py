@@ -16,7 +16,6 @@ from unique_matcher.constants import (
 )
 from unique_matcher.gui import QML_PATH
 from unique_matcher.gui.matcher import QmlMatcher
-from unique_matcher.gui.screenshot import QmlScreenshotter
 
 AHK_TEMPLATE = """#s::
 {
@@ -58,7 +57,6 @@ if __name__ == "__main__":
     engine.rootContext().setContextProperty("VERSION", VERSION)
 
     qmlRegisterType(QmlMatcher, "Matcher", 1, 0, "Matcher")  # type: ignore[call-overload]
-    qmlRegisterType(QmlScreenshotter, "Screenshotter", 1, 0, "Screenshotter")  # type: ignore[call-overload]
 
     engine.load(QML_PATH / "main.qml")  # Load main window
 
