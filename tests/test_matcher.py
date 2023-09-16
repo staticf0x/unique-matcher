@@ -2,6 +2,8 @@ import os
 import pathlib
 import sys
 
+from pathlib import Path
+
 import pytest
 from loguru import logger
 
@@ -17,7 +19,7 @@ logger.add(
 )
 
 
-def _load_data(folder: pathlib.Path) -> list[str]:
+def _load_data(folder: pathlib.Path) -> list[tuple[str, list[Path]]]:
     data = []
 
     for item in sorted(os.listdir(folder)):

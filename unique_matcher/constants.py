@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 
 # Load version
-with open(ROOT_DIR / "pyproject.toml", "rb") as fread:
+with ROOT_DIR.joinpath("pyproject.toml").open("rb") as fread:
     _data = tomllib.load(fread)
     VERSION = _data["tool"]["poetry"]["version"]
 

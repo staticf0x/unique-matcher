@@ -17,7 +17,7 @@ class ResultFile:
         "count",
     ]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.current_file: str | None = None
         os.makedirs(RESULT_DIR, exist_ok=True)
 

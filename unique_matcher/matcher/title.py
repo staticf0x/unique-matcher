@@ -54,11 +54,11 @@ class TitleParser:
             pass
 
         # Remove bases with fewer than 3 characters
-        OKAY_WORDS = ["OF"]
+        okay_words = ["OF"]
 
         lines = title.split("\n")
         lines = [
-            " ".join([w for w in line.split() if len(w) > 2 or w in OKAY_WORDS]) for line in lines
+            " ".join([w for w in line.split() if len(w) > 2 or w in okay_words]) for line in lines
         ]
 
         return "\n".join(lines)
@@ -90,8 +90,6 @@ class TitleParser:
 
         try:
             item = self.item_loader.get(item_name)
-            logger.info("Item name (normalized): {}", item_name)
-            return item.file
         except KeyError:
             logger.error("Couldn't find item name: {}", item_name)
 
@@ -99,6 +97,8 @@ class TitleParser:
                 raise
 
             return ""
+        logger.info("Item name (normalized): {}", item_name)
+        return item.file
 
     def _parse_identified_title(self, title_raw: str) -> tuple[str, str]:
         """Get a base and name of an identified item."""
@@ -159,7 +159,8 @@ class TitleParser:
         # Check that the parsed base exists in item loader
         if base_name not in self.item_loader.bases():
             logger.error("Cannot detect item base, got: '{}'", base_name)
-            raise CannotFindItemBase(f"Base '{base_name}' doesn't exist")
+            msg = f"Base '{base_name}' doesn't exist"
+            raise CannotFindItemBase(msg)
 
         logger.info("Item base: {}", base_name)
 

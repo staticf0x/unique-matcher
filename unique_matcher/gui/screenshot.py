@@ -15,7 +15,7 @@ class QmlScreenshotter(QObject):
         QObject.__init__(self)
 
     @Slot()
-    def grab(self) -> Image.Image:
+    def grab(self) -> None:
         filename = QUEUE_DIR / f"{time.strftime('%Y-%m-%d-%H-%M-%S')}.png"
 
         image = pyscreenshot.grab()

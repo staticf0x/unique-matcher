@@ -81,6 +81,8 @@ class MatchedBy(Enum):
                 return "Only unique for the base"
             case self.ITEM_NAME:
                 return "Item name"
+            case _:
+                raise ValueError
 
 
 @dataclass
@@ -178,12 +180,9 @@ class Matcher:
             if dist_hist_val < THRESHOLD_RESULT_DISTANCE:
                 # But if the hist_val distance is too low as well, terminate here
                 # because we value data correctness rather than guessing
-                logger.error(
-                    "Neither template matching nor histogram comparison is accurate enough"
-                )
-                raise CannotIdentifyUniqueItem(
-                    "Neither template matching nor histogram comparison is accurate enough"
-                )
+                msg = "Neither template matching nor histogram comparison is accurate enough"
+                logger.error(msg)
+                raise CannotIdentifyUniqueItem(msg)
 
             logger.warning("Switching matching algorithm to HISTOGRAM because dist_min_val=0")
             algorithm = MatchingAlgorithm.HISTOGRAM
@@ -268,14 +267,13 @@ class Matcher:
                     image.width,
                     image.height,
                 )
-                raise InvalidTemplateDimensions(
-                    "Template image is larger than unique item: {}x{}px vs {}x{}px".format(
-                        template.image.width,
-                        template.image.height,
-                        image.width,
-                        image.height,
-                    )
+                msg = "Template image is larger than unique item: {}x{}px vs {}x{}px".format(
+                    template.image.width,
+                    template.image.height,
+                    image.width,
+                    image.height,
                 )
+                raise InvalidTemplateDimensions(msg)
 
             hist = utils.calc_normalized_histogram(template.image)
 
@@ -310,7 +308,9 @@ class Matcher:
         return cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
 
     def _find_without_resizing(
-        self, image: Image.Image, screen: np.ndarray
+        self,
+        image: Image.Image,
+        screen: np.ndarray,
     ) -> tuple[float, tuple[int, int]]:
         result = cv2.matchTemplate(
             screen,
@@ -363,7 +363,9 @@ class Matcher:
         return None
 
     def _find_unique_control_end(
-        self, screen: np.ndarray, is_identified: bool
+        self,
+        screen: np.ndarray,
+        is_identified: bool,
     ) -> tuple[int, int] | None:
         """Find the end control point of a unique item.
 
@@ -416,7 +418,7 @@ class Matcher:
                     0,
                     image.width,
                     int(image.height * item.height / 4),
-                )
+                ),
             )
 
         return image
@@ -436,7 +438,7 @@ class Matcher:
 
             if not OPT_ALLOW_NON_FULLHD:
                 logger.error(
-                    "OPT_ALLOW_NON_FULLHD is disabled and screenshot isn't 1920x1080px, aborting"
+                    "OPT_ALLOW_NON_FULLHD is disabled and screenshot isn't 1920x1080px, aborting",
                 )
                 source_screen.close()
                 raise NotInFullHD
@@ -445,14 +447,16 @@ class Matcher:
 
         if res is None:
             source_screen.close()
-            raise CannotFindUniqueItem("Unique control guide start not found")
+            msg = "Unique control guide start not found"
+            raise CannotFindUniqueItem(msg)
 
         min_loc_start, is_identified = res
         min_loc_end = self._find_unique_control_end(screen, is_identified)
 
         if min_loc_end is None:
             source_screen.close()
-            raise CannotFindUniqueItem("Unique control guide end not found")
+            msg = "Unique control guide end not found"
+            raise CannotFindUniqueItem(msg)
 
         # Crop out the item image: (left, top, right, bottom)
         # Left is: position of guide - item width - space
@@ -466,7 +470,7 @@ class Matcher:
                 min_loc_start[1],
                 min_loc_start[0],
                 min_loc_start[1] + ITEM_MAX_SIZE[1],
-            )
+            ),
         )
 
         logger.debug(
@@ -489,7 +493,7 @@ class Matcher:
                 min_loc_start[1] + 4,
                 min_loc_end[0] + 6,
                 min_loc_end[1] + control_height - 6,
-            )
+            ),
         )
 
         source_screen.close()
@@ -503,7 +507,7 @@ class Matcher:
             identified=is_identified,
         )
 
-    def find_item(self, screenshot: str) -> MatchResult:
+    def find_item(self, screenshot: str | Path) -> MatchResult:
         """Find an item in a screenshot."""
         logger.info("Finding item in screenshot: {}", screenshot)
 

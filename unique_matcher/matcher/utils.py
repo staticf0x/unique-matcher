@@ -32,6 +32,4 @@ def calc_normalized_histogram(image: Image.Image) -> np.ndarray:
     hist = cv2.calcHist([arr], [0, 1], None, [50, 60], [0, 180, 0, 256], accumulate=False)
 
     # Normalize histogram
-    hist = cv2.normalize(hist, hist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
-
-    return hist
+    return cv2.normalize(hist, hist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)

@@ -1,6 +1,7 @@
 import math
 import os
 import time
+from pathlib import Path
 
 import numpy as np
 from loguru import logger
@@ -43,7 +44,7 @@ class Benchmark:
         item = self.matcher.item_loader.get(name)
         self.to_benchmark.append(item)
 
-    def _get_test_set(self, name: str) -> list[str]:
+    def _get_test_set(self, name: str) -> list[Path]:
         """Return the screenshot test set for an item."""
         files = []
 

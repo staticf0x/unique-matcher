@@ -6,7 +6,7 @@ from PySide6.QtCore import Property, QObject, QTimer, Signal, Slot
 
 from unique_matcher.constants import DONE_DIR, ERROR_DIR, LOG_DIR, QUEUE_DIR
 from unique_matcher.gui.results import ResultFile
-from unique_matcher.matcher.exceptions import BaseUMException
+from unique_matcher.matcher.exceptions import BaseUMError
 from unique_matcher.matcher.matcher import Matcher
 
 
@@ -35,24 +35,24 @@ class QmlMatcher(QObject):
 
         # Create all working dirs
         for path in [DONE_DIR, ERROR_DIR, QUEUE_DIR, LOG_DIR]:
-            os.makedirs(path, exist_ok=True)
+            path.mkdir(exist_ok=True, parents=True)
 
     @Property("int", notify=items_changed)
     def items(self) -> int:
         """Return the number of items in the DB."""
         return len(self.matcher.item_loader.items)
 
-    @Property("int", notify=queue_length_changed)
+    @Property(int, notify=queue_length_changed)
     def queue_length(self) -> int:
         """Return the size of the queue."""
         return len(os.listdir(QUEUE_DIR))
 
-    @Property("int", notify=processed_length_changed)
+    @Property(int, notify=processed_length_changed)
     def processed_length(self) -> int:
         """Return the number of processed screenshots."""
         return len(os.listdir(DONE_DIR))
 
-    @Property("int", notify=errors_length_changed)
+    @Property(int, notify=errors_length_changed)
     def errors_length(self) -> int:
         """Return the number of errors."""
         return len(os.listdir(ERROR_DIR))
@@ -81,7 +81,7 @@ class QmlMatcher(QObject):
 
             shutil.move(QUEUE_DIR / file, DONE_DIR / file)
             self.processed_length_changed.emit()
-        except BaseUMException as e:
+        except BaseUMError as e:
             shutil.move(QUEUE_DIR / file, ERROR_DIR / file)
             self.errors_length_changed.emit()
             logger.exception("Error during processing: {}", str(e))

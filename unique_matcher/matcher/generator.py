@@ -26,7 +26,10 @@ class ItemGenerator:
             img.thumbnail((36, 36), Image.Resampling.BILINEAR)
 
     def generate_sockets(
-        self, sockets: int, columns: int, color: Literal["r", "g", "b", "w"]
+        self,
+        sockets: int,
+        columns: int,
+        color: Literal["r", "g", "b", "w"],
     ) -> Image.Image:
         """Generate a socket overlay."""
         if sockets < 1 or sockets > 6:
@@ -75,7 +78,11 @@ class ItemGenerator:
         return new_image
 
     def generate_image(
-        self, base: Image.Image, item: Item, sockets: int, color: Literal["r", "g", "b", "w"] = "r"
+        self,
+        base: Image.Image,
+        item: Item,
+        sockets: int,
+        color: Literal["r", "g", "b", "w"] = "r",
     ) -> Image.Image:
         """Generate an image of a base item with N sockets."""
         if sockets < 1 or sockets > 6:

@@ -30,8 +30,8 @@ if __name__ == "__main__":
     # Properties
     engine.rootContext().setContextProperty("VERSION", VERSION)
 
-    qmlRegisterType(QmlMatcher, "Matcher", 1, 0, "Matcher")
-    qmlRegisterType(QmlScreenshotter, "Screenshotter", 1, 0, "Screenshotter")
+    qmlRegisterType(QmlMatcher, "Matcher", 1, 0, "Matcher")  # type: ignore[call-overload]
+    qmlRegisterType(QmlScreenshotter, "Screenshotter", 1, 0, "Screenshotter")  # type: ignore[call-overload]
 
     engine.load(QML_PATH / "main.qml")  # Load main window
 
