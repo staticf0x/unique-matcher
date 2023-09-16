@@ -21,9 +21,12 @@ class QmlMatcher(QObject):
     newResult = Signal(dict)
 
     def __init__(self) -> None:
+        # Matcher needs to be initiated before the whole QObject,
+        # because the QML object try to access it on launch already
+        self.matcher = Matcher()
+
         QObject.__init__(self)
 
-        self.matcher = Matcher()
         self._results = []
         self.result_file = ResultFile()
         self.result_file.new()
