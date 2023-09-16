@@ -5,7 +5,8 @@ from jinja2 import BaseLoader, Environment
 
 from unique_matcher.constants import ITEM_DIR, ROOT_DIR
 
-TEMPLATE = """#s::{
+TEMPLATE = """#s::
+{
     Run screen.exe, {{ root }}
 }"""
 
