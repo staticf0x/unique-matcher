@@ -97,6 +97,7 @@ class TitleParser:
                 raise
 
             return ""
+
         logger.info("Item name (normalized): {}", item_name)
         return item.file
 
