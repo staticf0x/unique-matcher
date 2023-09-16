@@ -424,7 +424,7 @@ Hezmana's Bloodlust,Hezmanas_Bloodlust,,6,2,Vaal Axe,1,1,,
 Hidden Potential,Hidden_Potential,,0,0,Viridian Jewel,1,1,1,1
 Hiltless,Hiltless,,6,2,Reaver Sword,1,1,,
 Hinekora's Sight,Hinekoras_Sight,,0,0,Onyx Amulet,1,1,1,1
-Honoured Alliance,Honoured_Alliance,,0,0,Coral Ring,1,1,1,1
+Honoured Alliance,Honoured_Alliance,,0,0,Coral Ring,1,0,1,1
 Honourhome,Honourhome,,4,2,Soldier Helmet,1,1,2,2
 Hopeshredder,Hopeshredder,,6,2,Ranger Bow,1,1,,
 Hotheaded,Hotheaded,,0,0,Viridian Jewel,0,1,1,1
@@ -1099,7 +1099,7 @@ Wings of Entropy,Wings_of_Entropy,,6,2,Ezomyte Axe,1,1,,
 Winter Burial,Winter_Burial,,0,0,Crimson Jewel,0,1,1,1
 Winterheart,Winterheart,,0,0,Gold Amulet,1,1,1,1
 Winter's Bounty,Winters_Bounty,,0,0,Cobalt Jewel,0,1,1,1
-Winterweave,Winterweave,,0,0,Coral Ring,0,1,1,1
+Winterweave,Winterweave,,0,0,Coral Ring,1,1,1,1
 Witchbane,Witchbane,,0,0,Cobalt Jewel,1,1,1,1
 Witchfire Brew,Witchfire_Brew,,0,0,Stibnite Flask,1,1,1,2
 Witchhunter's Judgment,Witchhunters_Judgment,,6,2,Highborn Staff,1,1,,
