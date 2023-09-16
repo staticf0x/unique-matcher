@@ -24,6 +24,7 @@ class TitleParser:
         "Unsset Ring": "Unset Ring",
         "Ruy Ring": "Ruby Ring",
         "Goathide Booots": "Goathide Boots",
+        "Hupris Circlet": "Hubris Circlet",
     }
 
     ITEM_CORRECTIONS: ClassVar[dict[str, str]] = {
