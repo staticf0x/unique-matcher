@@ -7,7 +7,7 @@ from unique_matcher.constants import ITEM_DIR, ROOT_DIR
 
 TEMPLATE = """#s::
 {
-    Run screen.exe, {{ root }}
+    Run "screen.exe", "{{ root }}", "Hide"
 }"""
 
 print("Creating AHK script...")

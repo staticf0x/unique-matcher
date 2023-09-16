@@ -4,7 +4,7 @@ import shutil
 from loguru import logger
 from PySide6.QtCore import Property, QObject, QTimer, Signal, Slot
 
-from unique_matcher.constants import DONE_DIR, ERROR_DIR, LOG_DIR, QUEUE_DIR
+from unique_matcher.constants import DONE_DIR, ERROR_DIR, QUEUE_DIR
 from unique_matcher.gui.results import ResultFile
 from unique_matcher.matcher.exceptions import BaseUMError
 from unique_matcher.matcher.matcher import Matcher
@@ -21,9 +21,12 @@ class QmlMatcher(QObject):
     newResult = Signal(dict)
 
     def __init__(self) -> None:
+        # Matcher needs to be initiated before the whole QObject,
+        # because the QML object try to access it on launch already
+        self.matcher = Matcher()
+
         QObject.__init__(self)
 
-        self.matcher = Matcher()
         self._results = []
         self.result_file = ResultFile()
         self.result_file.new()

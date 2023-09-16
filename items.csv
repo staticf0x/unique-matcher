@@ -386,7 +386,7 @@ Glitterdisc,Glitterdisc,,3,2,Burnished Spiked Shield,0,1,,
 Gloomfang,Gloomfang,,0,0,Blue Pearl Amulet,1,1,1,1
 Glorious Vanity,Glorious_Vanity,,0,0,Timeless Jewel,1,1,1,1
 Gluttony,Gluttony,,0,0,Leather Belt,1,1,2,1
-Goblinedge,Goblinedge,,3,1,Ambusher,1,1,,
+Goblinedge,Goblinedge,,3,1,Ambusher,1,1,1,3
 Goldrim,Goldrim,,4,2,Leather Cap,1,1,,
 Goldwyrm,Goldwyrm,,4,2,Nubuck Boots,1,1,2,2
 Gorebreaker,Gorebreaker,,3,2,Spiked Club,1,1,,
@@ -424,7 +424,7 @@ Hezmana's Bloodlust,Hezmanas_Bloodlust,,6,2,Vaal Axe,1,1,,
 Hidden Potential,Hidden_Potential,,0,0,Viridian Jewel,1,1,1,1
 Hiltless,Hiltless,,6,2,Reaver Sword,1,1,,
 Hinekora's Sight,Hinekoras_Sight,,0,0,Onyx Amulet,1,1,1,1
-Honoured Alliance,Honoured_Alliance,,0,0,Coral Ring,1,1,1,1
+Honoured Alliance,Honoured_Alliance,,0,0,Coral Ring,1,0,1,1
 Honourhome,Honourhome,,4,2,Soldier Helmet,1,1,2,2
 Hopeshredder,Hopeshredder,,6,2,Ranger Bow,1,1,,
 Hotheaded,Hotheaded,,0,0,Viridian Jewel,0,1,1,1
@@ -863,7 +863,7 @@ The Beast Fur Shawl,The_Beast_Fur_Shawl,,6,2,Vaal Regalia,1,1,,
 The Black Cane,The_Black_Cane,,3,2,Royal Sceptre,1,1,,
 The Blood Dance,The_Blood_Dance,,4,2,Sharkskin Boots,1,1,2,2
 The Blood Reaper,The_Blood_Reaper,,6,2,Headsman Axe,1,1,,
-The Blood Thorn,The_Blood_Thorn,,6,2,Gnarled Branch,1,1,,
+The Blood Thorn,The_Blood_Thorn,,3,1,Gnarled Branch,1,1,,
 The Blue Dream,The_Blue_Dream,,0,0,Cobalt Jewel,1,1,1,1
 The Blue Nightmare,The_Blue_Nightmare,,0,0,Cobalt Jewel,1,1,1,1
 The Brass Dome,The_Brass_Dome,,6,2,Gladiator Plate,1,1,2,3
@@ -912,7 +912,7 @@ The Gryphon,The_Gryphon,,3,2,Jade Hatchet,0,1,2,2
 The Gull,The_Gull,,4,2,Raven Mask,1,1,2,2
 The Halcyon,The_Halcyon,,0,0,Jade Amulet,1,1,1,1
 The Harvest,The_Harvest,,6,2,Jasper Chopper,1,1,,
-The Hidden Blade,The_Hidden_Blade,,3,1,Ambusher,1,1,,
+The Hidden Blade,The_Hidden_Blade,,3,1,Ambusher,1,1,1,3
 The Highwayman,The_Highwayman,,0,0,Gold Ring,1,1,1,1
 The Hungry Loop,The_Hungry_Loop,,1,1,Unset Ring,1,1,1,1
 The Ignomon,The_Ignomon,,0,0,Gold Amulet,1,1,1,1
@@ -1099,7 +1099,7 @@ Wings of Entropy,Wings_of_Entropy,,6,2,Ezomyte Axe,1,1,,
 Winter Burial,Winter_Burial,,0,0,Crimson Jewel,0,1,1,1
 Winterheart,Winterheart,,0,0,Gold Amulet,1,1,1,1
 Winter's Bounty,Winters_Bounty,,0,0,Cobalt Jewel,0,1,1,1
-Winterweave,Winterweave,,0,0,Coral Ring,0,1,1,1
+Winterweave,Winterweave,,0,0,Coral Ring,1,1,1,1
 Witchbane,Witchbane,,0,0,Cobalt Jewel,1,1,1,1
 Witchfire Brew,Witchfire_Brew,,0,0,Stibnite Flask,1,1,1,2
 Witchhunter's Judgment,Witchhunters_Judgment,,6,2,Highborn Staff,1,1,,

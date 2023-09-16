@@ -1,13 +1,8 @@
 """Constants and configuration."""
-import tomllib
 from pathlib import Path
 
+VERSION = "0.1.0"
 ROOT_DIR = Path(__file__).parent.parent.resolve()
-
-# Load version
-with ROOT_DIR.joinpath("pyproject.toml").open("rb") as fread:
-    _data = tomllib.load(fread)
-    VERSION = _data["tool"]["poetry"]["version"]
 
 # Directory definitions
 ITEM_DIR = ROOT_DIR / "items"
