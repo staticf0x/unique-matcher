@@ -11,7 +11,7 @@ from PIL import Image
 from rich.console import Console
 from rich.table import Table
 
-from unique_matcher.matcher.exceptions import BaseUMException
+from unique_matcher.matcher.exceptions import BaseUMError
 from unique_matcher.matcher.matcher import THRESHOLD_DISCARD, Matcher
 
 logger.remove()
@@ -56,7 +56,7 @@ if args.check_one:
 else:
     try:
         result = matcher.find_item(args.screenshot)
-    except BaseUMException as e:
+    except BaseUMError as e:
         pass
 
 if result and "results_all" in matcher.debug_info:
@@ -70,9 +70,9 @@ if result and "results_all" in matcher.debug_info:
     table.add_column("hist_val")
 
     if any(res.hist_val for res in matcher.debug_info["results_all"]):
-        sort_lambda = lambda r: r.hist_val
+        sort_lambda = lambda r: r.hist_val  # noqa: E731
     else:
-        sort_lambda = lambda r: r.min_val
+        sort_lambda = lambda r: r.min_val  # noqa: E731
 
     for i, res in enumerate(sorted(matcher.debug_info["results_all"], key=sort_lambda)):
         style = None

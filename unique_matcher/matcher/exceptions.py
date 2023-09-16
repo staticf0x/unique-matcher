@@ -1,22 +1,22 @@
-class BaseUMException(Exception):
+class BaseUMError(Exception):
     pass
 
 
-class CannotFindUniqueItem(BaseUMException):
+class CannotFindUniqueItem(BaseUMError):
     pass
 
 
-class NotInFullHD(BaseUMException):
+class NotInFullHD(BaseUMError):
     pass
 
 
-class CannotFindItemBase(BaseUMException):
+class CannotFindItemBase(BaseUMError):
     pass
 
 
-class CannotIdentifyUniqueItem(BaseUMException):
+class CannotIdentifyUniqueItem(BaseUMError):
     pass
 
 
-class InvalidTemplateDimensions(BaseUMException):
+class InvalidTemplateDimensions(BaseUMError):
     pass
