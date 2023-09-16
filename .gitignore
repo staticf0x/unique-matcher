@@ -6,12 +6,8 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .tox/
-generated/
-screenshots/
-debug/
 items/
 *.log
-training_data/
 tests/test_data/contains/*
 tests/test_data/contains_not/*
 tests/test_data/bases/*
