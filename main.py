@@ -1,10 +1,11 @@
+import os
 import sys
 
 from loguru import logger
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 
-from unique_matcher.constants import LOG_DIR, VERSION
+from unique_matcher.constants import DONE_DIR, ERROR_DIR, LOG_DIR, QUEUE_DIR, VERSION
 from unique_matcher.gui import QML_PATH
 from unique_matcher.gui.matcher import QmlMatcher
 from unique_matcher.gui.screenshot import QmlScreenshotter
@@ -23,6 +24,11 @@ if __name__ == "__main__":
         format="{time:YYYY-MM-DD HH:mm:ss.SSS} | <level>{level:7s}</level> | {message}",
         level="DEBUG",
     )
+
+    # Create all working dirs
+    for path in [DONE_DIR, ERROR_DIR, QUEUE_DIR, LOG_DIR]:
+        os.makedirs(path, exist_ok=True)
+
     app = QGuiApplication(sys.argv)
 
     engine = QQmlApplicationEngine()

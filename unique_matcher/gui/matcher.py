@@ -4,7 +4,7 @@ import shutil
 from loguru import logger
 from PySide6.QtCore import Property, QObject, QTimer, Signal, Slot
 
-from unique_matcher.constants import DONE_DIR, ERROR_DIR, LOG_DIR, QUEUE_DIR
+from unique_matcher.constants import DONE_DIR, ERROR_DIR, QUEUE_DIR
 from unique_matcher.gui.results import ResultFile
 from unique_matcher.matcher.exceptions import BaseUMException
 from unique_matcher.matcher.matcher import Matcher
@@ -32,10 +32,6 @@ class QmlMatcher(QObject):
         self.timer.timeout.connect(self.process_next)
         self.timer.setInterval(250)
         self.timer.start()
-
-        # Create all working dirs
-        for path in [DONE_DIR, ERROR_DIR, QUEUE_DIR, LOG_DIR]:
-            os.makedirs(path, exist_ok=True)
 
     @Property("int", notify=items_changed)
     def items(self) -> int:
