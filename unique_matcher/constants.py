@@ -34,7 +34,7 @@ OPT_ALLOW_NON_FULLHD: bool = True
 
 # Enable item name matching for identified items
 # Default: True
-OPT_FIND_ITEM_BY_NAME: bool = False
+OPT_FIND_ITEM_BY_NAME: bool = True
 
 # Ignore non-global drops, i.e. boss drops, metamorph drops, etc.
 # Default: True
