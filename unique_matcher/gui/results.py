@@ -3,7 +3,6 @@ import os
 import time
 from typing import ClassVar
 
-from devtools import debug
 from loguru import logger
 
 from unique_matcher.constants import RESULT_DIR
