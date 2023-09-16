@@ -7,7 +7,6 @@ from typing import Any, ClassVar
 
 import cv2
 import numpy as np
-from devtools import debug
 from loguru import logger
 from PIL import Image
 
