@@ -36,10 +36,6 @@ class QmlMatcher(QObject):
         self.timer.setInterval(250)
         self.timer.start()
 
-        # Create all working dirs
-        for path in [DONE_DIR, ERROR_DIR, QUEUE_DIR, LOG_DIR]:
-            path.mkdir(exist_ok=True, parents=True)
-
     @Property("int", notify=items_changed)
     def items(self) -> int:
         """Return the number of items in the DB."""
