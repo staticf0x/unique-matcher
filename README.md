@@ -25,6 +25,8 @@ to the desired name. For example, to run the `example` data set:
 DATA_SET=example pytest -v -n auto tests/test_matcher.py::test_find_item_contains_item
 ```
 
+or use the helper script: `python3 run_tests.py` which lets you pick the data set interactively.
+
 ## Credits
 
 ### Research
