@@ -99,7 +99,7 @@ Window {
                 }
 
                 delegate: Rectangle {
-                    implicitWidth: column == 0 || column == 2 ? 200 : 120
+                    implicitWidth: column == 0 || column == 2 ? 220 : 180
                     implicitHeight: 24
                     border.width: 1
 
