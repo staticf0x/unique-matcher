@@ -88,6 +88,7 @@ Window {
                 TableView {
                     id: resultsTable
                     Layout.alignment: Qt.AlignHCenter
+                    boundsBehavior: Flickable.StopAtBounds
 
                     clip: true
                     anchors.fill: parent
