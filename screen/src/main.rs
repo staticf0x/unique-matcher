@@ -86,8 +86,6 @@ where
 {
     let poe_config_path = poe_config_path.as_ref();
 
-    println!("{:?}", poe_config_path);
-
     if !poe_config_path.exists() {
         println!("PoE config path doesn't exist (are you on Linux?)");
         return None;
