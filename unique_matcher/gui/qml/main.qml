@@ -77,36 +77,41 @@ Window {
             width: mainWindow.width
             height: 350
 
-            TableView {
-                id: resultsTable
-                Layout.alignment: Qt.AlignHCenter
+            ScrollView {
+                width: parent.width
+                height: parent.height
 
-                clip: true
-                anchors.fill: parent
+                TableView {
+                    id: resultsTable
+                    Layout.alignment: Qt.AlignHCenter
 
-                model: TableModel {
-                    TableModelColumn { display: "item" }
-                    TableModelColumn { display: "base" }
-                    TableModelColumn { display: "matched_by" }
+                    clip: true
+                    anchors.fill: parent
 
-                    rows: [
-                        {
-                            "item": "Item",
-                            "base": "Base",
-                            "matched_by": "Matched by",
-                        },
-                    ]
-                }
+                    model: TableModel {
+                        TableModelColumn { display: "item" }
+                        TableModelColumn { display: "base" }
+                        TableModelColumn { display: "matched_by" }
 
-                delegate: Rectangle {
-                    implicitWidth: column == 0 || column == 2 ? 220 : 180
-                    implicitHeight: 24
-                    border.width: 1
+                        rows: [
+                            {
+                                "item": "Item",
+                                "base": "Base",
+                                "matched_by": "Matched by",
+                            },
+                        ]
+                    }
 
-                    Text {
-                        text: display
-                        anchors.centerIn: parent
-                        font.bold: row == 0 ? true : false
+                    delegate: Rectangle {
+                        implicitWidth: column == 0 || column == 2 ? 220 : 180
+                        implicitHeight: 24
+                        border.width: 1
+
+                        Text {
+                            text: display
+                            anchors.centerIn: parent
+                            font.bold: row == 0 ? true : false
+                        }
                     }
                 }
             }
