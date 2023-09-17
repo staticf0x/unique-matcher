@@ -11,6 +11,7 @@ Source: "templates\*"; DestDir: "{app}\templates"
 Source: "dist\UniqueMatcher\*"; DestDir: "{app}"; Flags: recursesubdirs
 Source: "unique_matcher\gui\qml\*"; DestDir: "{app}\unique_matcher\gui\qml"
 
+Source: "config.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "screen.exe"; DestDir: "{app}"
 Source: "items.csv"; DestDir: "{app}"
 Source: "README.md"; DestDir: "{app}"
