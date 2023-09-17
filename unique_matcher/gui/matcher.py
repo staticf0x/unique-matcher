@@ -84,6 +84,16 @@ class QmlMatcher(QObject):
             shutil.move(QUEUE_DIR / file, DONE_DIR / file)
             self.processed_length_changed.emit()
         except BaseUMError as e:
+            self.newResult.emit(
+                {
+                    "n": self._cnt,
+                    "item": "Error",
+                    "base": "-",
+                    "matched_by": "Couldn't find any item",
+                },
+            )
+            self._cnt += 1
+
             shutil.move(QUEUE_DIR / file, ERROR_DIR / file)
             self.errors_length_changed.emit()
             logger.exception("Error during processing: {}", str(e))

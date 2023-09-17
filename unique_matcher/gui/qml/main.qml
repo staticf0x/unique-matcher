@@ -117,6 +117,7 @@ Window {
                             text: display
                             anchors.centerIn: parent
                             font.bold: row == 0 ? true : false
+                            color: isRowError(row) ? "red" : "black"
                         }
                     }
                 }
@@ -132,5 +133,9 @@ Window {
             case 3: return 220;
             default: return 180;
         }
+    }
+
+    function isRowError(row) {
+        return resultsTable.model.rows[row].item == "Error"
     }
 }
