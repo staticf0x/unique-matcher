@@ -22,6 +22,10 @@ AHK_TEMPLATE = """#s::
     Run "screen.exe", "{{ root }}", "Hide"
 }"""
 
+CONFIG_TEMPLATE = """[screenshot]
+screen = 0
+"""
+
 if __name__ == "__main__":
     logger.remove()
     logger.add(
@@ -46,7 +50,15 @@ if __name__ == "__main__":
         template = Environment(loader=BaseLoader).from_string(AHK_TEMPLATE)
         rendered = template.render(root=ROOT_DIR)
 
-        with open(ROOT_DIR / "screenshot.ahk", "w") as fwrite:
+        with open(ROOT_DIR / "screenshot.ahk", "w", newline="\r\n") as fwrite:
+            fwrite.write(rendered)
+
+    # Create config if it doesn't exist
+    if not os.path.exists(ROOT_DIR / "config.ini"):
+        template = Environment(loader=BaseLoader).from_string(CONFIG_TEMPLATE)
+        rendered = template.render(root=ROOT_DIR)
+
+        with open(ROOT_DIR / "config.ini", "w", newline="\r\n") as fwrite:
             fwrite.write(rendered)
 
     # Init app

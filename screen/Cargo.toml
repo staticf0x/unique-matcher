@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 chrono = "0.4.31"
+rust-ini = "0.19.0"
 screenshots = "0.8.2"
