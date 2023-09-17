@@ -16,6 +16,10 @@ Window {
 
         onNewResult: (value) => {
             resultsTable.model.appendRow(value);
+
+            if (resultsTable.contentHeight > resultsTable.height) {
+                resultsTable.contentY = resultsTable.contentHeight - resultsTable.height + 24;
+            }
         }
     }
 
