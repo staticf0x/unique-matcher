@@ -9,10 +9,10 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.progress import track
 from rich.table import Table
-from simple_term_menu import TerminalMenu
+from simple_term_menu import TerminalMenu  # type: ignore[import]
 
 from unique_matcher.constants import ROOT_DIR
-from unique_matcher.matcher.exceptions import CannotFindUniqueItem
+from unique_matcher.matcher.exceptions import CannotFindUniqueItemError
 from unique_matcher.matcher.items import Item
 from unique_matcher.matcher.matcher import Matcher
 
@@ -20,15 +20,17 @@ logger.remove()
 
 DATA_DIR = ROOT_DIR / "tests" / "test_data" / "contains"
 
+_ACCEPTABLE_ACCURACY = 0.99
+
 
 class Benchmark:
     """Class for running the whole benchmark suite."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.matcher = Matcher()
         self.to_benchmark: list[Item] = []
-        self._report = []
-        self._times = []
+        self._report: list[bool] = []
+        self._times: list[float] = []
         self.console = Console()
         self.table = Table()
 
@@ -46,14 +48,9 @@ class Benchmark:
 
     def _get_test_set(self, name: str) -> list[Path]:
         """Return the screenshot test set for an item."""
-        files = []
+        return sorted(DATA_DIR.joinpath(self.data_set, name).iterdir())
 
-        for file in sorted(os.listdir(DATA_DIR / self.data_set / name)):
-            files.append(DATA_DIR / self.data_set / name / file)
-
-        return files
-
-    def report(self, found: bool) -> None:
+    def report(self, found: bool) -> None:  # noqa: FBT001
         self._report.append(found)
 
     def _run_one(self, item: Item) -> None:
@@ -66,7 +63,7 @@ class Benchmark:
                 result = self.matcher.find_item(screen)
 
                 found = result.item == item
-            except CannotFindUniqueItem:
+            except CannotFindUniqueItemError:
                 found = False
 
             t_end = time.perf_counter()
@@ -108,13 +105,13 @@ class Benchmark:
         # Draw the result table
         self.console.print(self.table)
 
-        found = sum(res for res in self._report if res)
+        found = sum(self._report)
         total = len(self._report)
         accuracy = found / total
 
         if math.isclose(accuracy, 1):
             color = "green"
-        elif accuracy > 0.99:
+        elif accuracy > _ACCEPTABLE_ACCURACY:
             color = "yellow"
         else:
             color = "red"
@@ -123,7 +120,7 @@ class Benchmark:
             f"Items:       {len(self.to_benchmark)}",
             f"Screenshots: {total}",
             f"Found:       {found}",
-            f"Accuracy:    [bold {color}]{found/total:.2%}[/bold {color}]",
+            f"Accuracy:    [bold {color}]{found / total:.2%}[/bold {color}]",
             "",
             f"Average time: {np.mean(self._times):6.2f} ms",
             f"Fastest:      {np.min(self._times):6.2f} ms",

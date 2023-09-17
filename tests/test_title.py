@@ -16,7 +16,8 @@ def test_clean_title(parser: TitleParser):
     assert parser._clean_title("BLOODBOUND\nBONE ARMOUR\n\n") == "BLOODBOUND\nBONE ARMOUR\n\n"
     assert parser._clean_title("IMPERIAL STAFF\n\n") == "IMPERIAL STAFF\n\n"
     assert (
-        parser._clean_title("BEREK’S GRIP\nTWO-STONE RING\n\n") == "BEREKS GRIP\nTWO-STONE RING\n\n"
+        parser._clean_title("BEREK’S GRIP\nTWO-STONE RING\n\n")  # noqa: RUF001
+        == "BEREKS GRIP\nTWO-STONE RING\n\n"
     )
     assert (
         parser._clean_title("BONES OF ULLR\nSILK SLIPPERS\n\n")

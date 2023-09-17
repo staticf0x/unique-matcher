@@ -16,3 +16,4 @@ tests/test_data/bases/*
 debug.html
 data/
 screen/target
+screenshot.ahk

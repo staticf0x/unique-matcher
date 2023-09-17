@@ -12,11 +12,20 @@ list_group.add_argument("--enabled", action="store_true", help="Only list enable
 list_group.add_argument("--disabled", action="store_true", help="Only list disabled items")
 list_group.add_argument("--base", type=str, help="Filter item base")
 list_group.add_argument(
-    "--no-sc", action="store_true", help="Only list items without sockets/columns"
+    "--no-sc",
+    action="store_true",
+    help="Only list items without sockets/columns",
 )
-list_group.add_argument("--no-wh", action="store_true", help="Only list items without width/height")
 list_group.add_argument(
-    "--global", dest="yes_global", action="store_true", help="Only list items that can drop"
+    "--no-wh",
+    action="store_true",
+    help="Only list items without width/height",
+)
+list_group.add_argument(
+    "--global",
+    dest="yes_global",
+    action="store_true",
+    help="Only list items that can drop",
 )
 list_group.add_argument("--no-global", action="store_true", help="Hide items that can drop")
 

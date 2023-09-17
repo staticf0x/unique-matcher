@@ -2,7 +2,7 @@
 import os
 
 import pytest
-from simple_term_menu import TerminalMenu
+from simple_term_menu import TerminalMenu  # type: ignore[import]
 
 from unique_matcher.constants import ROOT_DIR
 

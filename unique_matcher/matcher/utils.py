@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 from PIL import Image
 
+from unique_matcher.matcher.items import Item
+
 
 def normalize_item_name(name: str) -> str:
     """Convert item name to file."""
@@ -33,3 +35,9 @@ def calc_normalized_histogram(image: Image.Image) -> np.ndarray:
 
     # Normalize histogram
     return cv2.normalize(hist, hist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
+
+
+def validate_item_sockets(sockets: int) -> None:
+    if sockets < 1 or sockets > Item.MAX_SOCKETS:
+        msg = f"Item can only have 1-{Item.MAX_SOCKETS} sockets"
+        raise ValueError(msg)

@@ -1,12 +1,12 @@
 """Module for generating item sockets."""
 import math
-from typing import Literal
 
 from loguru import logger
 from PIL import Image
 
 from unique_matcher.constants import ITEM_MAX_SIZE, SOCKET_DIR
-from unique_matcher.matcher.items import Item
+from unique_matcher.matcher.items import Color, Item
+from unique_matcher.matcher.utils import validate_item_sockets
 
 LINK_WIDTH = 17
 
@@ -29,11 +29,10 @@ class ItemGenerator:
         self,
         sockets: int,
         columns: int,
-        color: Literal["r", "g", "b", "w"],
+        color: Color,
     ) -> Image.Image:
         """Generate a socket overlay."""
-        if sockets < 1 or sockets > 6:
-            raise ValueError("Item can only have 1-6 sockets")
+        validate_item_sockets(sockets=sockets)
 
         socket_img = self.sockets[color]
 
@@ -82,11 +81,10 @@ class ItemGenerator:
         base: Image.Image,
         item: Item,
         sockets: int,
-        color: Literal["r", "g", "b", "w"] = "r",
+        color: Color = "r",
     ) -> Image.Image:
         """Generate an image of a base item with N sockets."""
-        if sockets < 1 or sockets > 6:
-            raise ValueError("Item can only have 1-6 sockets")
+        validate_item_sockets(sockets=sockets)
 
         # Resize to max size, keep aspect ratio
         base.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BILINEAR)

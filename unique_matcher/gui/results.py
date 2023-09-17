@@ -1,5 +1,4 @@
 import csv
-import os
 import time
 from typing import ClassVar
 
@@ -9,6 +8,7 @@ from unique_matcher.constants import RESULT_DIR
 from unique_matcher.matcher.matcher import MatchResult
 
 
+# TODO(doctor.py): This class should be refactored to not rely on self.current_file state
 class ResultFile:
     """Handle writing results."""
 
@@ -19,7 +19,7 @@ class ResultFile:
 
     def __init__(self) -> None:
         self.current_file: str | None = None
-        os.makedirs(RESULT_DIR, exist_ok=True)
+        RESULT_DIR.mkdir(exist_ok=True, parents=True)
 
     def new(self) -> None:
         """Create a new CSV."""
@@ -35,8 +35,10 @@ class ResultFile:
     def _load(self) -> dict[str, int]:
         """Load data from current CSV."""
         logger.debug("Loading CSV")
+        if not self.current_file:
+            raise ValueError
 
-        with open(self.current_file, "r", newline="") as fread:
+        with open(self.current_file, newline="") as fread:
             reader = csv.DictReader(fread)
 
             return {row["item"]: int(row["count"]) for row in reader}
@@ -44,6 +46,9 @@ class ResultFile:
     def _save(self, data: dict[str, int]) -> None:
         """Write data into current CSV."""
         logger.debug("Writing CSV")
+
+        if not self.current_file:
+            raise ValueError
 
         with open(self.current_file, "w", newline="") as fwrite:
             writer = csv.DictWriter(fwrite, self.HEADER)

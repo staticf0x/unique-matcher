@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import contextlib
 import sys
 import tempfile
 import webbrowser
@@ -30,10 +31,14 @@ parser.add_argument(
     help="Display the item template that was used to match the item",
 )
 parser.add_argument(
-    "--show-screenshot", action="store_true", help="Display the original screenshot"
+    "--show-screenshot",
+    action="store_true",
+    help="Display the original screenshot",
 )
 parser.add_argument(
-    "--show-unique", action="store_true", help="Display the unique item used for matching"
+    "--show-unique",
+    action="store_true",
+    help="Display the unique item used for matching",
 )
 parser.add_argument("--check-one", type=str, help="Item name to check against")
 parser.add_argument("--html", action="store_true", help="Open a debug html page")
@@ -54,10 +59,8 @@ if args.check_one:
         matcher.item_loader.get(args.check_one),
     )
 else:
-    try:
+    with contextlib.suppress(BaseUMError):
         result = matcher.find_item(args.screenshot)
-    except BaseUMError as e:
-        pass
 
 if result and "results_all" in matcher.debug_info:
     table = Table()

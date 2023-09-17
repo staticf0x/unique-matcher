@@ -1,7 +1,6 @@
-import os
 import sys
 
-from jinja2 import BaseLoader, Environment
+from jinja2 import Environment
 from loguru import logger
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
@@ -43,10 +42,10 @@ if __name__ == "__main__":
 
     # Create all working dirs
     for path in [DONE_DIR, ERROR_DIR, QUEUE_DIR, LOG_DIR]:
-        os.makedirs(path, exist_ok=True)
+        path.mkdir(exist_ok=True, parents=True)
 
     # Create the AHK script
-    if not os.path.exists(ROOT_DIR / "screenshot.ahk"):
+    if not ROOT_DIR.joinpath("screenshot.ahk").exists():
         template = Environment().from_string(AHK_TEMPLATE)
         rendered = template.render(root=ROOT_DIR)
 
@@ -54,7 +53,7 @@ if __name__ == "__main__":
             fwrite.write(rendered)
 
     # Create config if it doesn't exist
-    if not os.path.exists(ROOT_DIR / "config.ini"):
+    if not ROOT_DIR.joinpath("config.ini").exists():
         template = Environment().from_string(CONFIG_TEMPLATE)
         rendered = template.render(root=ROOT_DIR)
 
