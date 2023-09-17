@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     # Create the AHK script
     if not os.path.exists(ROOT_DIR / "screenshot.ahk"):
-        template = Environment(loader=BaseLoader).from_string(AHK_TEMPLATE)
+        template = Environment().from_string(AHK_TEMPLATE)
         rendered = template.render(root=ROOT_DIR)
 
         with open(ROOT_DIR / "screenshot.ahk", "w", newline="\r\n") as fwrite:
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     # Create config if it doesn't exist
     if not os.path.exists(ROOT_DIR / "config.ini"):
-        template = Environment(loader=BaseLoader).from_string(CONFIG_TEMPLATE)
+        template = Environment().from_string(CONFIG_TEMPLATE)
         rendered = template.render(root=ROOT_DIR)
 
         with open(ROOT_DIR / "config.ini", "w", newline="\r\n") as fwrite:
