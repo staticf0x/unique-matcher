@@ -93,12 +93,14 @@ Window {
                     anchors.fill: parent
 
                     model: TableModel {
+                        TableModelColumn { display: "n" }
                         TableModelColumn { display: "item" }
                         TableModelColumn { display: "base" }
                         TableModelColumn { display: "matched_by" }
 
                         rows: [
                             {
+                                "n": "#",
                                 "item": "Item",
                                 "base": "Base",
                                 "matched_by": "Matched by",
@@ -107,7 +109,7 @@ Window {
                     }
 
                     delegate: Rectangle {
-                        implicitWidth: column == 0 || column == 2 ? 220 : 180
+                        implicitWidth: getColumnWidth(column)
                         implicitHeight: 24
                         border.width: 1
 
@@ -119,6 +121,16 @@ Window {
                     }
                 }
             }
+        }
+    }
+
+    function getColumnWidth(col) {
+        switch (col) {
+            case 0: return 50;
+            case 1: return 220;
+            case 2: return 180;
+            case 3: return 220;
+            default: return 180;
         }
     }
 }

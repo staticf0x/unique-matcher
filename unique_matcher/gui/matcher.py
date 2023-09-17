@@ -30,6 +30,7 @@ class QmlMatcher(QObject):
         self._results = []
         self.result_file = ResultFile()
         self.result_file.new()
+        self._cnt = 1
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.process_next)
@@ -72,11 +73,13 @@ class QmlMatcher(QObject):
             self._results.append(result)  # This is used for export
             self.newResult.emit(
                 {
+                    "n": self._cnt,
                     "item": result.item.name,
                     "base": result.item.base,
                     "matched_by": str(result.matched_by),
-                }
+                },
             )
+            self._cnt += 1
 
             shutil.move(QUEUE_DIR / file, DONE_DIR / file)
             self.processed_length_changed.emit()
