@@ -20,7 +20,9 @@ logger.remove()
 
 DATA_DIR = ROOT_DIR / "tests" / "test_data" / "contains"
 
-_ACCEPTABLE_ACCURACY = 0.99
+# Accuracy between 99% and 100% is still acceptable
+# but make it stand out by warning.
+ACCURACY_WARN_THRESHOLD = 0.99
 
 
 class Benchmark:
@@ -111,7 +113,7 @@ class Benchmark:
 
         if math.isclose(accuracy, 1):
             color = "green"
-        elif accuracy > _ACCEPTABLE_ACCURACY:
+        elif accuracy > ACCURACY_WARN_THRESHOLD:
             color = "yellow"
         else:
             color = "red"
@@ -120,7 +122,7 @@ class Benchmark:
             f"Items:       {len(self.to_benchmark)}",
             f"Screenshots: {total}",
             f"Found:       {found}",
-            f"Accuracy:    [bold {color}]{found / total:.2%}[/bold {color}]",
+            f"Accuracy:    [bold {color}]{accuracy:.2%}[/bold {color}]",
             "",
             f"Average time: {np.mean(self._times):6.2f} ms",
             f"Fastest:      {np.min(self._times):6.2f} ms",

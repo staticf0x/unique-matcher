@@ -1,5 +1,6 @@
 import csv
 import time
+from pathlib import Path
 from typing import ClassVar
 
 from loguru import logger
@@ -8,7 +9,6 @@ from unique_matcher.constants import RESULT_DIR
 from unique_matcher.matcher.matcher import MatchResult
 
 
-# TODO(doctor.py): This class should be refactored to not rely on self.current_file state
 class ResultFile:
     """Handle writing results."""
 
@@ -18,7 +18,7 @@ class ResultFile:
     ]
 
     def __init__(self) -> None:
-        self.current_file: str | None = None
+        self.current_file: Path | None = None
         RESULT_DIR.mkdir(exist_ok=True, parents=True)
 
     def new(self) -> None:
@@ -35,6 +35,7 @@ class ResultFile:
     def _load(self) -> dict[str, int]:
         """Load data from current CSV."""
         logger.debug("Loading CSV")
+
         if not self.current_file:
             raise ValueError
 

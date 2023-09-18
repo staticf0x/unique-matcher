@@ -25,7 +25,7 @@ from unique_matcher.matcher.exceptions import (
     NotInFullHDError,
 )
 from unique_matcher.matcher.generator import ItemGenerator
-from unique_matcher.matcher.items import Colors, Item, ItemLoader
+from unique_matcher.matcher.items import SOCKET_COLORS, Item, ItemLoader
 from unique_matcher.matcher.title import TitleParser
 
 # Threshold at which we must discard the result because it's inconclusive
@@ -189,8 +189,10 @@ class Matcher:
 
         match algorithm:
             case MatchingAlgorithm.VARIANTS_ONLY:
-                if any(res.template.sockets > 0 for res in results):
+                if any(res.template.sockets > 0 for res in results):  # type: ignore[union-attr]
                     # Socketable items will always have min_val matching first
+                    # NOTE: Ignoring union-attr because mypy doesn't know that
+                    #       with VARIANTS_ONLY the template is *always* present
                     return min(results, key=lambda res: res.min_val)
 
                 logger.warning("Using VARIANTS_ONLY when sockets=0 defaults to DEFAULT")
@@ -230,7 +232,7 @@ class Matcher:
             # TODO: This is a hack to make large items work. Find a better solution.
             icon.thumbnail((100, 200), Image.Resampling.BILINEAR)
 
-        for color in Colors:
+        for color in SOCKET_COLORS:
             for sockets in range(item.sockets, 0, -1):
                 # Generate item with sockets in memory
                 template = ItemTemplate(
@@ -542,7 +544,7 @@ class Matcher:
 
         results_all = []
 
-        filtered_bases = self.item_loader.filter_(cropped_item.base)
+        filtered_bases = self.item_loader.filter_base(cropped_item.base)
         logger.info("Searching through {} item base variants", len(filtered_bases))
 
         if len(filtered_bases) == 1:
