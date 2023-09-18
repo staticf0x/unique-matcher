@@ -1,7 +1,6 @@
 import os
 import pathlib
 import sys
-from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
@@ -19,7 +18,7 @@ logger.add(
 )
 
 
-def _load_data(folder: pathlib.Path) -> Sequence[tuple[str, Sequence[Path]]]:
+def _load_data(folder: pathlib.Path) -> list[tuple[str, list[Path]]]:
     return [
         (item_dir.name, list(item_dir.iterdir()))
         for item_dir in sorted(folder.iterdir())
@@ -29,7 +28,6 @@ def _load_data(folder: pathlib.Path) -> Sequence[tuple[str, Sequence[Path]]]:
 
 TEST_SET = os.getenv("DATA_SET", "example")
 
-CONTAINS: Sequence[tuple[str, Sequence[Path]]]
 if TEST_SET == "all":
     CONTAINS = [
         sublist

@@ -1,6 +1,6 @@
 """Item handling."""
 import csv
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, TypeAlias
@@ -9,8 +9,8 @@ from loguru import logger
 
 from unique_matcher.constants import ITEM_DIR, OPT_IGNORE_NON_GLOBAL_ITEMS, ROOT_DIR
 
-Color: TypeAlias = Literal["r", "g", "b", "w"]
-Colors: Sequence[Color] = ["r", "g", "b", "w"]
+SocketColor: TypeAlias = Literal["r", "g", "b", "w"]
+SOCKET_COLORS: list[SocketColor] = ["r", "g", "b", "w"]
 
 
 @dataclass
@@ -89,7 +89,7 @@ class ItemLoader:
         """Return a list of all item bases."""
         return {item.base for item in self}
 
-    def filter_(self, base: str) -> list[Item]:
+    def filter_base(self, base: str) -> list[Item]:
         """Filter items by their base name."""
         return [item for item in self if item.base == base and not item.alias]
 

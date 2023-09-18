@@ -5,8 +5,7 @@ from loguru import logger
 from PIL import Image
 
 from unique_matcher.constants import ITEM_MAX_SIZE, SOCKET_DIR
-from unique_matcher.matcher.items import Color, Item
-from unique_matcher.matcher.utils import validate_item_sockets
+from unique_matcher.matcher.items import Item, SocketColor
 
 LINK_WIDTH = 17
 
@@ -25,14 +24,20 @@ class ItemGenerator:
         for img in self.sockets.values():
             img.thumbnail((36, 36), Image.Resampling.BILINEAR)
 
+    def _validate_item_sockets(self, sockets: int) -> None:
+        """Validate the socket count."""
+        if sockets < 1 or sockets > Item.MAX_SOCKETS:
+            msg = f"Item can only have 1-{Item.MAX_SOCKETS} sockets"
+            raise ValueError(msg)
+
     def generate_sockets(
         self,
         sockets: int,
         columns: int,
-        color: Color,
+        color: SocketColor,
     ) -> Image.Image:
         """Generate a socket overlay."""
-        validate_item_sockets(sockets=sockets)
+        self._validate_item_sockets(sockets)
 
         socket_img = self.sockets[color]
 
@@ -81,10 +86,10 @@ class ItemGenerator:
         base: Image.Image,
         item: Item,
         sockets: int,
-        color: Color = "r",
+        color: SocketColor = "r",
     ) -> Image.Image:
         """Generate an image of a base item with N sockets."""
-        validate_item_sockets(sockets=sockets)
+        self._validate_item_sockets(sockets)
 
         # Resize to max size, keep aspect ratio
         base.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BILINEAR)
