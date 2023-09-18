@@ -7,7 +7,7 @@ from loguru import logger
 from PIL import Image, ImageOps
 
 from unique_matcher.constants import OPT_FIND_BY_NAME_RAISE
-from unique_matcher.matcher.exceptions import CannotFindItemBase
+from unique_matcher.matcher.exceptions import CannotFindItemBaseError
 from unique_matcher.matcher.items import ItemLoader
 from unique_matcher.matcher.utils import normalize_item_name
 
@@ -163,7 +163,7 @@ class TitleParser:
         if base_name not in self.item_loader.bases():
             logger.error("Cannot detect item base, got: '{}'", base_name)
             msg = f"Base '{base_name}' doesn't exist"
-            raise CannotFindItemBase(msg)
+            raise CannotFindItemBaseError(msg)
 
         logger.info("Item base: {}", base_name)
 

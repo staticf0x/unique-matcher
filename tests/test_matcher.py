@@ -1,6 +1,7 @@
 import os
 import pathlib
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
@@ -18,18 +19,17 @@ logger.add(
 )
 
 
-def _load_data(folder: pathlib.Path) -> list[tuple[str, list[Path]]]:
-    data = []
-
-    for item in sorted(os.listdir(folder)):
-        screenshots = [folder / item / file for file in os.listdir(folder / item)]
-        data.append((item, screenshots))
-
-    return data
+def _load_data(folder: pathlib.Path) -> Sequence[tuple[str, Sequence[Path]]]:
+    return [
+        (item_dir.name, list(item_dir.iterdir()))
+        for item_dir in sorted(folder.iterdir())
+        if item_dir.is_dir()
+    ]
 
 
 TEST_SET = os.getenv("DATA_SET", "example")
 
+CONTAINS: Sequence[tuple[str, Sequence[Path]]]
 if TEST_SET == "all":
     CONTAINS = [
         sublist

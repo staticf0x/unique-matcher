@@ -19,13 +19,13 @@ from unique_matcher.constants import (
 )
 from unique_matcher.matcher import utils
 from unique_matcher.matcher.exceptions import (
-    CannotFindUniqueItem,
-    CannotIdentifyUniqueItem,
-    InvalidTemplateDimensions,
-    NotInFullHD,
+    CannotFindUniqueItemError,
+    CannotIdentifyUniqueItemError,
+    InvalidTemplateDimensionsError,
+    NotInFullHDError,
 )
 from unique_matcher.matcher.generator import ItemGenerator
-from unique_matcher.matcher.items import Item, ItemLoader
+from unique_matcher.matcher.items import Colors, Item, ItemLoader
 from unique_matcher.matcher.title import TitleParser
 
 # Threshold at which we must discard the result because it's inconclusive
@@ -126,10 +126,10 @@ class Matcher:
         self.unique_two_line_end = Image.open(str(TEMPLATES_DIR / "unique-two-line-end-fullhd.png"))
 
         self.unique_two_line_cmp = Image.open(
-            str(TEMPLATES_DIR / "unique-two-line-fullhd-compressed.png")
+            str(TEMPLATES_DIR / "unique-two-line-fullhd-compressed.png"),
         )
         self.unique_two_line_end_cmp = Image.open(
-            str(TEMPLATES_DIR / "unique-two-line-end-fullhd-compressed.png")
+            str(TEMPLATES_DIR / "unique-two-line-end-fullhd-compressed.png"),
         )
 
         self.debug_info: dict[str, Any] = {}
@@ -182,7 +182,7 @@ class Matcher:
                 # because we value data correctness rather than guessing
                 msg = "Neither template matching nor histogram comparison is accurate enough"
                 logger.error(msg)
-                raise CannotIdentifyUniqueItem(msg)
+                raise CannotIdentifyUniqueItemError(msg)
 
             logger.warning("Switching matching algorithm to HISTOGRAM because dist_min_val=0")
             algorithm = MatchingAlgorithm.HISTOGRAM
@@ -230,7 +230,7 @@ class Matcher:
             # TODO: This is a hack to make large items work. Find a better solution.
             icon.thumbnail((100, 200), Image.Resampling.BILINEAR)
 
-        for color in ["r", "g", "b", "w"]:
+        for color in Colors:
             for sockets in range(item.sockets, 0, -1):
                 # Generate item with sockets in memory
                 template = ItemTemplate(
@@ -273,7 +273,7 @@ class Matcher:
                     image.width,
                     image.height,
                 )
-                raise InvalidTemplateDimensions(msg)
+                raise InvalidTemplateDimensionsError(msg)
 
             hist = utils.calc_normalized_histogram(template.image)
 
@@ -365,6 +365,7 @@ class Matcher:
     def _find_unique_control_end(
         self,
         screen: np.ndarray,
+        *,
         is_identified: bool,
     ) -> tuple[int, int] | None:
         """Find the end control point of a unique item.
@@ -441,22 +442,22 @@ class Matcher:
                     "OPT_ALLOW_NON_FULLHD is disabled and screenshot isn't 1920x1080px, aborting",
                 )
                 source_screen.close()
-                raise NotInFullHD
+                raise NotInFullHDError
 
         res = self._find_unique_control_start(screen)
 
         if res is None:
             source_screen.close()
             msg = "Unique control guide start not found"
-            raise CannotFindUniqueItem(msg)
+            raise CannotFindUniqueItemError(msg)
 
         min_loc_start, is_identified = res
-        min_loc_end = self._find_unique_control_end(screen, is_identified)
+        min_loc_end = self._find_unique_control_end(screen, is_identified=is_identified)
 
         if min_loc_end is None:
             source_screen.close()
             msg = "Unique control guide end not found"
-            raise CannotFindUniqueItem(msg)
+            raise CannotFindUniqueItemError(msg)
 
         # Crop out the item image: (left, top, right, bottom)
         # Left is: position of guide - item width - space
@@ -541,7 +542,7 @@ class Matcher:
 
         results_all = []
 
-        filtered_bases = self.item_loader.filter(cropped_item.base)
+        filtered_bases = self.item_loader.filter_(cropped_item.base)
         logger.info("Searching through {} item base variants", len(filtered_bases))
 
         if len(filtered_bases) == 1:
@@ -578,7 +579,7 @@ class Matcher:
                 "was above THRESHOLD_DISCARD (min_val={})",
                 result.min_val,
             )
-            raise CannotIdentifyUniqueItem
+            raise CannotIdentifyUniqueItemError
 
         if aliases := self.item_loader.item_aliases(best_result.item):
             logger.warning(

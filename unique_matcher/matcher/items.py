@@ -1,16 +1,25 @@
 """Item handling."""
 import csv
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal, TypeAlias
 
 from loguru import logger
 
 from unique_matcher.constants import ITEM_DIR, OPT_IGNORE_NON_GLOBAL_ITEMS, ROOT_DIR
 
+Color: TypeAlias = Literal["r", "g", "b", "w"]
+Colors: Sequence[Color] = ["r", "g", "b", "w"]
+
 
 @dataclass
 class Item:
     """Represent a single item."""
+
+    MAX_WIDTH = 2
+    MAX_HEIGHT = 4
+    MAX_SOCKETS = 6
 
     name: str
     file: str
@@ -24,7 +33,7 @@ class Item:
 
     def is_smaller_than_full(self) -> bool:
         """Return True if the item is smaller than full dimensions (for cropping)."""
-        return self.width < 2 or self.height < 4
+        return self.width < self.MAX_WIDTH or self.height < self.MAX_HEIGHT
 
     def __hash__(self) -> int:
         """Hash by name (it's unique)."""
@@ -41,7 +50,7 @@ class ItemLoader:
         """Load items from CSV."""
         self.items = {}
 
-        with open(ROOT_DIR / "items.csv", "r", newline="") as fread:
+        with open(ROOT_DIR / "items.csv", newline="") as fread:
             reader = csv.DictReader(fread)
 
             for row in reader:
@@ -80,7 +89,7 @@ class ItemLoader:
         """Return a list of all item bases."""
         return {item.base for item in self}
 
-    def filter(self, base: str) -> list[Item]:
+    def filter_(self, base: str) -> list[Item]:
         """Filter items by their base name."""
         return [item for item in self if item.base == base and not item.alias]
 
@@ -88,5 +97,5 @@ class ItemLoader:
         """Get item aliases."""
         return [i for i in self if i.alias == item.file]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Item]:
         return self.items.values().__iter__()

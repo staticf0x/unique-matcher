@@ -7,7 +7,7 @@ from PySide6.QtCore import Property, QObject, QTimer, Signal, Slot
 from unique_matcher.constants import DONE_DIR, ERROR_DIR, QUEUE_DIR
 from unique_matcher.gui.results import ResultFile
 from unique_matcher.matcher.exceptions import BaseUMError
-from unique_matcher.matcher.matcher import Matcher
+from unique_matcher.matcher.matcher import Matcher, MatchResult
 
 
 class QmlMatcher(QObject):
@@ -27,7 +27,7 @@ class QmlMatcher(QObject):
 
         QObject.__init__(self)
 
-        self._results = []
+        self._results: list[MatchResult] = []
         self.result_file = ResultFile()
         self.result_file.new()
         self._cnt = 1
@@ -37,22 +37,22 @@ class QmlMatcher(QObject):
         self.timer.setInterval(250)
         self.timer.start()
 
-    @Property("int", notify=items_changed)
+    @Property(int, notify=items_changed)  # type: ignore[operator, arg-type]
     def items(self) -> int:
         """Return the number of items in the DB."""
         return len(self.matcher.item_loader.items)
 
-    @Property(int, notify=queue_length_changed)
+    @Property(int, notify=queue_length_changed)  # type: ignore[operator, arg-type]
     def queue_length(self) -> int:
         """Return the size of the queue."""
         return len(os.listdir(QUEUE_DIR))
 
-    @Property(int, notify=processed_length_changed)
+    @Property(int, notify=processed_length_changed)  # type: ignore[operator, arg-type]
     def processed_length(self) -> int:
         """Return the number of processed screenshots."""
         return len(os.listdir(DONE_DIR))
 
-    @Property(int, notify=errors_length_changed)
+    @Property(int, notify=errors_length_changed)  # type: ignore[operator, arg-type]
     def errors_length(self) -> int:
         """Return the number of errors."""
         return len(os.listdir(ERROR_DIR))
