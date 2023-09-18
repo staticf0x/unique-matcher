@@ -60,7 +60,8 @@ class TitleParser:
 
         lines = title.split("\n")
         lines = [
-            " ".join([w for w in line.split() if len(w) > 2 or w in okay_words]) for line in lines
+            " ".join([w for w in line.split() if len(w) > 2 or w in okay_words])  # noqa: PLR2004
+            for line in lines
         ]
 
         return "\n".join(lines)

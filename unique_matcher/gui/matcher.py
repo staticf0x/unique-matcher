@@ -1,3 +1,4 @@
+"""QML object to handle the matching."""
 import os
 import shutil
 
@@ -18,7 +19,7 @@ class QmlMatcher(QObject):
     processed_length_changed = Signal()
     errors_length_changed = Signal()
 
-    newResult = Signal(dict)
+    newResult = Signal(dict)  # noqa: N815
 
     def __init__(self) -> None:
         # Matcher needs to be initiated before the whole QObject,

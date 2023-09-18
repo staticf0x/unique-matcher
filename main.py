@@ -1,3 +1,4 @@
+"""Main GUI application."""
 import sys
 
 from jinja2 import Environment

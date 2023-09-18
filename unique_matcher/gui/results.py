@@ -1,7 +1,10 @@
+"""Module for handling the result CSV files from GUI."""
 import csv
 import time
-from pathlib import Path
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 from loguru import logger
 

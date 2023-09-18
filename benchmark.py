@@ -1,3 +1,4 @@
+"""Run benchmark on testing data sets."""
 import math
 import os
 import time
@@ -53,6 +54,7 @@ class Benchmark:
         return sorted(DATA_DIR.joinpath(self.data_set, name).iterdir())
 
     def report(self, found: bool) -> None:  # noqa: FBT001
+        """Add report (whether the item was correctly identified) for a single test."""
         self._report.append(found)
 
     def _run_one(self, item: Item) -> None:

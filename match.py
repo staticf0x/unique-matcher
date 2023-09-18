@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Debugging tool for the matching algorithm."""
 import argparse
 import contextlib
 import sys
@@ -98,9 +99,9 @@ if result and "results_all" in matcher.debug_info:
 
     console = Console()
 
-    print()
+    console.print()
     console.print(table)
-    print()
+    console.print()
 
     if args.html:
         context = {

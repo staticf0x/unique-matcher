@@ -1,3 +1,4 @@
+"""Helper tool for managing the item DB."""
 import argparse
 import csv
 

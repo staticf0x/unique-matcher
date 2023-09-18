@@ -214,12 +214,12 @@ class Matcher:
             icon = Image.open(item.icon)
             icon.thumbnail(ITEM_MAX_SIZE, Image.Resampling.BILINEAR)
 
-            if item.width != 2 or item.height != 4:
+            if item.width != Item.MAX_WIDTH or item.height != Item.MAX_HEIGHT:
                 logger.debug("Changing item base image dimensions")
                 icon.thumbnail(
                     (
-                        int(ITEM_MAX_SIZE[0] * (item.width / 2)),
-                        int(ITEM_MAX_SIZE[1] * (item.height / 4)),
+                        int(ITEM_MAX_SIZE[0] * (item.width / Item.MAX_WIDTH)),
+                        int(ITEM_MAX_SIZE[1] * (item.height / Item.MAX_HEIGHT)),
                     ),
                     Image.Resampling.BILINEAR,
                 )

@@ -1,22 +1,25 @@
+"""Errors for Unique Matcher."""
+
+
 class BaseUMError(Exception):
-    pass
+    """Base error for all Unique Matcher errors."""
 
 
 class CannotFindUniqueItemError(BaseUMError):
-    pass
+    """When no unique item can be found (e.g. the guides are missing)."""
 
 
 class NotInFullHDError(BaseUMError):
-    pass
+    """When the processed screenshot is not in FullHD."""
 
 
 class CannotFindItemBaseError(BaseUMError):
-    pass
+    """When parsing of item base fails."""
 
 
 class CannotIdentifyUniqueItemError(BaseUMError):
-    pass
+    """When no item can be found in the screenshot."""
 
 
 class InvalidTemplateDimensionsError(BaseUMError):
-    pass
+    """When, for whatever reason, the generated template is bigger than the cropped image."""

@@ -43,7 +43,7 @@ class ItemGenerator:
 
         if columns == 1:
             rows = sockets
-        elif columns == 2:
+        elif columns == 2:  # noqa: PLR2004
             rows = math.ceil(sockets / 2)
 
         if sockets == 1:
@@ -64,11 +64,11 @@ class ItemGenerator:
             if columns == 1:
                 col = 0
                 row = n
-            elif columns == 2:
+            elif columns == 2:  # noqa: PLR2004
                 col = n % 2
                 row = n // 2
 
-            if sockets == 3 and n == 2 and columns == 2:
+            if sockets == 3 and n == 2 and columns == 2:  # noqa: PLR2004
                 # TODO: Hack for middle row for 3 sockets, because the socket
                 #       goes to the *right*
                 left_offset = socket_img.width + LINK_WIDTH
