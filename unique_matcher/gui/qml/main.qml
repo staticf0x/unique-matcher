@@ -41,7 +41,7 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            resultsTable.model.removeRow(1, resultsTable.model.rows.length - 1);
+            clearResults();
         }
     }
 
@@ -58,7 +58,7 @@ ApplicationWindow {
 
         onAccepted: {
             matcher.snapshot();
-            resultsTable.model.removeRow(1, resultsTable.model.rows.length - 1);
+            clearResults();
         }
     }
 
@@ -82,7 +82,30 @@ ApplicationWindow {
             title: "&Results"
 
             Action {
-                text: "&Create snapshot"
+                text: "&Open CSV"
+                onTriggered: {
+                    utils.open_csv();
+                }
+            }
+
+            Action {
+                text: "Show processed screenshots"
+                onTriggered: {
+                    utils.open_folder("done");
+                }
+            }
+
+            Action {
+                text: "Show error screenshots"
+                onTriggered: {
+                    utils.open_folder("errors");
+                }
+            }
+
+            MenuSeparator {}
+
+            Action {
+                text: "Create snapshot"
                 onTriggered: {
                     confirmSnapshotDialog.open();
                 }
@@ -105,6 +128,13 @@ ApplicationWindow {
                 shortcut: "F1"
                 onTriggered: {
                     utils.open_help();
+                }
+            }
+
+            Action {
+                text: "Show logs"
+                onTriggered: {
+                    utils.open_folder("logs");
                 }
             }
         }
@@ -229,5 +259,11 @@ ApplicationWindow {
         }
 
         return resultsTable.model.rows[row].item == "Error"
+    }
+
+    function clearResults() {
+        if (resultsTable.model.rows.length > 1) {
+            resultsTable.model.removeRow(1, resultsTable.model.rows.length - 1);
+        }
     }
 }
