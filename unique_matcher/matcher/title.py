@@ -25,6 +25,7 @@ class TitleParser:
         "Ruy Ring": "Ruby Ring",
         "Goathide Booots": "Goathide Boots",
         "Hupris Circlet": "Hubris Circlet",
+        "Husris Circlet": "Hubris Circlet",
         "Occcultists Vestment": "Occultists Vestment",
         "Hoty Chainmail": "Holy Chainmail",
     }
