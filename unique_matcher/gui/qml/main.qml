@@ -174,6 +174,9 @@ ApplicationWindow {
         anchors.topMargin: 8
 
         RowLayout {
+            id: titleRow
+            width: mainWindow.width
+
             Text {
                 text: "Results"
                 font.bold: true
@@ -196,7 +199,7 @@ ApplicationWindow {
         Rectangle {
             border.width: 1
             width: mainWindow.width
-            height: 350
+            height: mainWindow.height - this.y - 100
 
             ScrollView {
                 width: parent.width
