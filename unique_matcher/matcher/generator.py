@@ -74,7 +74,7 @@ class ItemGenerator:
                 left_offset = socket_img.width + LINK_WIDTH
 
             offset_x = left_offset + col * (socket_img.width + LINK_WIDTH)
-            offset_y = row * (socket_img.height + LINK_WIDTH)
+            offset_y = row * (socket_img.height + LINK_WIDTH) - 1
 
             # Pass the second socket image as a mask to allow transparency
             new_image.paste(socket_img, (offset_x, offset_y), socket_img)
