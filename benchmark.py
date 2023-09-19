@@ -43,6 +43,7 @@ class Benchmark:
         self.table.add_column("Found")
         self.table.add_column("Matched by")
         self.table.add_column("Time (ms)")
+        self.table.add_column("min_val")
 
     def add(self, name: str) -> None:
         """Add item to benchmark suite."""
@@ -80,6 +81,7 @@ class Benchmark:
                     "[green]Yes[/green]",
                     str(result.matched_by),
                     f"{(t_end - t_start) * 1e3:.2f}",
+                    f"{result.min_val:.3f}" if result.min_val > 0 else "-",
                 )
             else:
                 self.table.add_row(
@@ -121,6 +123,7 @@ class Benchmark:
             color = "red"
 
         lines = [
+            f"Data set:    {data_set}",
             f"Items:       {len(self.to_benchmark)}",
             f"Screenshots: {total}",
             f"Found:       {found}",
