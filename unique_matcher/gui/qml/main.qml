@@ -88,6 +88,15 @@ ApplicationWindow {
                 }
             }
 
+            MenuSeparator {}
+
+            Action {
+                text: "Show results"
+                onTriggered: {
+                    utils.open_folder("results");
+                }
+            }
+
             Action {
                 text: "Show processed screenshots"
                 onTriggered: {
