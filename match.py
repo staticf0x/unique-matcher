@@ -73,7 +73,7 @@ if result and "results_all" in matcher.debug_info:
     table.add_column("min_val")
     table.add_column("hist_val")
 
-    if any(res.hist_val for res in matcher.debug_info["results_all"]):
+    if result.item.base in matcher.FORCE_HISTOGRAM_MATCHING:
         sort_lambda = lambda r: r.hist_val  # noqa: E731
     else:
         sort_lambda = lambda r: r.min_val  # noqa: E731
