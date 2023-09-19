@@ -3,13 +3,15 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt.labs.qmlmodels
 import Matcher
+import Utils
 
-Window {
+ApplicationWindow {
     id: mainWindow
     width: 854
     height: 480
     visible: true
     title: "Unique Matcher v" + VERSION
+    menuBar: mainMenu
 
     Matcher {
         id: matcher
@@ -19,6 +21,91 @@ Window {
 
             if (resultsTable.contentHeight > resultsTable.height) {
                 resultsTable.contentY = resultsTable.contentHeight - resultsTable.height + 24;
+            }
+        }
+    }
+
+    Utils {
+        id: utils
+    }
+
+    Dialog {
+        id: confirmClearDialog
+        title: "Clear results?"
+        standardButtons: Dialog.Yes | Dialog.No
+        modal: true
+        anchors.centerIn: parent
+
+        Text {
+            text: "This will not erase the CSV file, only the displayed table."
+        }
+
+        onAccepted: {
+            resultsTable.model.removeRow(1, resultsTable.model.rows.length - 1);
+        }
+    }
+
+    Dialog {
+        id: confirmSnapshotDialog
+        title: "Create snapshot?"
+        standardButtons: Dialog.Yes | Dialog.No
+        modal: true
+        anchors.centerIn: parent
+
+        Text {
+            text: "This will start writing results in a new CSV file\nand clear the results table."
+        }
+
+        onAccepted: {
+            matcher.snapshot();
+            resultsTable.model.removeRow(1, resultsTable.model.rows.length - 1);
+        }
+    }
+
+    MenuBar {
+        id: mainMenu
+
+        Menu {
+            id: fileMenu
+            title: "&File"
+
+            Action {
+                text: "&Exit"
+                onTriggered: {
+                    Qt.callLater(Qt.quit);
+                }
+            }
+        }
+
+        Menu {
+            id: resultsMenu
+            title: "&Results"
+
+            Action {
+                text: "&Create snapshot"
+                onTriggered: {
+                    confirmSnapshotDialog.open();
+                }
+            }
+
+            Action {
+                text: "Clear results"
+                onTriggered: {
+                    confirmClearDialog.open();
+                }
+            }
+        }
+
+        Menu {
+            id: helpMenu
+            title: "&Help"
+
+            Action {
+                text: "How to use"
+                shortcut: "F1"
+                onTriggered: {
+                    utils.open_help();
+                }
             }
         }
     }
@@ -71,7 +158,7 @@ Window {
                 id: exportButton
                 text: "Create snapshot"
                 onClicked: {
-                    matcher.snapshot();
+                    confirmSnapshotDialog.open();
                 }
             }
         }
@@ -137,6 +224,10 @@ Window {
     }
 
     function isRowError(row) {
+        if (resultsTable.model.rows.length == 0) {
+            return false;
+        }
+
         return resultsTable.model.rows[row].item == "Error"
     }
 }
