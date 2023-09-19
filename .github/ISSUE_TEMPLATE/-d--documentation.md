@@ -1,5 +1,5 @@
 ---
-name: Documentation
+name: "(D) Documentation"
 about: Missing or incorrect documentation
 title: ''
 labels: documentation
