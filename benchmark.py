@@ -146,6 +146,9 @@ def run() -> None:
     menu = TerminalMenu(data_sets)
     choice_idx = menu.show()
 
+    if choice_idx is None:
+        return
+
     benchmark.run(data_sets[choice_idx])
 
 

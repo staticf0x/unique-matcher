@@ -1,5 +1,6 @@
 """Helper script to run test_find_item_contains_item on a selected data set."""
 import os
+import sys
 
 import pytest
 from simple_term_menu import TerminalMenu  # type: ignore[import]
@@ -13,6 +14,9 @@ data_sets = [*sorted(os.listdir(DATA_DIR)), "all"]
 # Make the user choose a data set
 menu = TerminalMenu(data_sets)
 choice_idx = menu.show()
+
+if choice_idx is None:
+    sys.exit()
 
 os.environ["DATA_SET"] = data_sets[choice_idx]
 pytest.main(["-n", "auto", "-v", "tests/test_matcher.py::test_find_item_contains_item"])
