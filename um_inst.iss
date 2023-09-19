@@ -1,6 +1,6 @@
 [Setup]
 AppName=Unique Matcher
-AppVersion=0.2.0
+AppVersion=0.2.1
 DefaultDirName=UniqueMatcher
 OutputBaseFilename=UniqueMatcherInstall
 
