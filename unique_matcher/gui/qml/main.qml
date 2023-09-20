@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import Qt.labs.qmlmodels
 import Matcher
 import Utils
+import Config
 
 ApplicationWindow {
     id: mainWindow
@@ -22,6 +23,14 @@ ApplicationWindow {
             if (resultsTable.contentHeight > resultsTable.height) {
                 resultsTable.contentY = resultsTable.contentHeight - resultsTable.height + 24;
             }
+        }
+    }
+
+    Config {
+        id: config
+
+        onShortcutLoaded: function(mod_key, key) {
+            shortcutPicker.loadCurrent(mod_key, key);
         }
     }
 
@@ -83,6 +92,82 @@ ApplicationWindow {
         }
     }
 
+    Dialog {
+        id: shortcutPicker
+        title: "Choose screenshot shortcut"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        modal: true
+        anchors.centerIn: parent
+
+        ColumnLayout {
+            RowLayout {
+                ComboBox {
+                    id: modKeyPicker
+                    model: ["None", "Ctrl", "Alt", "Shift", "Win"]
+                }
+
+                Text {
+                    text: "+"
+                }
+
+                ComboBox {
+                    id: keyPicker
+                    model: [
+                        "MouseL",
+                        "MouseM",
+                        "MouseR",
+                        "Mouse4",
+                        "Mouse5",
+                        "Enter",
+                        "Tab",
+                        "CapsLock",
+                        "F1",
+                        "F2",
+                        "F3",
+                        "F4",
+                        "F5",
+                        "F6",
+                        "F7",
+                        "F8",
+                        "F9",
+                        "F10",
+                        "F11",
+                        "F12",
+                        "A", "B", "C", "D", "E", "F", "G", "H",
+                        "I", "J", "K", "L", "M", "N", "O", "P",
+                        "Q", "R", "S", "T", "U", "V", "W", "X",
+                        "Y", "Z"]
+                }
+            }
+
+            CheckBox {
+                id: restartAHKCheckBox
+                checked: true
+                text: "Restart AHK script"
+            }
+
+            Text {
+                text: "Note: this will overwrite your screenshot.ahk"
+            }
+        }
+
+        onAccepted: {
+            var modKey = modKeyPicker.currentText;
+            var key = keyPicker.currentText;
+
+            config.change_shortcut(modKey, key);
+
+            if (restartAHKCheckBox.checked) {
+                config.restart_ahk();
+            }
+        }
+
+        function loadCurrent(mod_key, key) {
+            modKeyPicker.currentIndex = modKeyPicker.find(mod_key);
+            keyPicker.currentIndex = keyPicker.find(key);
+        }
+    }
+
     MenuBar {
         id: mainMenu
 
@@ -94,6 +179,19 @@ ApplicationWindow {
                 text: "&Exit"
                 onTriggered: {
                     Qt.callLater(Qt.quit);
+                }
+            }
+        }
+
+        Menu {
+            id: editMenu
+            title: "&Edit"
+
+            Action {
+                text: "&Change screenshot shortcut"
+                onTriggered: {
+                    config.load_current();
+                    shortcutPicker.open();
                 }
             }
         }
