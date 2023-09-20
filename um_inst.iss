@@ -12,7 +12,6 @@ Source: "Tesseract-OCR\*"; DestDir: "{app}\Tesseract-OCR"; Flags: recursesubdirs
 
 Source: "config.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "screen.exe"; DestDir: "{app}"
-Source: "items.csv"; DestDir: "{app}"
 Source: "README.md"; DestDir: "{app}"
 Source: "LICENSE"; DestDir: "{app}"
 
