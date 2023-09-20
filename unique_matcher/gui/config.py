@@ -127,7 +127,7 @@ class QmlConfig(QObject):
     def restart_ahk(self) -> None:
         """Restart the AHK script."""
         if sys.platform == "win32":
-            logger.info("Restart AHK script")
+            logger.info("Restarting AHK script")
             os.startfile(ROOT_DIR / "screenshot.ahk")
         else:
             logger.warning("Restarting AHK script is not supported on {}", sys.platform)

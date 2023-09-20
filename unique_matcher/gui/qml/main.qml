@@ -176,6 +176,15 @@ ApplicationWindow {
             title: "&File"
 
             Action {
+                text: "Start AHK script"
+                onTriggered: {
+                    config.restart_ahk();
+                }
+            }
+
+            MenuSeparator {}
+
+            Action {
                 text: "&Exit"
                 onTriggered: {
                     Qt.callLater(Qt.quit);
