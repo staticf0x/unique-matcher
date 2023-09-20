@@ -1,5 +1,6 @@
 """QML object to handle the matching."""
 import os
+import shutil
 import subprocess
 import sys
 import webbrowser
@@ -7,7 +8,7 @@ from pathlib import Path
 
 from PySide6.QtCore import QObject, Slot
 
-from unique_matcher.constants import DATA_DIR, RESULT_DIR
+from unique_matcher.constants import DATA_DIR, DONE_DIR, RESULT_DIR
 
 HELP_URL = "https://github.com/staticf0x/unique-matcher/wiki/Usage"
 
@@ -24,6 +25,7 @@ class QmlUtils(QObject):
         webbrowser.open_new_tab(HELP_URL)
 
     def open_file(self, file: Path) -> None:
+        """Use OS's way to open a file or directory."""
         if sys.platform == "win32":
             os.startfile(file)
         elif sys.platform == "darwin":
@@ -33,8 +35,16 @@ class QmlUtils(QObject):
 
     @Slot()
     def open_csv(self) -> None:
+        """Open the folder with CSV results."""
         self.open_file(RESULT_DIR / sorted(os.listdir(RESULT_DIR))[-1])
 
     @Slot("QString")
-    def open_folder(self, folder) -> None:
+    def open_folder(self, folder: str) -> None:
+        """Open a single folder."""
         self.open_file(DATA_DIR / folder)
+
+    @Slot()
+    def zip_done(self) -> None:
+        """Zip the done folder and open the directory where the zip file is."""
+        shutil.make_archive(DATA_DIR / "TestDataSet", "zip", DATA_DIR, DONE_DIR.name)
+        self.open_file(DATA_DIR)

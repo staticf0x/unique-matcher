@@ -62,6 +62,27 @@ ApplicationWindow {
         }
     }
 
+
+    Dialog {
+        id: confirmZipDialog
+        title: "Create test data set"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        modal: true
+        anchors.centerIn: parent
+
+        Text {
+            text: "This will create a ZIP file with all the processed screenshots for\n"
+                + "the developer to improve accuracy of the detection algorithm.\n\n"
+                + "You can then upload it to your Google Drive, Dropbox, One Drive or similar\n"
+                + "and send it either via #tooldev-chat on Prohibited Library's Discord server\n"
+                + "or to the GitHub repository."
+        }
+
+        onAccepted: {
+            utils.zip_done();
+        }
+    }
+
     MenuBar {
         id: mainMenu
 
@@ -144,6 +165,13 @@ ApplicationWindow {
                 text: "Show logs"
                 onTriggered: {
                     utils.open_folder("logs");
+                }
+            }
+
+            Action {
+                text: "Create test data set"
+                onTriggered: {
+                    confirmZipDialog.open();
                 }
             }
         }
