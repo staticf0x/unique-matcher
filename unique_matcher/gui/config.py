@@ -2,7 +2,6 @@ import configparser
 import os
 import sys
 
-from devtools import debug
 from jinja2 import Environment
 from loguru import logger
 from PySide6.QtCore import QObject, Signal, Slot
