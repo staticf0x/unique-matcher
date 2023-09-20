@@ -11,6 +11,7 @@ from PySide6.QtCore import QObject, Slot
 from unique_matcher.constants import DATA_DIR, DONE_DIR, RESULT_DIR
 
 HELP_URL = "https://github.com/staticf0x/unique-matcher/wiki/Usage"
+ISSUE_URL = "https://github.com/staticf0x/unique-matcher/issues/new/choose"
 
 
 class QmlUtils(QObject):
@@ -23,6 +24,11 @@ class QmlUtils(QObject):
     def open_help(self) -> None:
         """Open the help page."""
         webbrowser.open_new_tab(HELP_URL)
+
+    @Slot()
+    def report_issue(self) -> None:
+        """Open the issue reporting on GitHub."""
+        webbrowser.open_new_tab(ISSUE_URL)
 
     def open_file(self, file: Path) -> None:
         """Use OS's way to open a file or directory."""

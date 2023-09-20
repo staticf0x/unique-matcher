@@ -154,12 +154,21 @@ ApplicationWindow {
             title: "&Help"
 
             Action {
-                text: "How to use"
+                text: "Usage guide"
                 shortcut: "F1"
                 onTriggered: {
                     utils.open_help();
                 }
             }
+
+            Action {
+                text: "Report issue"
+                onTriggered: {
+                    utils.report_issue();
+                }
+            }
+
+            MenuSeparator {}
 
             Action {
                 text: "Show logs"
