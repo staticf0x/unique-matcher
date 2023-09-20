@@ -9,7 +9,7 @@ A project aimed at detecting unique items on screen for PoE research purposes.
 
 ## Installation
 
-Download the latest version in [Releases](https://github.com/staticf0x/unique-matcher/releases).
+Download the latest version [here](https://github.com/staticf0x/unique-matcher/releases/latest).
 
 For installation instructions, head to the wiki page [Installation](https://github.com/staticf0x/unique-matcher/wiki/Installation).
 
