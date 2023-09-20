@@ -51,7 +51,12 @@ class QmlMatcher(QObject):
     @Property(int, notify=processed_length_changed)  # type: ignore[operator, arg-type]
     def processed_length(self) -> int:
         """Return the number of processed screenshots."""
-        return sum(len(os.listdir(DONE_DIR / item)) for item in os.listdir(DONE_DIR))
+        inside_folders = sum(
+            len(os.listdir(DONE_DIR / item)) for item in DONE_DIR.iterdir() if item.is_dir()
+        )
+        in_root = len([file for file in DONE_DIR.iterdir() if file.is_file()])
+
+        return inside_folders + in_root
 
     @Property(int, notify=errors_length_changed)  # type: ignore[operator, arg-type]
     def errors_length(self) -> int:
