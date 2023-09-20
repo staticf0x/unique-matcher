@@ -1,5 +1,5 @@
 [![Discord link](https://img.shields.io/badge/Discord-Prohibited%20Library-5865F2?logo=discord&logoColor=white)](https://discord.gg/3VxKY6gt7j)
-[![Download](https://img.shields.io/badge/Download%20latest%20version-blue)](https://github.com/staticf0x/unique-matcher/releases)
+[![Download](https://img.shields.io/badge/Download%20latest%20version-blue)](https://github.com/staticf0x/unique-matcher/releases/latest)
 [![Documentation](https://img.shields.io/badge/Documentation-yellow)](https://github.com/staticf0x/unique-matcher/wiki)
 
 
