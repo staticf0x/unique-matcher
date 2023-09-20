@@ -7,7 +7,7 @@ from typing import Literal, TypeAlias
 
 from loguru import logger
 
-from unique_matcher.constants import ITEM_DIR, OPT_IGNORE_NON_GLOBAL_ITEMS, ROOT_DIR
+from unique_matcher.constants import ASSETS_DIR, ITEM_DIR, OPT_IGNORE_NON_GLOBAL_ITEMS
 
 SocketColor: TypeAlias = Literal["r", "g", "b", "w"]
 SOCKET_COLORS: list[SocketColor] = ["r", "g", "b", "w"]
@@ -50,7 +50,7 @@ class ItemLoader:
         """Load items from CSV."""
         self.items = {}
 
-        with open(ROOT_DIR / "items.csv", newline="") as fread:
+        with open(ASSETS_DIR / "items.csv", newline="") as fread:
             reader = csv.DictReader(fread)
 
             for row in reader:

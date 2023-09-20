@@ -5,9 +5,10 @@ VERSION = "0.3.0"
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 
 # Directory definitions
-ITEM_DIR = ROOT_DIR / "items"
-SOCKET_DIR = ROOT_DIR / "socket"
-TEMPLATES_DIR = ROOT_DIR / "templates"
+ASSETS_DIR = ROOT_DIR / "assets"
+ITEM_DIR = ASSETS_DIR / "items"
+SOCKET_DIR = ASSETS_DIR / "socket"
+TEMPLATES_DIR = ASSETS_DIR / "templates"
 
 DATA_DIR = ROOT_DIR / "data"
 QUEUE_DIR = DATA_DIR / "queue"
