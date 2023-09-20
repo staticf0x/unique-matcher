@@ -8,6 +8,7 @@
 - [New] Option to clear the result table
 - [New] Option to report issues on GitHub
 - [New] Option to modify the screenshot shortcut
+- [New] Option to start AHK script from menu
 - [Fixed] Result table expands with the application window size
 - [Fixed] Create snapshot button position changes with the application window size
 - [Fixed] Holy Chainmail base detection
