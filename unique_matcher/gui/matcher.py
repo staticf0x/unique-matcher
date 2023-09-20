@@ -51,7 +51,7 @@ class QmlMatcher(QObject):
     @Property(int, notify=processed_length_changed)  # type: ignore[operator, arg-type]
     def processed_length(self) -> int:
         """Return the number of processed screenshots."""
-        return len(os.listdir(DONE_DIR))
+        return sum(len(os.listdir(DONE_DIR / item)) for item in os.listdir(DONE_DIR))
 
     @Property(int, notify=errors_length_changed)  # type: ignore[operator, arg-type]
     def errors_length(self) -> int:
@@ -82,7 +82,11 @@ class QmlMatcher(QObject):
             )
             self._cnt += 1
 
-            shutil.move(QUEUE_DIR / file, DONE_DIR / file)
+            # Sort items in done/<item>/...
+            item_folder = DONE_DIR.joinpath(result.item.file)
+            item_folder.mkdir(exist_ok=True, parents=True)
+
+            shutil.move(QUEUE_DIR / file, item_folder / file)
             self.processed_length_changed.emit()
         except BaseUMError as e:
             self.newResult.emit(
