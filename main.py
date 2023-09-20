@@ -17,7 +17,7 @@ if __name__ == "__main__":
     logger.add(
         sys.stdout,
         format="{time:YYYY-MM-DD HH:mm:ss.SSS} | <level>{level:7s}</level> | {message}",
-        level="INFO",
+        level="DEBUG",
         colorize=True,
     )
     logger.add(
