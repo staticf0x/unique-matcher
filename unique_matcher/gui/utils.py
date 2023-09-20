@@ -12,6 +12,7 @@ from unique_matcher.constants import DATA_DIR, DONE_DIR, RESULT_DIR
 
 HELP_URL = "https://github.com/staticf0x/unique-matcher/wiki/Usage"
 ISSUE_URL = "https://github.com/staticf0x/unique-matcher/issues/new/choose"
+CHANGELOG_URL = "https://github.com/staticf0x/unique-matcher/blob/master/CHANGELOG.md"
 
 
 class QmlUtils(QObject):
@@ -24,6 +25,11 @@ class QmlUtils(QObject):
     def open_help(self) -> None:
         """Open the help page."""
         webbrowser.open_new_tab(HELP_URL)
+
+    @Slot()
+    def open_changelog(self) -> None:
+        """Open the changelog."""
+        webbrowser.open_new_tab(CHANGELOG_URL)
 
     @Slot()
     def report_issue(self) -> None:

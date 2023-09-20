@@ -183,6 +183,15 @@ ApplicationWindow {
                     confirmZipDialog.open();
                 }
             }
+
+            MenuSeparator {}
+
+            Action {
+                text: "Changelog"
+                onTriggered: {
+                    utils.open_changelog();
+                }
+            }
         }
     }
 
