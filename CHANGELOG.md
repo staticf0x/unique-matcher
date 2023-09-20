@@ -1,3 +1,20 @@
+# v0.3.0
+
+## Changes
+
+- [New] Added menu bar with several convenience options
+- [New] Processed items are now sorted into their respective folders
+- [New] Option to create a ZIP file with the processed screenshots to make a new data set for testing ([wiki](https://github.com/staticf0x/unique-matcher/wiki/Test-data-and-benchmarking))
+- [New] Option to clear the result table
+- [New] Option to report issues on GitHub
+- [New] Option to modify the screenshot shortcut
+- [Fixed] Result table expands with the application window size
+- [Fixed] Create snapshot button position changes with the application window size
+- [Fixed] Holy Chainmail base detection
+- [Fixed] Hubris Circlet base detection
+- [Fixed] Socketed item accuracy improved by about 6%, fixing Eclipse Solaris (#21)
+- [Fixed] Turned off Indigon (non-global drop)
+
 # v0.2.1
 
 ## Changes
