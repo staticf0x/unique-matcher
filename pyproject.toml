@@ -20,7 +20,7 @@ simple-term-menu = "^1.6.1"
 
 [tool.poetry.group.dev.dependencies]
 devtools = {extras = ["pygments"], version = "^0.11.0"}
-types-pillow = "^10.0.0.2"
+types-pillow = "^10.0.0.3"
 pytest = "^7.4.0"
 mypy = "^1.5.1"
 pytest-xdist = {extras = ["psutil"], version = "^3.3.1"}
