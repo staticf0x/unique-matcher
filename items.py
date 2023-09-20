@@ -5,6 +5,8 @@ import csv
 from rich.console import Console
 from rich.table import Table
 
+from unique_matcher.constants import ASSETS_DIR
+
 parser = argparse.ArgumentParser()
 parser.add_argument("action", type=str, choices=["list", "edit"])
 
@@ -39,7 +41,7 @@ edit_group.add_argument("--set-enabled", type=int, help="1 to enable, 0 to disab
 
 args = parser.parse_args()
 
-fread = open("items.csv")
+fread = open(ASSETS_DIR / "items.csv")
 reader = csv.DictReader(fread)
 
 
