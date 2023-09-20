@@ -1,3 +1,3 @@
-from unique_matcher.constants import ROOT_DIR
+from unique_matcher.constants import ASSETS_DIR
 
-QML_PATH = ROOT_DIR / "unique_matcher" / "gui" / "qml"
+QML_PATH = ASSETS_DIR / "qml"
