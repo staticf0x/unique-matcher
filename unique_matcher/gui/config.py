@@ -10,7 +10,7 @@ from unique_matcher.constants import ROOT_DIR
 
 CONFIG_TEMPLATE = """[screenshot]
 screen = -1
-shortcut = win+s
+shortcut = Win+S
 """
 
 AHK_TEMPLATE = """{{ shortcut }}::
@@ -114,7 +114,7 @@ class QmlConfig(QObject):
     def load_current(self) -> None:
         """Load current shortcut and emit shortcutLoaded."""
         cfg = load_config()
-        shortcut = cfg.get("screenshot", "shortcut", fallback="win+s")
+        shortcut = cfg.get("screenshot", "shortcut", fallback="Win+S")
 
         if "+" in shortcut:
             mod_key, key = shortcut.split("+")
