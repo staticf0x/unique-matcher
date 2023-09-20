@@ -1,12 +1,13 @@
 """Parse item titles."""
 import re
+import sys
 from typing import ClassVar
 
 import pytesseract
 from loguru import logger
 from PIL import Image, ImageOps
 
-from unique_matcher.constants import OPT_FIND_BY_NAME_RAISE
+from unique_matcher.constants import OPT_FIND_BY_NAME_RAISE, TESSERACT_PATH
 from unique_matcher.matcher.exceptions import CannotFindItemBaseError
 from unique_matcher.matcher.items import ItemLoader
 from unique_matcher.matcher.utils import normalize_item_name
@@ -43,6 +44,19 @@ class TitleParser:
 
     def __init__(self, item_loader: ItemLoader) -> None:
         self.item_loader = item_loader
+
+        # Set Tesseract path
+        if sys.platform == "win32":
+            # On Windows we bundle the Tesseract with the project
+            if TESSERACT_PATH.exists():
+                logger.info("Using Tesseract: {}", TESSERACT_PATH)
+                pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
+            else:
+                # Older version will have to rely on PATH
+                logger.info("Using Tesseract from PATH")
+        else:
+            # Other systems will just use PATH
+            logger.info("Using Tesseract from PATH")
 
     def _clean_title(self, title: str) -> str:
         """Clean the raw title as received from tesseract."""

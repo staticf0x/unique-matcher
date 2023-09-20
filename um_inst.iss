@@ -10,6 +10,7 @@ Source: "socket\*"; DestDir: "{app}\socket"
 Source: "templates\*"; DestDir: "{app}\templates"
 Source: "dist\UniqueMatcher\*"; DestDir: "{app}"; Flags: recursesubdirs
 Source: "unique_matcher\gui\qml\*"; DestDir: "{app}\unique_matcher\gui\qml"
+Source: "Tesseract-OCR\*"; DestDir: "{app}\Tesseract-OCR"; Flags: recursesubdirs
 
 Source: "config.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "screen.exe"; DestDir: "{app}"

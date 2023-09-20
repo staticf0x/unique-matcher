@@ -16,6 +16,8 @@ DONE_DIR = DATA_DIR / "done"
 LOG_DIR = DATA_DIR / "logs"
 RESULT_DIR = DATA_DIR / "results"
 
+TESSERACT_PATH = ROOT_DIR / "Tesseract-OCR" / "tesseract.exe"
+
 # Maximum size of an item image for comparison
 # (might differ from artwork found on wiki)
 ITEM_MAX_SIZE: tuple[int, int] = (104, 208)
