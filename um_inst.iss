@@ -3,6 +3,7 @@ AppName=Unique Matcher
 AppVersion=0.3.0
 DefaultDirName=UniqueMatcher
 OutputBaseFilename=UniqueMatcherInstall
+SetupIconFile=um.ico
 
 [Files]
 Source: "items\*"; DestDir: "{app}\items"
