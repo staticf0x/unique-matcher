@@ -1,30 +1,16 @@
 """Main GUI application."""
+
 import sys
 
-from jinja2 import Environment
 from loguru import logger
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 
-from unique_matcher.constants import (
-    DONE_DIR,
-    ERROR_DIR,
-    LOG_DIR,
-    QUEUE_DIR,
-    ROOT_DIR,
-    VERSION,
-)
-from unique_matcher.gui import QML_PATH
+from unique_matcher.constants import DONE_DIR, ERROR_DIR, LOG_DIR, QUEUE_DIR, VERSION
+from unique_matcher.gui import QML_PATH, config
+from unique_matcher.gui.config import QmlConfig
 from unique_matcher.gui.matcher import QmlMatcher
-
-AHK_TEMPLATE = """#s::
-{
-    Run "screen.exe", "{{ root }}", "Hide"
-}"""
-
-CONFIG_TEMPLATE = """[screenshot]
-screen = 0
-"""
+from unique_matcher.gui.utils import QmlUtils
 
 if __name__ == "__main__":
     logger.remove()
@@ -45,21 +31,11 @@ if __name__ == "__main__":
     for path in [DONE_DIR, ERROR_DIR, QUEUE_DIR, LOG_DIR]:
         path.mkdir(exist_ok=True, parents=True)
 
-    # Create the AHK script
-    if not ROOT_DIR.joinpath("screenshot.ahk").exists():
-        template = Environment().from_string(AHK_TEMPLATE)
-        rendered = template.render(root=ROOT_DIR)
-
-        with open(ROOT_DIR / "screenshot.ahk", "w", newline="\r\n") as fwrite:
-            fwrite.write(rendered)
-
     # Create config if it doesn't exist
-    if not ROOT_DIR.joinpath("config.ini").exists():
-        template = Environment().from_string(CONFIG_TEMPLATE)
-        rendered = template.render(root=ROOT_DIR)
+    config.create_config()
 
-        with open(ROOT_DIR / "config.ini", "w", newline="\r\n") as fwrite:
-            fwrite.write(rendered)
+    # Create the AHK script
+    config.create_ahk_script()
 
     # Init app
     app = QGuiApplication(sys.argv)
@@ -69,6 +45,8 @@ if __name__ == "__main__":
     engine.rootContext().setContextProperty("VERSION", VERSION)
 
     qmlRegisterType(QmlMatcher, "Matcher", 1, 0, "Matcher")  # type: ignore[call-overload]
+    qmlRegisterType(QmlUtils, "Utils", 1, 0, "Utils")  # type: ignore[call-overload]
+    qmlRegisterType(QmlConfig, "Config", 1, 0, "Config")  # type: ignore[call-overload]
 
     engine.load(QML_PATH / "main.qml")  # Load main window
 
