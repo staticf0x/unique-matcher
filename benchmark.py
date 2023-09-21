@@ -2,6 +2,7 @@
 import math
 import os
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -25,17 +26,32 @@ DATA_DIR = ROOT_DIR / "tests" / "test_data" / "contains"
 # but make it stand out by warning.
 ACCURACY_WARN_THRESHOLD = 0.99
 
+# These data sets will be excluded from the total count for the wiki page
+EXCLUDE_FROM_TOTAL = ["example", "download"]
+
+
+@dataclass
+class SuiteResult:
+    """Helper class for storing the result of a single benchmark run."""
+
+    data_set: str
+    items: int
+    screenshots: int
+    found: int
+    accuracy: float
+
 
 class Benchmark:
     """Class for running the whole benchmark suite."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, display: bool = True) -> None:
         self.matcher = Matcher()
         self.to_benchmark: list[Item] = []
         self._report: list[bool] = []
         self._times: list[float] = []
         self.console = Console()
         self.table = Table()
+        self.display = display
 
         self.table.add_column("#")
         self.table.add_column("Item")
@@ -64,6 +80,7 @@ class Benchmark:
 
         for screen in test_set:
             t_start = time.perf_counter()
+
             try:
                 result = self.matcher.find_item(screen)
 
@@ -102,57 +119,102 @@ class Benchmark:
         self._times = []
         self.data_set = data_set
 
+        # Load all screenshots
         for name in sorted(os.listdir(DATA_DIR / self.data_set)):
             self.add(name)
 
-        for item in track(self.to_benchmark, description="Gathering results"):
+        # Run the benchmark
+        for item in track(self.to_benchmark, description=f"Benchmarking {data_set}"):
             self._run_one(item)
-
-        # Draw the result table
-        self.console.print(self.table)
 
         found = sum(self._report)
         total = len(self._report)
         accuracy = found / total
 
-        if math.isclose(accuracy, 1):
-            color = "green"
-        elif accuracy > ACCURACY_WARN_THRESHOLD:
-            color = "yellow"
-        else:
-            color = "red"
+        # Draw the result table
+        if self.display:
+            self.console.print(self.table)
 
-        lines = [
-            f"Data set:    {data_set}",
-            f"Items:       {len(self.to_benchmark)}",
-            f"Screenshots: {total}",
-            f"Found:       {found}",
-            f"Accuracy:    [bold {color}]{accuracy:.2%}[/bold {color}]",
-            "",
-            f"Average time: {np.mean(self._times):6.2f} ms",
-            f"Fastest:      {np.min(self._times):6.2f} ms",
-            f"Slowest:      {np.max(self._times):6.2f} ms",
-            f"Std:          {np.std(self._times):6.2f} ms",
-        ]
+            if math.isclose(accuracy, 1):
+                color = "green"
+            elif accuracy > ACCURACY_WARN_THRESHOLD:
+                color = "yellow"
+            else:
+                color = "red"
 
-        panel = Panel("\n".join(lines), title="Summary")
-        self.console.print(panel)
+            lines = [
+                f"Data set:    {data_set}",
+                f"Items:       {len(self.to_benchmark)}",
+                f"Screenshots: {total}",
+                f"Found:       {found}",
+                f"Accuracy:    [bold {color}]{accuracy:.2%}[/bold {color}]",
+                "",
+                f"Average time: {np.mean(self._times):6.2f} ms",
+                f"Fastest:      {np.min(self._times):6.2f} ms",
+                f"Slowest:      {np.max(self._times):6.2f} ms",
+                f"Std:          {np.std(self._times):6.2f} ms",
+            ]
+
+            panel = Panel("\n".join(lines), title="Summary")
+            self.console.print(panel)
+
+        return SuiteResult(
+            data_set=data_set,
+            items=len(self.to_benchmark),
+            screenshots=total,
+            found=found,
+            accuracy=accuracy,
+        )
 
 
 def run() -> None:
     """Run the benchmark."""
-    benchmark = Benchmark()
-
     data_sets = sorted(os.listdir(DATA_DIR))
 
     # Make the user choose a data set
-    menu = TerminalMenu(data_sets)
-    choice_idx = menu.show()
+    menu = TerminalMenu(
+        data_sets,
+        multi_select=True,
+        show_multi_select_hint=True,
+    )
+    choices = menu.show()
 
-    if choice_idx is None:
+    if choices is None:
         return
 
-    benchmark.run(data_sets[choice_idx])
+    run_multiple = len(choices) > 1
+
+    results: list[SuiteResult] = []
+
+    for choice in choices:
+        benchmark = Benchmark(display=not run_multiple)
+        result = benchmark.run(data_sets[choice])
+        results.append(result)
+
+    if run_multiple:
+        # Display a table used for the wiki page
+        print()
+        print("| Data set      | Items | Screenshots | Accuracy    |")
+        print("| ------------- | ----- | ----------- | ----------- |")
+
+        for res in results:
+            if res.data_set in EXCLUDE_FROM_TOTAL:
+                continue
+
+            print(
+                f"| {res.data_set:<13s} | {res.items:<5d} | {res.screenshots:<11d} | {res.accuracy:<11.2%} |"
+            )
+
+        total_items = sum(res.items for res in results if res.data_set not in EXCLUDE_FROM_TOTAL)
+        total_found = sum(res.found for res in results if res.data_set not in EXCLUDE_FROM_TOTAL)
+        total_screenshots = sum(
+            res.screenshots for res in results if res.data_set not in EXCLUDE_FROM_TOTAL
+        )
+        total_accuracy = total_found / total_screenshots
+
+        print(
+            f"| **Total**     | {total_items:<5d} | {total_screenshots:<11d} | **{total_accuracy:.2%}** |"
+        )
 
 
 if __name__ == "__main__":

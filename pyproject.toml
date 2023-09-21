@@ -76,7 +76,7 @@ max-complexity = 10
 ]
 "items.py" = ["T201", "SIM115"]
 "main.py" = ["S701"]
-"tests/test_data/count.py" = ["T201", "INP001"]
+"benchmark.py" = ["T201"]
 
 [[tool.mypy.overrides]]
 module = "pytesseract"
