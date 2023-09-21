@@ -7,7 +7,7 @@ SetupIconFile=um.ico
 
 [Files]
 Source: "assets\*"; DestDir: "{app}\assets"; Flags: recursesubdirs
-Source: "dist\UniqueMatcher\*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "dist\UniqueMatcher\*"; DestDir: "{app}"; Flags: recursesubdirs; Excludes: "dist\UniqueMatcher\PySide6\Qt6WebEngine*";
 Source: "Tesseract-OCR\*"; DestDir: "{app}\Tesseract-OCR"; Flags: recursesubdirs
 
 Source: "config.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
