@@ -13,7 +13,7 @@ from PIL import Image
 from rich.console import Console
 from rich.table import Table
 
-from unique_matcher.constants import TEMPLATES_DIR
+from unique_matcher.constants import ROOT_DIR
 from unique_matcher.matcher.exceptions import BaseUMError
 from unique_matcher.matcher.matcher import THRESHOLD_DISCARD, Matcher
 
@@ -49,7 +49,7 @@ args = parser.parse_args()
 matcher = Matcher()
 result = None
 
-environment = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATES_DIR))
+environment = jinja2.Environment(loader=jinja2.FileSystemLoader(ROOT_DIR / "debug"))
 template = environment.get_template("debug.html")
 
 if args.show_screenshot:
