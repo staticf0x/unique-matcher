@@ -1,3 +1,18 @@
+# v0.4.0
+
+## Changes
+
+- [New] Tesseract is now part of the installer, users no longer need to set it up manually
+- [New] Unique Matcher now has its own icon!
+- [New] Option to create a desktop icon during installation
+- [Changed] All application data files are now inside one folder, so there's less clutter
+- [Changed] Shaved off some unnecessary DLLs, so the installer is now smaller, faster and the installed size is also lower
+- [Fixed] Fixed default screenshot shortcut (app could fail if freshly installed)
+
+Note: it is recommended to do a clean install before installing 0.4.0.
+
+**Always backup your data/results CSVs before upgrading.**
+
 # v0.3.0
 
 ## Changes

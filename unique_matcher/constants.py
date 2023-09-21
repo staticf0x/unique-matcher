@@ -1,7 +1,7 @@
 """Constants and configuration."""
 from pathlib import Path
 
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 
 # Directory definitions
