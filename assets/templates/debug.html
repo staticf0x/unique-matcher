@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Debug output</title>
+
+    <link rel="stylesheet" href="assets/templates/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Best result</h1>
+
+            <p>
+                Screenshot: <code>{{ screenshot }}</code>
+            </p>
+
+            <br>
+
+            <table class="table is-bordered is-hoverable is-striped">
+                <tbody>
+                    <tr>
+                        <td class="has-text-weight-bold">Name</td>
+                        <td><a href="https://www.poewiki.net/wiki/{{ result.item.name|replace(' ', '_') }}" target="_blank">{{ result.item.name }}</a></td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">Base</td>
+                        <td><a href="https://www.poewiki.net/wiki/{{ result.item.base|replace(' ', '_') }}" target="_blank">{{ result.item.base }}</a></td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">Identified</td>
+                        <td>{% if result.identified %}<span class="tag is-success">Yes</span>{% else %}<span class="tag is-danger">No</span>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">s/c</td>
+                        <td>{{ result.item.sockets }}/{{ result.item.cols }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">WxH</td>
+                        <td>{{ result.item.width }}x{{ result.item.height }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">min_val</td>
+                        <td{% if result.min_val > 0.96 %} class="is-danger"{% endif %}>{{ result.min_val }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">hist_val</td>
+                        <td>{{ result.hist_val }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">Matched by</td>
+                        <td>{{ result.matched_by }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-weight-bold">Image</td>
+                        <td><img src="file:///{{ result.item.icon }}" alt="{{ result.item.name }}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h1 class="title">Results</h1>
+
+            <table class="table is-bordered is-hoverable is-striped">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Item</th>
+                        <th>Base</th>
+                        <th>s/c</th>
+                        <th>WxH</th>
+                        <th>min_val</th>
+                        <th>hist_val</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for res in results_all %}
+                    <tr>
+                        <td><img src="{{ res.item.icon }}" alt="{{ res.item.name }}"></td>
+                        <td><a href="https://www.poewiki.net/wiki/{{ res.item.name|replace(' ', '_') }}" target="_blank">{{ res.item.name }}</a></td>
+                        <td>{{ res.item.base }}</td>
+                        <td>{{ res.item.sockets }}/{{ res.item.cols }}</td>
+                        <td>{{ res.item.width }}x{{ res.item.height }}</td>
+                        <td{% if res.min_val > 0.96 %} class="is-danger"{% endif %}>{{ res.min_val|round(3) }}</td>
+                        <td>{{ res.hist_val|round(3) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h1 class="title">Debug info</h1>
+
+            <table class="table is-bordered">
+                <tr>
+                    <td>Unique item to match</td>
+                    <td>Cropped unique</td>
+                    <td>Best result template</td>
+                </tr>
+                <tr>
+                    <td><img src="file:///{{ unique_image }}" alt="Unique image"></td>
+                    <td>{% if cropped_unique %}<img src="file:///{{ cropped_unique }}" alt="Cropped unique">{% else %}-{% endif %}</td>
+                    <td>{% if template %}<img src="file:///{{ template }}" alt="Best result template">{% else %}-{% endif %}</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</body>
