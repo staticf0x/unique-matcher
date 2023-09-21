@@ -7,7 +7,7 @@ SetupIconFile=um.ico
 
 [Files]
 Source: "assets\*"; DestDir: "{app}\assets"; Flags: recursesubdirs
-Source: "dist\UniqueMatcher\*"; DestDir: "{app}"; Flags: recursesubdirs; Excludes: "dist\UniqueMatcher\PySide6\Qt6WebEngine*";
+Source: "dist\UniqueMatcher\*"; DestDir: "{app}"; Flags: recursesubdirs; Excludes: "PySide6\Qt6WebEngine*.dll,PySide6\Qt63D*.dll,PySide6\Qt6Quick3D*.dll,PySide6\qml\Qt3D\*,PySide6\qml\QtQuick3D\*,opencv_videoio*.dll";
 Source: "Tesseract-OCR\*"; DestDir: "{app}\Tesseract-OCR"; Flags: recursesubdirs
 
 Source: "config.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
