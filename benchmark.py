@@ -194,15 +194,15 @@ def run() -> None:
     if run_multiple:
         # Display a table used for the wiki page
         print()
-        print("| Data set      | Items | Screenshots | Accuracy    |")
-        print("| ------------- | ----- | ----------- | ----------- |")
+        print("| Data set      | Items | Screenshots | Found | Accuracy    |")
+        print("| ------------- | ----- | ----------- | ----- | ----------- |")
 
         for res in results:
             if res.data_set in EXCLUDE_FROM_TOTAL:
                 continue
 
             print(
-                f"| {res.data_set:<13s} | {res.items:<5d} | {res.screenshots:<11d} | {res.accuracy:<11.2%} |"
+                f"| {res.data_set:<13s} | {res.items:<5d} | {res.screenshots:<11d} | {res.found:<5d} | {res.accuracy:<11.2%} |"
             )
 
         total_items = sum(res.items for res in results if res.data_set not in EXCLUDE_FROM_TOTAL)
@@ -213,7 +213,7 @@ def run() -> None:
         total_accuracy = total_found / total_screenshots
 
         print(
-            f"| **Total**     | {total_items:<5d} | {total_screenshots:<11d} | **{total_accuracy:.2%}** |"
+            f"| **Total**     | {total_items:<5d} | {total_screenshots:<11d} | {total_found:<5d} | **{total_accuracy:.2%}** |"
         )
 
 
