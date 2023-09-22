@@ -14,6 +14,8 @@ ApplicationWindow {
     title: "Unique Matcher v" + VERSION
     menuBar: mainMenu
 
+    property variant window;
+
     Matcher {
         id: matcher
 
@@ -36,6 +38,10 @@ ApplicationWindow {
 
     Utils {
         id: utils
+    }
+
+    ResultCombinatorWindow {
+        id: resultCombinatorWindow
     }
 
     Dialog {
@@ -213,6 +219,13 @@ ApplicationWindow {
                 text: "&Open CSV"
                 onTriggered: {
                     utils.open_csv();
+                }
+            }
+
+            Action {
+                text: "&Combine CSVs"
+                onTriggered: {
+                    resultCombinatorWindow.show();
                 }
             }
 
@@ -399,7 +412,7 @@ ApplicationWindow {
                         Text {
                             text: display
                             anchors.centerIn: parent
-                            font.bold: row == 0 ? true : false
+                            font.bold: row == 0
                             color: isRowError(row) ? "red" : "black"
                         }
                     }
