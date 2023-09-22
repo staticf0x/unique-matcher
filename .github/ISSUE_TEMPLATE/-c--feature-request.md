@@ -1,7 +1,7 @@
 ---
 name: "(C) Feature request"
 about: Suggest an idea for this project
-title: ''
+title: 'Feature: <summary>'
 labels: enhancement
 assignees: ''
 

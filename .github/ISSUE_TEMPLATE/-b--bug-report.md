@@ -1,7 +1,7 @@
 ---
 name: "(B) Bug report"
 about: Other issues not related to item detection
-title: ''
+title: 'Bug: <summary>'
 labels: bug
 assignees: ''
 

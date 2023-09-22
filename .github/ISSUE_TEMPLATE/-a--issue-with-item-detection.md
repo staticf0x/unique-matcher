@@ -1,7 +1,7 @@
 ---
 name: "(A) Issue with item detection"
 about: An item wasn't detected or some other item was detected instead
-title: ''
+title: 'Problem with detection: <item name>'
 labels: detection
 assignees: ''
 

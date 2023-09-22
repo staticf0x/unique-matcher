@@ -1,7 +1,7 @@
 ---
 name: "(D) Documentation"
 about: Missing or incorrect documentation
-title: ''
+title: 'Documentation: <summary>'
 labels: documentation
 assignees: ''
 
