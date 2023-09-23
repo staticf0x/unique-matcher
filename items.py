@@ -38,6 +38,7 @@ edit_group.add_argument("--set-height", type=int, help="Height to set")
 edit_group.add_argument("--set-sockets", type=int, help="Sockets to set")
 edit_group.add_argument("--set-columns", type=int, help="Columns to set")
 edit_group.add_argument("--set-enabled", type=int, help="1 to enable, 0 to disable")
+edit_group.add_argument("--set-global", type=int, help="1 to enable, 0 to disable")
 
 args = parser.parse_args()
 
@@ -143,6 +144,9 @@ if args.action == "edit":
 
             if args.set_enabled:
                 line["enabled"] = str(args.set_enabled)
+
+            if args.set_global:
+                line["global"] = str(args.set_global)
 
         writer.writerow(line)
 
