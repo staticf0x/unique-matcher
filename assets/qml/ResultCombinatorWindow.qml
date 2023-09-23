@@ -9,6 +9,8 @@ import ResultCombinator
 Window {
     width: 854
     height: 480
+    minimumWidth: 854
+    minimumHeight: 480
     title: "Combine results"
     color: "#faf9f8"
 
