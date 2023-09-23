@@ -22,6 +22,18 @@ Window {
         onResultsLoaded: (files) => {
             this.files = files;
 
+            if (fileList.model.rows.length > 1) {
+                fileList.model.removeRow(1, fileList.model.rows.length - 1);
+            }
+
+            if (previewTable.model.rows.length > 1) {
+                previewTable.model.removeRow(1, previewTable.model.rows.length - 1);
+            }
+
+            if (combinedTable.model.rows.length > 1) {
+                combinedTable.model.removeRow(1, combinedTable.model.rows.length - 1);
+            }
+
             for (var i = 0; i < files.length; i++) {
                 fileList.model.appendRow({"n": files[i].n, "file": files[i].file});
             }
@@ -45,10 +57,6 @@ Window {
             for (var i = 0; i < items.length; i++) {
                 combinedTable.model.appendRow(items[i]);
             }
-        }
-
-        Component.onCompleted: {
-            resultCombinator.load_results();
         }
 
         function getCheckedFiles() {
@@ -93,7 +101,9 @@ Window {
     Rectangle {
         id: fileListWrapper
         width: 250
-        height: parent.height
+        anchors.top: parent.top
+        anchors.bottom: refreshButton.top
+        anchors.bottomMargin: 8
 
         Text {
             id: tableLabel
@@ -176,7 +186,7 @@ Window {
         anchors.leftMargin: 8
         anchors.right: parent.right
         anchors.bottom: exportButton.top
-        anchors.bottomMargin: exportButton.height
+        anchors.bottomMargin: 8
         anchors.top: parent.top
 
         RowLayout {
@@ -192,7 +202,7 @@ Window {
 
                 Rectangle {
                     width: 300
-                    height: parent.parent.height
+                    height: parent.parent.height - previewLabel.height
                     anchors.top: previewLabel.bottom
 
                     ScrollView {
@@ -241,7 +251,7 @@ Window {
 
                 Rectangle {
                     width: 300
-                    height: parent.parent.height
+                    height: parent.parent.height - combinedLabel.height
                     anchors.top: combinedLabel.bottom
 
                     ScrollView {
@@ -283,6 +293,20 @@ Window {
     }
 
     Button {
+        id: refreshButton
+        text: "Refresh"
+
+        anchors.bottom: parent.bottom
+        anchors.right: fileListWrapper.right
+        anchors.bottomMargin: 2
+        anchors.leftMargin: 2
+
+        onClicked: {
+            resultCombinator.load_results();
+        }
+    }
+
+    Button {
         id: exportButton
         text: "Save combined"
 
@@ -298,6 +322,10 @@ Window {
                 noFileSelectedDialog.open();
             }
         }
+    }
+
+    function loadFileList() {
+        resultCombinator.load_results();
     }
 
     function resetColors() {

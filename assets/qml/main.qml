@@ -228,6 +228,7 @@ ApplicationWindow {
                 text: "&Combine CSVs"
                 onTriggered: {
                     resultCombinatorWindow.show();
+                    resultCombinatorWindow.loadFileList();
                 }
             }
 
