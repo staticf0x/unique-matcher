@@ -374,11 +374,10 @@ ApplicationWindow {
         Rectangle {
             border.width: 1
             width: mainWindow.width
-            height: mainWindow.height - this.y - 100
+            height: mainWindow.height - 100
 
             ScrollView {
-                width: parent.width
-                height: parent.height
+                anchors.fill: parent
 
                 TableView {
                     id: resultsTable
