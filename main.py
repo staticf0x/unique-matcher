@@ -10,6 +10,7 @@ from unique_matcher.constants import DONE_DIR, ERROR_DIR, LOG_DIR, QUEUE_DIR, VE
 from unique_matcher.gui import QML_PATH, config
 from unique_matcher.gui.config import QmlConfig
 from unique_matcher.gui.matcher import QmlMatcher
+from unique_matcher.gui.result_combinator import QmlResultCombinator
 from unique_matcher.gui.utils import QmlUtils
 
 if __name__ == "__main__":
@@ -47,6 +48,7 @@ if __name__ == "__main__":
     qmlRegisterType(QmlMatcher, "Matcher", 1, 0, "Matcher")  # type: ignore[call-overload]
     qmlRegisterType(QmlUtils, "Utils", 1, 0, "Utils")  # type: ignore[call-overload]
     qmlRegisterType(QmlConfig, "Config", 1, 0, "Config")  # type: ignore[call-overload]
+    qmlRegisterType(QmlResultCombinator, "ResultCombinator", 1, 0, "ResultCombinator")  # type: ignore[call-overload]
 
     engine.load(QML_PATH / "main.qml")  # Load main window
 
