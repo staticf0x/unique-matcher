@@ -1,5 +1,8 @@
 """Various utility functions."""
 
+import csv
+from pathlib import Path
+
 import cv2
 import numpy as np
 from PIL import Image
@@ -33,3 +36,11 @@ def calc_normalized_histogram(image: Image.Image) -> np.ndarray:
 
     # Normalize histogram
     return cv2.normalize(hist, hist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
+
+
+def is_csv_empty(file: Path) -> bool:
+    """Return True if the provided CSV is empty."""
+    with open(file, newline="") as fread:
+        reader = csv.DictReader(fread)
+
+        return len(list(reader)) == 0

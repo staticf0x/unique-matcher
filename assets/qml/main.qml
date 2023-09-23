@@ -28,6 +28,10 @@ ApplicationWindow {
                 resultsTable.contentY = resultsTable.contentHeight - resultsTable.height + 24;
             }
         }
+
+        Component.onCompleted: {
+            matcher.cleanup();
+        }
     }
 
     Config {

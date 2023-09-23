@@ -7,6 +7,7 @@ from loguru import logger
 from PySide6.QtCore import QObject, Signal, Slot
 
 from unique_matcher.constants import RESULT_DIR
+from unique_matcher.matcher.utils import is_csv_empty
 
 
 class QmlResultCombinator(QObject):
@@ -46,12 +47,8 @@ class QmlResultCombinator(QObject):
         files = []
 
         for n, file in enumerate(sorted(RESULT_DIR.iterdir())):
-            with open(RESULT_DIR / file, newline="") as fread:
-                reader = csv.DictReader(fread)
-
-                if len(list(reader)) == 0:
-                    # Skip empty CSVs
-                    continue
+            if is_csv_empty(RESULT_DIR / file):
+                continue
 
             row = {"n": n, "checked": False, "file": file.name}
             files.append(row)
