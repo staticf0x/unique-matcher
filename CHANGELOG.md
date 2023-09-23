@@ -1,3 +1,17 @@
+# v0.5.0
+
+## Changes
+
+### App
+
+- [New] New feature to combine selected result CSVs into one (*Results > Combine CSVs*)
+- [New] On startup, the app will delete all empty CSVs except the currently used one
+
+### Item detection
+
+- [Fixed] All non-natural drops are now disabled
+- [Fixed] Cameria's Avarice detection
+
 # v0.4.0
 
 ## Changes
