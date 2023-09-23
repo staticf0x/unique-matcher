@@ -152,15 +152,15 @@ Window {
                             text: display
                             anchors.centerIn: parent
                             font.bold: row == 0
+                        }
 
-                            MouseArea {
-                                anchors.fill: parent
-                                propagateComposedEvents: true
-
-                                onClicked: (mouse) => {
-                                    filePreview(row);
-                                    resetColors();
-                                }
+                        MouseArea {
+                            enabled: column == 1
+                            anchors.fill: parent
+                            propagateComposedEvents: true
+                            onClicked: (mouse) => {
+                                filePreview(row);
+                                resetColors();
                             }
                         }
                     }
