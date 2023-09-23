@@ -81,10 +81,14 @@ if args.action == "list":
     table.add_column("WxH")
     table.add_column("Enabled")
     table.add_column("Global")
+    table.add_column("Wiki")
 
     for line in reader:
         if not filtered(line):
             continue
+
+        norm_name = line["name"].replace(" ", "_")
+        url = f"https://www.poewiki.net/wiki/{norm_name}"
 
         table.add_row(
             line["name"],
@@ -95,6 +99,7 @@ if args.action == "list":
             f"{line['width']}x{line['height']}",
             "Yes" if line["enabled"] == "1" else "No",
             "Yes" if line["global"] == "1" else "No",
+            f"[link={url}]link[/link]",
         )
 
     console = Console()
