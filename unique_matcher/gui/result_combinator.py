@@ -1,5 +1,6 @@
 """Module for combining the result CSVs in QML."""
 import csv
+import sys
 from pathlib import Path
 
 from loguru import logger
@@ -79,7 +80,10 @@ class QmlResultCombinator(QObject):
     @Slot(list, str)
     def save_combined(self, files: list[str], output: str) -> None:
         """Write the combined CSV into user selected file."""
-        output_path = Path(output.replace("file://", ""))
+        if sys.platform == "win32":
+            output_path = Path(output.replace("file://", "").lstrip("/"))
+        else:
+            output_path = Path(output.replace("file://", ""))
 
         logger.info("Saving combined CSV into {}", str(output_path))
 
