@@ -10,9 +10,13 @@ ApplicationWindow {
     id: mainWindow
     width: 854
     height: 480
+    minimumWidth: 854
+    minimumHeight: 480
     visible: true
     title: "Unique Matcher v" + VERSION
     menuBar: mainMenu
+
+    property variant window;
 
     Matcher {
         id: matcher
@@ -23,6 +27,10 @@ ApplicationWindow {
             if (resultsTable.contentHeight > resultsTable.height) {
                 resultsTable.contentY = resultsTable.contentHeight - resultsTable.height + 24;
             }
+        }
+
+        Component.onCompleted: {
+            matcher.cleanup();
         }
     }
 
@@ -36,6 +44,10 @@ ApplicationWindow {
 
     Utils {
         id: utils
+    }
+
+    ResultCombinatorWindow {
+        id: resultCombinatorWindow
     }
 
     Dialog {
@@ -216,6 +228,14 @@ ApplicationWindow {
                 }
             }
 
+            Action {
+                text: "&Combine CSVs"
+                onTriggered: {
+                    resultCombinatorWindow.show();
+                    resultCombinatorWindow.loadFileList();
+                }
+            }
+
             MenuSeparator {}
 
             Action {
@@ -361,11 +381,10 @@ ApplicationWindow {
         Rectangle {
             border.width: 1
             width: mainWindow.width
-            height: mainWindow.height - this.y - 100
+            height: mainWindow.height - 100
 
             ScrollView {
-                width: parent.width
-                height: parent.height
+                anchors.fill: parent
 
                 TableView {
                     id: resultsTable
@@ -399,7 +418,7 @@ ApplicationWindow {
                         Text {
                             text: display
                             anchors.centerIn: parent
-                            font.bold: row == 0 ? true : false
+                            font.bold: row == 0
                             color: isRowError(row) ? "red" : "black"
                         }
                     }

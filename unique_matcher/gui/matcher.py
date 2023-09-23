@@ -5,10 +5,11 @@ import shutil
 from loguru import logger
 from PySide6.QtCore import Property, QObject, QTimer, Signal, Slot
 
-from unique_matcher.constants import DONE_DIR, ERROR_DIR, QUEUE_DIR
+from unique_matcher.constants import DONE_DIR, ERROR_DIR, QUEUE_DIR, RESULT_DIR
 from unique_matcher.gui.results import ResultFile
 from unique_matcher.matcher.exceptions import BaseUMError
 from unique_matcher.matcher.matcher import Matcher, MatchResult
+from unique_matcher.matcher.utils import is_csv_empty
 
 
 class QmlMatcher(QObject):
@@ -114,3 +115,23 @@ class QmlMatcher(QObject):
     def snapshot(self) -> None:
         """Create a new snapshot."""
         self.result_file.snapshot()
+
+    @Slot()
+    def cleanup(self) -> None:
+        """Remove empty CSVs."""
+        logger.debug("Running cleanup")
+
+        for file in RESULT_DIR.iterdir():
+            if RESULT_DIR / file == self.result_file.current_file:
+                # Do not delete the currently used file
+                # This is also the reason why cleanup is here
+                # and not in utils, because we have access to result_file
+                continue
+
+            if is_csv_empty(RESULT_DIR / file):
+                logger.debug("Deleting empty CSV: {}", file.name)
+
+                try:
+                    os.remove(RESULT_DIR / file)
+                except OSError:
+                    logger.error("Cannot delete empty CSV: {}", file.name)

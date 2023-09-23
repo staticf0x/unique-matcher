@@ -38,6 +38,7 @@ edit_group.add_argument("--set-height", type=int, help="Height to set")
 edit_group.add_argument("--set-sockets", type=int, help="Sockets to set")
 edit_group.add_argument("--set-columns", type=int, help="Columns to set")
 edit_group.add_argument("--set-enabled", type=int, help="1 to enable, 0 to disable")
+edit_group.add_argument("--set-global", type=int, help="1 to enable, 0 to disable")
 
 args = parser.parse_args()
 
@@ -81,10 +82,14 @@ if args.action == "list":
     table.add_column("WxH")
     table.add_column("Enabled")
     table.add_column("Global")
+    table.add_column("Wiki")
 
     for line in reader:
         if not filtered(line):
             continue
+
+        norm_name = line["name"].replace(" ", "_")
+        url = f"https://www.poewiki.net/wiki/{norm_name}"
 
         table.add_row(
             line["name"],
@@ -95,6 +100,7 @@ if args.action == "list":
             f"{line['width']}x{line['height']}",
             "Yes" if line["enabled"] == "1" else "No",
             "Yes" if line["global"] == "1" else "No",
+            f"[link={url}]link[/link]",
         )
 
     console = Console()
@@ -138,6 +144,9 @@ if args.action == "edit":
 
             if args.set_enabled:
                 line["enabled"] = str(args.set_enabled)
+
+            if args.set_global:
+                line["global"] = str(args.set_global)
 
         writer.writerow(line)
 
