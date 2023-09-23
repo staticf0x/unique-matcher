@@ -1,5 +1,6 @@
 """Module for combining the result CSVs in QML."""
 import csv
+from pathlib import Path
 
 from loguru import logger
 from PySide6.QtCore import QObject, Signal, Slot
@@ -10,20 +11,49 @@ from unique_matcher.constants import RESULT_DIR
 class QmlResultCombinator(QObject):
     """Class for combining result CSVs."""
 
-    resultsLoaded = Signal(list, arguments=["files"])
-    previewLoaded = Signal(list, arguments=["items"])
-    combinedChanged = Signal(list, arguments=["items"])
+    resultsLoaded = Signal(list, arguments=["files"])  # noqa: N815
+    previewLoaded = Signal(list, arguments=["items"])  # noqa: N815
+    combinedChanged = Signal(list, arguments=["items"])  # noqa: N815
 
     def __init__(self) -> None:
         QObject.__init__(self)
 
+    def get_combined_results(self, files: list[Path]) -> list[dict[str, str | int]]:
+        """Get a list of combined results, sorted by count."""
+        combined = {}
+
+        for file in files:
+            with open(RESULT_DIR / file, newline="") as fread:
+                reader = csv.DictReader(fread)
+
+                for item in reader:
+                    combined.setdefault(item["item"], 0)
+                    combined[item["item"]] += int(item["count"])
+
+        return [
+            {"item": v[0], "count": v[1]}
+            for v in sorted(
+                combined.items(),
+                key=lambda x: x[1],
+                reverse=True,
+            )
+        ]
+
     @Slot()
     def load_results(self) -> None:
         """Load CSV list."""
-        files = [
-            {"n": n, "checked": False, "file": file.name}
-            for n, file in enumerate(sorted(list(RESULT_DIR.iterdir())))
-        ]
+        files = []
+
+        for n, file in enumerate(sorted(RESULT_DIR.iterdir())):
+            with open(RESULT_DIR / file, newline="") as fread:
+                reader = csv.DictReader(fread)
+
+                if len(list(reader)) == 0:
+                    # Skip empty CSVs
+                    continue
+
+            row = {"n": n, "checked": False, "file": file.name}
+            files.append(row)
 
         logger.debug("Loaded {} result CSVs", len(files))
 
@@ -44,23 +74,20 @@ class QmlResultCombinator(QObject):
         """Combine selected files."""
         logger.debug("Combining results of {} CSVs", len(files))
 
-        combined = {}
+        self.combinedChanged.emit(self.get_combined_results(files))
 
-        for file in files:
-            with open(RESULT_DIR / file, newline="") as fread:
-                reader = csv.DictReader(fread)
+    @Slot(list, str)
+    def save_combined(self, files: list[str], output: str) -> None:
+        """Write the combined CSV into user selected file."""
+        output_path = Path(output.replace("file://", ""))
 
-                for item in reader:
-                    combined.setdefault(item["item"], 0)
-                    combined[item["item"]] += int(item["count"])
+        logger.info("Saving combined CSV into {}", str(output_path))
 
-        combined_list = [
-            {"item": v[0], "count": v[1]}
-            for v in sorted(
-                combined.items(),
-                key=lambda x: x[1],
-                reverse=True,
-            )
-        ]
+        combined_results = self.get_combined_results(files)
 
-        self.combinedChanged.emit(combined_list)
+        with output_path.open("w", newline="") as fwrite:
+            writer = csv.DictWriter(fwrite, ["item", "count"])
+            writer.writeheader()
+
+            for row in combined_results:
+                writer.writerow(row)

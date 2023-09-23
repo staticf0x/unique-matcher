@@ -1,6 +1,8 @@
+import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import Qt.labs.qmlmodels
 import ResultCombinator
 
@@ -57,6 +59,32 @@ Window {
             }
 
             return file_names;
+        }
+    }
+
+    Dialog {
+        id: noFileSelectedDialog
+        title: "No file selected"
+        standardButtons: Dialog.Ok
+        modal: true
+        anchors.centerIn: parent
+
+        Text {
+            text: "Select at least one CSV to be combined."
+        }
+    }
+
+    FileDialog {
+        id: saveCombinedDialog
+        fileMode: FileDialog.SaveFile
+
+        currentFolder: StandardPaths.standardLocations(StandardPaths.DocumentsLocation)[0]
+        defaultSuffix: "csv"
+        selectedFile: currentFolder + "/combined.csv"
+        nameFilters: ["CSV files (*.csv)"]
+
+        onAccepted: {
+            resultCombinator.save_combined(resultCombinator.getCheckedFiles(), selectedFile);
         }
     }
 
@@ -141,7 +169,8 @@ Window {
         anchors.left: fileListWrapper.right
         anchors.leftMargin: 8
         anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.bottom: exportButton.top
+        anchors.bottomMargin: exportButton.height
         anchors.top: parent.top
 
         RowLayout {
@@ -243,6 +272,24 @@ Window {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    Button {
+        id: exportButton
+        text: "Save combined"
+
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.bottomMargin: 2
+        anchors.rightMargin: 2
+
+        onClicked: {
+            if (resultCombinator.getCheckedFiles().length > 0) {
+                saveCombinedDialog.open();
+            } else {
+                noFileSelectedDialog.open();
             }
         }
     }
