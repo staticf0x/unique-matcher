@@ -132,14 +132,18 @@ Window {
                         color: getRowColor(row)
 
                         CheckBox {
-                            visible: column == 0 && row > 0
+                            visible: column == 0
                             anchors.centerIn: parent
                             checked: getChecked(row)
 
                             onToggled: {
-                                filePreview(row);
-                                setChecked(row);
-                                resetColors();
+                                if (row == 0) {
+                                    setCheckedAll(checked);
+                                } else {
+                                    filePreview(row);
+                                    setChecked(row);
+                                    resetColors();
+                                }
                             }
                         }
 
@@ -337,5 +341,16 @@ Window {
     function setChecked(row) {
         resultCombinator.files[row - 1]["checked"] = !resultCombinator.files[row - 1]["checked"];
         resultCombinator.combine_results(resultCombinator.getCheckedFiles());
+    }
+
+    function setCheckedAll(checked) {
+        for (var row = 1; row < fileList.rows; row++) {
+            resultCombinator.files[row - 1]["checked"] = checked;
+            var checkbox_cell = fileList.itemAtIndex(fileList.index(row, 0));
+            checkbox_cell.children[0].checked = checked;
+        }
+
+        resultCombinator.combine_results(resultCombinator.getCheckedFiles());
+        resetColors();
     }
 }
