@@ -35,6 +35,11 @@ class Item:
         """Return True if the item is smaller than full dimensions (for cropping)."""
         return self.width < self.MAX_WIDTH or self.height < self.MAX_HEIGHT
 
+    def poewiki_url(self) -> str:
+        """Return link to poewiki for this item."""
+        norm_name = self.name.replace(" ", "_")
+        return f"https://www.poewiki.net/wiki/{norm_name}"
+
     def __hash__(self) -> int:
         """Hash by name (it's unique)."""
         return hash(self.name)
