@@ -2,6 +2,7 @@
 import math
 import os
 import time
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -9,14 +10,14 @@ import numpy as np
 from loguru import logger
 from rich.console import Console
 from rich.panel import Panel
-from rich.progress import track
+from rich.progress import Progress
 from rich.table import Table
 from simple_term_menu import TerminalMenu  # type: ignore[import]
 
 from unique_matcher.constants import ROOT_DIR
 from unique_matcher.matcher.exceptions import CannotFindUniqueItemError
 from unique_matcher.matcher.items import Item
-from unique_matcher.matcher.matcher import Matcher
+from unique_matcher.matcher.matcher import Matcher, MatchResult
 
 logger.remove()
 
@@ -41,6 +42,52 @@ class SuiteResult:
     accuracy: float
 
 
+@dataclass
+class CheckResult:
+    """A result of a single check (1 item in 1 screenshot)."""
+
+    item: Item
+    found: bool
+    elapsed: float
+    result: MatchResult | None
+
+
+def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
+    """Run benchmark for one item on a list of screenshots.
+
+    This must be a function because if it was a class method,
+    then ProcessPoolExecutor will not be able to pickle it.
+    """
+    results = []
+
+    # Matcher is not thread-safe so we need one per worker
+    matcher = Matcher()
+
+    for screen in test_set:
+        t_start = time.perf_counter()
+
+        try:
+            result = matcher.find_item(screen)
+            t_end = time.perf_counter()
+
+            res = CheckResult(
+                item=item,
+                found=result.item == item,
+                elapsed=t_end - t_start,
+                result=result,
+            )
+        except CannotFindUniqueItemError:
+            res = CheckResult(
+                item=item,
+                found=False,
+                elapsed=t_end - t_start,
+            )
+
+        results.append(res)
+
+    return results
+
+
 class Benchmark:
     """Class for running the whole benchmark suite."""
 
@@ -50,16 +97,7 @@ class Benchmark:
         self._report: list[bool] = []
         self._times: list[float] = []
         self.console = Console()
-        self.table = Table()
         self.display = display
-
-        self.table.add_column("#")
-        self.table.add_column("Item")
-        self.table.add_column("Identified")
-        self.table.add_column("Found")
-        self.table.add_column("Matched by")
-        self.table.add_column("Time (ms)")
-        self.table.add_column("min_val")
 
     def add(self, name: str) -> None:
         """Add item to benchmark suite."""
@@ -74,44 +112,29 @@ class Benchmark:
         """Add report (whether the item was correctly identified) for a single test."""
         self._report.append(found)
 
-    def _run_one(self, item: Item) -> None:
-        """Run benchmark for one item."""
-        test_set = self._get_test_set(item.file)
+    def print_result_table(self, results: list[CheckResult]) -> None:
+        """Print the results."""
+        table = Table()
+        table.add_column("#")
+        table.add_column("Item")
+        table.add_column("Identified")
+        table.add_column("Found")
+        table.add_column("Matched by")
+        table.add_column("Time (ms)")
+        table.add_column("min_val")
 
-        for screen in test_set:
-            t_start = time.perf_counter()
+        for n, result in enumerate(results, 1):
+            table.add_row(
+                str(n),
+                result.item.name,
+                "Yes" if result.result.identified else "No",
+                "[green]Yes[/green]" if result.found else "[red]Yes[/red]",
+                str(result.result.matched_by),
+                f"{result.elapsed * 1e3:.2f}",
+                f"{result.result.min_val:.3f}" if result.result.min_val > 0 else "-",
+            )
 
-            try:
-                result = self.matcher.find_item(screen)
-
-                found = result.item == item
-            except CannotFindUniqueItemError:
-                found = False
-
-            t_end = time.perf_counter()
-
-            if found:
-                self.table.add_row(
-                    str(len(self._times) + 1),
-                    item.name,
-                    "Yes" if result.identified else "No",
-                    "[green]Yes[/green]",
-                    str(result.matched_by),
-                    f"{(t_end - t_start) * 1e3:.2f}",
-                    f"{result.min_val:.3f}" if result.min_val > 0 else "-",
-                )
-            else:
-                self.table.add_row(
-                    str(len(self._times) + 1),
-                    item.name,
-                    "-",
-                    "[red]No[/red]",
-                    "-",
-                    f"{(t_end - t_start) * 1e3:.2f}",
-                )
-
-            self.report(found)
-            self._times.append((t_end - t_start) * 1e3)
+        self.console.print(table)
 
     def run(self, data_set: str) -> None:
         """Run the whole benchmark suite."""
@@ -123,17 +146,38 @@ class Benchmark:
         for name in sorted(os.listdir(DATA_DIR / self.data_set)):
             self.add(name)
 
-        # Run the benchmark
-        for item in track(self.to_benchmark, description=f"Benchmarking {data_set}"):
-            self._run_one(item)
+        with ProcessPoolExecutor(max_workers=6) as executor:
+            futures = []
 
-        found = sum(self._report)
-        total = len(self._report)
+            for item in self.to_benchmark:
+                f = executor.submit(_run_one, item, self._get_test_set(item.file))
+                futures.append(f)
+
+            with Progress() as progress:
+                task = progress.add_task(f"Benchmarking {data_set}", total=len(futures))
+
+                while True:
+                    completed = sum(f.done() for f in futures)
+                    progress.update(task, completed=completed)
+
+                    if completed == len(futures):
+                        break
+
+                    time.sleep(0.1)
+
+        all_results = []
+
+        for result in [f.result() for f in futures]:
+            all_results.extend(result)
+
+        found = sum(result.found for result in all_results)
+        total = len(all_results)
+        times = [result.elapsed for result in all_results]
         accuracy = found / total
 
         # Draw the result table
         if self.display:
-            self.console.print(self.table)
+            self.print_result_table(all_results)
 
             if math.isclose(accuracy, 1):
                 color = "green"
@@ -149,10 +193,10 @@ class Benchmark:
                 f"Found:       {found}",
                 f"Accuracy:    [bold {color}]{accuracy:.2%}[/bold {color}]",
                 "",
-                f"Average time: {np.mean(self._times):6.2f} ms",
-                f"Fastest:      {np.min(self._times):6.2f} ms",
-                f"Slowest:      {np.max(self._times):6.2f} ms",
-                f"Std:          {np.std(self._times):6.2f} ms",
+                f"Average time: {np.mean(times)*1e3:6.2f} ms",
+                f"Fastest:      {np.min(times)*1e3:6.2f} ms",
+                f"Slowest:      {np.max(times)*1e3:6.2f} ms",
+                f"Std:          {np.std(times)*1e3:6.2f} ms",
             ]
 
             panel = Panel("\n".join(lines), title="Summary")
@@ -202,7 +246,7 @@ def run() -> None:
                 continue
 
             print(
-                f"| {res.data_set:<13s} | {res.items:<5d} | {res.screenshots:<11d} | {res.found:<5d} | {res.accuracy:<11.2%} |"
+                f"| {res.data_set:<13s} | {res.items:<5d} | {res.screenshots:<11d} | {res.found:<5d} | {res.accuracy:<11.2%} |",
             )
 
         total_items = sum(res.items for res in results if res.data_set not in EXCLUDE_FROM_TOTAL)
@@ -213,7 +257,7 @@ def run() -> None:
         total_accuracy = total_found / total_screenshots
 
         print(
-            f"| **Total**     | {total_items:<5d} | {total_screenshots:<11d} | {total_found:<5d} | **{total_accuracy:.2%}** |"
+            f"| **Total**     | {total_items:<5d} | {total_screenshots:<11d} | {total_found:<5d} | **{total_accuracy:.2%}** |",
         )
 
 
