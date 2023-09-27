@@ -16,7 +16,7 @@ from simple_term_menu import TerminalMenu  # type: ignore[import]
 
 from unique_matcher.constants import ROOT_DIR
 from unique_matcher.matcher.exceptions import CannotFindUniqueItemError
-from unique_matcher.matcher.items import Item
+from unique_matcher.matcher.items import Item, ItemLoader
 from unique_matcher.matcher.matcher import Matcher, MatchResult
 
 logger.remove()
@@ -40,6 +40,7 @@ class SuiteResult:
     screenshots: int
     found: int
     accuracy: float
+    item_names: set
 
 
 @dataclass
@@ -208,6 +209,7 @@ class Benchmark:
             screenshots=total,
             found=found,
             accuracy=accuracy,
+            item_names={item.file for item in self.to_benchmark},
         )
 
 
@@ -229,6 +231,9 @@ def run() -> None:
     run_multiple = len(choices) > 1
 
     results: list[SuiteResult] = []
+    _il = ItemLoader()
+    _il.load()
+    items_in_db = len(_il.items)
 
     for choice in choices:
         benchmark = Benchmark(display=not run_multiple)
@@ -238,27 +243,45 @@ def run() -> None:
     if run_multiple:
         # Display a table used for the wiki page
         print()
-        print("| Data set      | Items | Screenshots | Found | Accuracy    |")
-        print("| ------------- | ----- | ----------- | ----- | ----------- |")
+        print("| Data set      | Items | Coverage | Screenshots | Found | Accuracy    |")
+        print("| ------------- | ----- | -------- | ----------- | ----- | ----------- |")
+
+        tested_items = set()
 
         for res in results:
             if res.data_set in EXCLUDE_FROM_TOTAL:
                 continue
 
-            print(
-                f"| {res.data_set:<13s} | {res.items:<5d} | {res.screenshots:<11d} | {res.found:<5d} | {res.accuracy:<11.2%} |",
-            )
+            tested_items |= res.item_names
 
-        total_items = sum(res.items for res in results if res.data_set not in EXCLUDE_FROM_TOTAL)
+            columns = [
+                f"{res.data_set:<13s}",
+                f"{res.items:<5d}",
+                f"{res.items/items_in_db:<8.2%}",
+                f"{res.screenshots:<11d}",
+                f"{res.found:<5d}",
+                f"{res.accuracy:<11.2%}",
+            ]
+
+            print(f"| {' | '.join(columns)} |")
+
+        total_items = len(tested_items)
         total_found = sum(res.found for res in results if res.data_set not in EXCLUDE_FROM_TOTAL)
         total_screenshots = sum(
             res.screenshots for res in results if res.data_set not in EXCLUDE_FROM_TOTAL
         )
         total_accuracy = total_found / total_screenshots
 
-        print(
-            f"| **Total**     | {total_items:<5d} | {total_screenshots:<11d} | {total_found:<5d} | **{total_accuracy:.2%}** |",
-        )
+        columns = [
+            "**Total**    ",
+            f"{total_items:<5d}",
+            f"{total_items/items_in_db:<8.2%}",
+            f"{total_screenshots:<11d}",
+            f"{total_found:<5d}",
+            f"**{total_accuracy:.2%}**" + " " if total_accuracy < 1 else "",
+        ]
+
+        print(f"| {' | '.join(columns)} |")
 
 
 if __name__ == "__main__":
