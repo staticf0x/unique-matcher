@@ -21,6 +21,9 @@ logger.remove()
 matcher = Matcher()
 
 for item_dir in sorted(DONE_DIR.iterdir()):
+    if item_dir.is_file():
+        continue
+
     for screenshot in (DONE_DIR / item_dir).iterdir():
         file = DONE_DIR / item_dir / screenshot
 
