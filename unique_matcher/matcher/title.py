@@ -29,6 +29,7 @@ class TitleParser:
         "Husris Circlet": "Hubris Circlet",
         "Occcultists Vestment": "Occultists Vestment",
         "Hoty Chainmail": "Holy Chainmail",
+        "Maelstrom Staff": "Maelström Staff",
     }
 
     ITEM_CORRECTIONS: ClassVar[dict[str, str]] = {
