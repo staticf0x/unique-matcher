@@ -50,7 +50,7 @@ class CheckResult:
     item: Item
     found: bool
     elapsed: float
-    result: MatchResult | None
+    result: MatchResult | None = None
 
 
 def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
@@ -78,6 +78,7 @@ def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
                 result=result,
             )
         except CannotFindUniqueItemError:
+            t_end = time.perf_counter()
             res = CheckResult(
                 item=item,
                 found=False,
@@ -125,15 +126,26 @@ class Benchmark:
         table.add_column("min_val")
 
         for n, result in enumerate(results, 1):
-            table.add_row(
-                str(n),
-                result.item.name,
-                "Yes" if result.result.identified else "No",
-                "[green]Yes[/green]" if result.found else "[red]Yes[/red]",
-                str(result.result.matched_by),
-                f"{result.elapsed * 1e3:.2f}",
-                f"{result.result.min_val:.3f}" if result.result.min_val > 0 else "-",
-            )
+            if result.found:
+                table.add_row(
+                    str(n),
+                    result.item.name,
+                    "Yes" if result.result.identified else "No",
+                    "[green]Yes[/green]",
+                    str(result.result.matched_by),
+                    f"{result.elapsed * 1e3:.2f}",
+                    f"{result.result.min_val:.3f}" if result.result.min_val > 0 else "-",
+                )
+            else:
+                table.add_row(
+                    str(n),
+                    result.item.name,
+                    "-",
+                    "[red]No[/red]",
+                    "-",
+                    f"{result.elapsed * 1e3:.2f}",
+                    "-",
+                )
 
         self.console.print(table)
 
