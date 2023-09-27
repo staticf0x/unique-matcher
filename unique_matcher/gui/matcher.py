@@ -117,6 +117,11 @@ class QmlMatcher(QObject):
         self.result_file.snapshot()
 
     @Slot()
+    def reset_result_counter(self) -> None:
+        """Reset the internal row counter."""
+        self._cnt = 1
+
+    @Slot()
     def cleanup(self) -> None:
         """Remove empty CSVs."""
         logger.debug("Running cleanup")

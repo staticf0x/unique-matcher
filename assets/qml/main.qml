@@ -449,5 +449,7 @@ ApplicationWindow {
         if (resultsTable.model.rows.length > 1) {
             resultsTable.model.removeRow(1, resultsTable.model.rows.length - 1);
         }
+
+        matcher.reset_result_counter();
     }
 }
