@@ -4,6 +4,7 @@ import os
 import time
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
+from multiprocessing import cpu_count
 from pathlib import Path
 
 import numpy as np
@@ -159,7 +160,7 @@ class Benchmark:
         for name in sorted(os.listdir(DATA_DIR / self.data_set)):
             self.add(name)
 
-        with ProcessPoolExecutor(max_workers=6) as executor:
+        with ProcessPoolExecutor(max_workers=min(cpu_count(), 8)) as executor:
             futures = []
 
             for item in self.to_benchmark:
