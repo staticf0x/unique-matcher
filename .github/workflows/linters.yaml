@@ -1,0 +1,48 @@
+name: Static analysis
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Setup a local virtual environment
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+
+      - uses: actions/cache@v3
+        name: Setup cache
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: isort
+        run: poetry run isort --check --diff unique_matcher/ tests/
+
+      - name: black
+        run: poetry run black --check --diff unique_matcher/ tests/
+
+      - name: ruff
+        run: poetry run ruff check unique_matcher/ tests/
+        continue-on-error: true
