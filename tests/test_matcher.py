@@ -38,8 +38,8 @@ if TEST_SET == "all":
 else:
     CONTAINS = _load_data(DATA_DIR / "contains" / TEST_SET)
 
-CONTAINS_NOT = _load_data(DATA_DIR / "contains_not")
-BASES = _load_data(DATA_DIR / "bases")
+if not GH_ACTION:
+    BASES = _load_data(DATA_DIR / "bases")
 
 
 @pytest.mark.skipif(GH_ACTION, reason="Disabled in GitHub actions.")
