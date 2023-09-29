@@ -532,6 +532,7 @@ class Matcher:
                 item = self.item_loader.get(item.alias)
 
             logger.success("Found identified item by name")
+            logger.info("Found item: {}", item.name)
             return MatchResult(
                 item=item,
                 loc=(0, 0),
@@ -550,6 +551,7 @@ class Matcher:
         if len(filtered_bases) == 1:
             item = filtered_bases[0]
             logger.success("Only one possible unique for base {}", item.base)
+            logger.info("Found item: {}", item.name)
             return MatchResult(
                 item=item,
                 loc=(0, 0),
@@ -591,5 +593,7 @@ class Matcher:
             )
 
         best_result.identified = cropped_item.identified
+
+        logger.info("Found item: {}", best_result.item.name)
 
         return best_result
