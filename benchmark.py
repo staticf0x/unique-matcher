@@ -131,11 +131,13 @@ class Benchmark:
                 table.add_row(
                     str(n),
                     result.item.name,
-                    "Yes" if result.result.identified else "No",
+                    "Yes" if result.result.identified else "No",  # type: ignore[union-attr]
                     "[green]Yes[/green]",
-                    str(result.result.matched_by),
+                    str(result.result.matched_by),  # type: ignore[union-attr]
                     f"{result.elapsed * 1e3:.2f}",
-                    f"{result.result.min_val:.3f}" if result.result.min_val > 0 else "-",
+                    f"{result.result.min_val:.3f}"  # type: ignore[union-attr]
+                    if result.result.min_val > 0  # type: ignore[union-attr]
+                    else "-",
                 )
             else:
                 table.add_row(
@@ -150,7 +152,7 @@ class Benchmark:
 
         self.console.print(table)
 
-    def run(self, data_set: str) -> None:
+    def run(self, data_set: str) -> SuiteResult:
         """Run the whole benchmark suite."""
         self._report = []
         self._times = []

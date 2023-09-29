@@ -90,12 +90,12 @@ def create_ahk_script(*, overwrite: bool = False) -> None:
 class QmlConfig(QObject):
     """Class for managing config.ini from QML."""
 
-    shortcutLoaded = Signal(str, str, arguments=["mod_key", "key"])
+    shortcutLoaded = Signal(str, str, arguments="mod_key,key")
 
     def __init__(self) -> None:
         QObject.__init__(self)
 
-    @Slot("QString", "QString")
+    @Slot(str, str)
     def change_shortcut(self, mod_key: str, key: str) -> None:
         """Change shortcut in config.ini and update the AHK script."""
         shortcut = key if mod_key == "None" else f"{mod_key}+{key}"

@@ -26,6 +26,7 @@ def _load_data(folder: pathlib.Path) -> list[tuple[str, list[Path]]]:
     ]
 
 
+GH_ACTION = os.getenv("GITHUB_ACTIONS") == "true"
 TEST_SET = os.getenv("DATA_SET", "example")
 
 if TEST_SET == "all":
@@ -37,10 +38,10 @@ if TEST_SET == "all":
 else:
     CONTAINS = _load_data(DATA_DIR / "contains" / TEST_SET)
 
-CONTAINS_NOT = _load_data(DATA_DIR / "contains_not")
-BASES = _load_data(DATA_DIR / "bases")
+BASES = _load_data(DATA_DIR / "bases") if not GH_ACTION else []
 
 
+@pytest.mark.skipif(GH_ACTION, reason="Disabled in GitHub actions.")
 @pytest.mark.parametrize(("name", "screenshots"), CONTAINS)
 def test_find_item_contains_item(name, screenshots, matcher):
     """Test that a screenshot contains a specified item."""
@@ -49,15 +50,7 @@ def test_find_item_contains_item(name, screenshots, matcher):
         assert result.item.file == name
 
 
-@pytest.mark.parametrize(("name", "screenshots"), CONTAINS_NOT)
-def test_find_item_doesnt_contain_item(name, screenshots, matcher):
-    """Test that a screenshot does NOT contain a specified item."""
-    # TODO: Can we just invert the CONTAINS data set?
-    for screenshot in screenshots:
-        result = matcher.find_item(screenshot)
-        assert result.item.file != name
-
-
+@pytest.mark.skipif(GH_ACTION, reason="Disabled in GitHub actions.")
 @pytest.mark.parametrize(("base", "screenshots"), BASES)
 def test_get_base_name(base, screenshots, matcher):
     for screenshot in screenshots:

@@ -50,7 +50,7 @@ class QmlUtils(QObject):
         """Open the folder with CSV results."""
         self.open_file(RESULT_DIR / sorted(os.listdir(RESULT_DIR))[-1])
 
-    @Slot("QString")
+    @Slot(str)
     def open_folder(self, folder: str) -> None:
         """Open a single folder."""
         self.open_file(DATA_DIR / folder)
@@ -58,5 +58,5 @@ class QmlUtils(QObject):
     @Slot()
     def zip_done(self) -> None:
         """Zip the done folder and open the directory where the zip file is."""
-        shutil.make_archive(DATA_DIR / "TestDataSet", "zip", DATA_DIR, DONE_DIR.name)
+        shutil.make_archive(str(DATA_DIR / "TestDataSet"), "zip", DATA_DIR, DONE_DIR.name)
         self.open_file(DATA_DIR)
