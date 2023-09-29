@@ -48,4 +48,4 @@ jobs:
         continue-on-error: true
 
       - name: mypy
-        run: mypy unique_matcher/
+        run: poetry run mypy unique_matcher/
