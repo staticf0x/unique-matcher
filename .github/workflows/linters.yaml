@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  linters:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -46,3 +46,6 @@ jobs:
       - name: ruff
         run: poetry run ruff check unique_matcher/ tests/
         continue-on-error: true
+
+      - name: mypy
+        run: mypy unique_matcher/
