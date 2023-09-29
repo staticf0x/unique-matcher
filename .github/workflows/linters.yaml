@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  pytest:
+  linters:
     runs-on: ubuntu-latest
 
     steps:
