@@ -70,7 +70,8 @@ class QmlMatcher(QObject):
         if self.queue_length == 0:
             return
 
-        file = os.listdir(QUEUE_DIR)[0]
+        self.timer.stop()  # This is basically a lock
+        file = sorted(os.listdir(QUEUE_DIR))[0]
 
         try:
             result = self.matcher.find_item(QUEUE_DIR / file)
@@ -110,6 +111,7 @@ class QmlMatcher(QObject):
             logger.exception("Error during processing: {}", str(e))
 
         self.queue_length_changed.emit()
+        self.timer.start()
 
     @Slot()
     def snapshot(self) -> None:
