@@ -29,7 +29,6 @@ class QmlMatcher(QObject):
 
         QObject.__init__(self)
 
-        self._results: list[MatchResult] = []
         self.result_file = ResultFile()
         self.result_file.new()
         self._cnt = 1
@@ -78,7 +77,6 @@ class QmlMatcher(QObject):
 
             self.result_file.add(result)
 
-            self._results.append(result)  # This is used for export
             self.newResult.emit(
                 {
                     "n": self._cnt,
