@@ -136,7 +136,7 @@ if result and "results_all" in matcher.debug_info:
 if result:
     debug(result)
 
-    if args.show_template:
+    if args.show_template and result.template:
         result.template.image.show()
 
 if args.show_unique:

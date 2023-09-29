@@ -13,16 +13,16 @@ from unique_matcher.matcher.utils import is_csv_empty
 class QmlResultCombinator(QObject):
     """Class for combining result CSVs."""
 
-    resultsLoaded = Signal(list, arguments=["files"])  # noqa: N815
-    previewLoaded = Signal(list, arguments=["items"])  # noqa: N815
-    combinedChanged = Signal(list, arguments=["items"])  # noqa: N815
+    resultsLoaded = Signal(list, arguments="files")  # noqa: N815
+    previewLoaded = Signal(list, arguments="items")  # noqa: N815
+    combinedChanged = Signal(list, arguments="items")  # noqa: N815
 
     def __init__(self) -> None:
         QObject.__init__(self)
 
-    def get_combined_results(self, files: list[Path]) -> list[dict[str, str | int]]:
+    def get_combined_results(self, files: list[str]) -> list[dict[str, str | int]]:
         """Get a list of combined results, sorted by count."""
-        combined = {}
+        combined: dict[str, int] = {}
 
         for file in files:
             with open(RESULT_DIR / file, newline="") as fread:
