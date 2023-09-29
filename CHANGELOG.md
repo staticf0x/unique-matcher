@@ -1,3 +1,19 @@
+# v0.5.1
+
+## Changes
+
+### App
+
+- [Fixed] When clearing result table (either directly or through new snapshot),
+  the row numbers start from 1 again
+- [Fixed] The app could process some files multiple times, this should be fixed now
+
+### Item detection
+
+- [Fixed] Following items set as non-natural: Coruscating Elixir, Maw of Mischief
+- [Fixed] Removed items: Band of the Victor
+- [Fixed] Item bases: Maelström Staff, Long Bow (in some cases)
+
 # v0.5.0
 
 ## Changes
