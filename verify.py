@@ -30,14 +30,37 @@ for item_dir in sorted(DONE_DIR.iterdir()):
         item_name = file.parent.name
         item = matcher.item_loader.get(item_name)
 
+        rich.print(f"\n[bold]{item.name}[/bold]")
+        rich.print(f"[link={item.poewiki_url()}]PoE wiki[/link]")
+
+        filtered_bases = matcher.item_loader.filter_base(item.base)
+
+        if len(filtered_bases) == 1:
+            # TODO: duplicated code
+            rich.print("[bold green]Only one unique for this base[/bold green]")
+
+            target_dir = DATA_SET / item_dir.name
+            target_dir.mkdir(parents=True, exist_ok=True)
+
+            target = target_dir / screenshot.name
+
+            if target.exists():
+                rich.print("[bold red]Target already exist![/bold red]")
+                continue
+
+            print(f"Move:\n  source: {file}\n  dest:   {target}")
+            shutil.move(file, target)
+
+            if len(list((DONE_DIR / item_dir).iterdir())) == 0:
+                (DONE_DIR / item_dir).rmdir()
+
+            continue
+
         with Image.open(item.icon) as image:
             image.show()
 
         cropped = matcher.find_unique(file)
         cropped.image.show()
-
-        rich.print(f"\n[bold]{item.name}[/bold]")
-        rich.print(f"[link={item.poewiki_url()}]PoE wiki[/link]")
 
         print()
 
