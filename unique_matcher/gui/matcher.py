@@ -107,6 +107,20 @@ class QmlMatcher(QObject):
             shutil.move(QUEUE_DIR / file, ERROR_DIR / file)
             self.errors_length_changed.emit()
             logger.exception("Error during processing: {}", str(e))
+        except Exception as e:
+            self.newResult.emit(
+                {
+                    "n": self._cnt,
+                    "item": "Error",
+                    "base": "-",
+                    "matched_by": "Unexpected error",
+                },
+            )
+            self._cnt += 1
+
+            shutil.move(QUEUE_DIR / file, ERROR_DIR / file)
+            self.errors_length_changed.emit()
+            logger.exception("Unexpected error during processing: {}", str(e))
 
         self.queue_length_changed.emit()
         self.timer.start()
