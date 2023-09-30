@@ -66,7 +66,7 @@ class QmlMatcher(QObject):
     @Slot()
     def process_next(self) -> None:
         """Process one screenshot."""
-        if self.queue_length == 0:
+        if len(os.listdir(QUEUE_DIR)) == 0:
             return
 
         self.timer.stop()  # This is basically a lock
