@@ -1,3 +1,12 @@
+# v0.5.3
+
+## Changes
+
+### App
+
+- [Fixed] If the screenshot cannot be read (corrupted file),
+  Unique Matcher will try again before moving it to errors.
+
 # v0.5.2
 
 ## Changes
