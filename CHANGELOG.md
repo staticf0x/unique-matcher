@@ -1,3 +1,11 @@
+# v0.5.4
+
+## Changes
+
+### App
+
+- [Fixed] Force UTF-8 everywhere, keep backward compatibility for old CSVs
+
 # v0.5.3
 
 ## Changes
