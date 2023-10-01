@@ -1,3 +1,18 @@
+# v0.5.2
+
+## Changes
+
+### App
+
+- [Fixed] Errors coming from other places than item identification are now
+  properly handled. They will appear as "Unexpected error" in the results table.
+- [Fixed] It is now possible to make screenshots faster than 1 per second
+  because the filenames now contain milliseconds of the time they were created.
+
+### Item detection
+
+- [Fixed] The Iron Fortress couldn't be identified
+
 # v0.5.1
 
 ## Changes
