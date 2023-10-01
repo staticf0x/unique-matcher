@@ -89,7 +89,7 @@ class TitleParser:
         return title_raw.replace("\n", "").title()
 
     def _find_item_name(self, title_parts: list[str]) -> str:
-        """Find item name in title parts."""
+        """Find normalized item name (item.file) in title parts."""
         item_name = (
             normalize_item_name(title_parts[0].title())
             .replace("_Of_", "_of_")
@@ -114,7 +114,7 @@ class TitleParser:
         except KeyError:
             logger.error("Couldn't find item name: {}", item_name)
 
-            if OPT_FIND_BY_NAME_RAISE:
+            if OPT_FIND_BY_NAME_RAISE:  # pragma: no cover
                 raise
 
             return ""
