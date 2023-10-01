@@ -25,7 +25,7 @@ class QmlResultCombinator(QObject):
         combined: dict[str, int] = {}
 
         for file in files:
-            with open(RESULT_DIR / file, newline="") as fread:
+            with open(RESULT_DIR / file, newline="", encoding="utf-8") as fread:
                 reader = csv.DictReader(fread)
 
                 for item in reader:
@@ -62,7 +62,7 @@ class QmlResultCombinator(QObject):
         """Load a preview of one CSV."""
         logger.debug("Loading preview for {}", file)
 
-        with open(RESULT_DIR / file, newline="") as fread:
+        with open(RESULT_DIR / file, newline="", encoding="utf-8") as fread:
             reader = csv.DictReader(fread)
 
             self.previewLoaded.emit(list(reader))
@@ -86,7 +86,7 @@ class QmlResultCombinator(QObject):
 
         combined_results = self.get_combined_results(files)
 
-        with output_path.open("w", newline="") as fwrite:
+        with output_path.open("w", newline="", encoding="utf-8") as fwrite:
             writer = csv.DictWriter(fwrite, ["item", "count"])
             writer.writeheader()
 

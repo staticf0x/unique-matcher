@@ -29,7 +29,7 @@ class ResultFile:
         filename = RESULT_DIR / f"{time.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
         self.current_file = filename
 
-        with open(filename, "w") as fwrite:
+        with open(filename, "w", newline="", encoding="utf-8") as fwrite:
             writer = csv.DictWriter(fwrite, self.HEADER)
             writer.writeheader()
 
@@ -42,7 +42,7 @@ class ResultFile:
         if not self.current_file:
             raise ValueError
 
-        with open(self.current_file, newline="") as fread:
+        with open(self.current_file, newline="", encoding="utf-8") as fread:
             reader = csv.DictReader(fread)
 
             return {row["item"]: int(row["count"]) for row in reader}
@@ -54,7 +54,7 @@ class ResultFile:
         if not self.current_file:
             raise ValueError
 
-        with open(self.current_file, "w", newline="") as fwrite:
+        with open(self.current_file, "w", newline="", encoding="utf-8") as fwrite:
             writer = csv.DictWriter(fwrite, self.HEADER)
             writer.writeheader()
 

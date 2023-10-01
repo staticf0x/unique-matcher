@@ -40,7 +40,7 @@ def calc_normalized_histogram(image: Image.Image) -> np.ndarray:
 
 def is_csv_empty(file: Path) -> bool:
     """Return True if the provided CSV is empty."""
-    with open(file, newline="") as fread:
+    with open(file, newline="", encoding="utf-8") as fread:
         reader = csv.DictReader(fread)
 
         return len(list(reader)) == 0

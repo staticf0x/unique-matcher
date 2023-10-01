@@ -43,7 +43,7 @@ def create_config():
     template = Environment().from_string(CONFIG_TEMPLATE)
     rendered = template.render(root=ROOT_DIR)
 
-    with open(ROOT_DIR / "config.ini", "w", newline="\r\n") as fwrite:
+    with open(ROOT_DIR / "config.ini", "w", newline="\r\n", encoding="utf-8") as fwrite:
         fwrite.write(rendered)
 
     logger.info("Created new config.ini")
@@ -81,7 +81,7 @@ def create_ahk_script(*, overwrite: bool = False) -> None:
     template = Environment().from_string(AHK_TEMPLATE)
     rendered = template.render(root=ROOT_DIR, shortcut=shortcut_to_ahk(shortcut))
 
-    with open(ROOT_DIR / "screenshot.ahk", "w", newline="\r\n") as fwrite:
+    with open(ROOT_DIR / "screenshot.ahk", "w", newline="\r\n", encoding="utf-8") as fwrite:
         fwrite.write(rendered)
 
     logger.info("Created new screenshot.ahk")
@@ -105,7 +105,7 @@ class QmlConfig(QObject):
         cfg = load_config()
         cfg.set("screenshot", "shortcut", shortcut)
 
-        with open(ROOT_DIR / "config.ini", "w") as fwrite:
+        with open(ROOT_DIR / "config.ini", "w", encoding="utf-8") as fwrite:
             cfg.write(fwrite)
 
         create_ahk_script(overwrite=True)
