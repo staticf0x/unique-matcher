@@ -25,12 +25,21 @@ class QmlResultCombinator(QObject):
         combined: dict[str, int] = {}
 
         for file in files:
-            with open(RESULT_DIR / file, newline="", encoding="utf-8") as fread:
-                reader = csv.DictReader(fread)
+            try:
+                with open(RESULT_DIR / file, newline="", encoding="utf-8") as fread:
+                    reader = csv.DictReader(fread)
 
-                for item in reader:
-                    combined.setdefault(item["item"], 0)
-                    combined[item["item"]] += int(item["count"])
+                    for item in reader:
+                        combined.setdefault(item["item"], 0)
+                        combined[item["item"]] += int(item["count"])
+            except UnicodeDecodeError:
+                # TODO: Remove one day
+                with open(RESULT_DIR / file, newline="") as fread:
+                    reader = csv.DictReader(fread)
+
+                    for item in reader:
+                        combined.setdefault(item["item"], 0)
+                        combined[item["item"]] += int(item["count"])
 
         return [
             {"item": v[0], "count": v[1]}
@@ -62,10 +71,17 @@ class QmlResultCombinator(QObject):
         """Load a preview of one CSV."""
         logger.debug("Loading preview for {}", file)
 
-        with open(RESULT_DIR / file, newline="", encoding="utf-8") as fread:
-            reader = csv.DictReader(fread)
+        try:
+            with open(RESULT_DIR / file, newline="", encoding="utf-8") as fread:
+                reader = csv.DictReader(fread)
 
-            self.previewLoaded.emit(list(reader))
+                self.previewLoaded.emit(list(reader))
+        except UnicodeDecodeError:
+            # TODO: Remove one day
+            with open(RESULT_DIR / file, newline="") as fread:
+                reader = csv.DictReader(fread)
+
+                self.previewLoaded.emit(list(reader))
 
     @Slot(list)
     def combine_results(self, files: list[str]) -> None:

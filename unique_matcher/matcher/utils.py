@@ -40,7 +40,15 @@ def calc_normalized_histogram(image: Image.Image) -> np.ndarray:
 
 def is_csv_empty(file: Path) -> bool:
     """Return True if the provided CSV is empty."""
-    with open(file, newline="", encoding="utf-8") as fread:
-        reader = csv.DictReader(fread)
+    try:
+        with open(file, newline="", encoding="utf-8") as fread:
+            reader = csv.DictReader(fread)
 
-        return len(list(reader)) == 0
+            return len(list(reader)) == 0
+    except UnicodeDecodeError:
+        # Using default platform encoding
+        # TODO: Remove one day
+        with open(file, newline="") as fread:
+            reader = csv.DictReader(fread)
+
+            return len(list(reader)) == 0
