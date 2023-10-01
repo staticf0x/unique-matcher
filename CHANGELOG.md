@@ -6,6 +6,7 @@
 
 - [Fixed] If the screenshot cannot be read (corrupted file),
   Unique Matcher will try again before moving it to errors.
+- [Fixed] Force UTF-8 when opening item DB on Windows
 
 # v0.5.2
 
