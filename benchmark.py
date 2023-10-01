@@ -16,7 +16,10 @@ from rich.table import Table
 from simple_term_menu import TerminalMenu  # type: ignore[import]
 
 from unique_matcher.constants import ROOT_DIR
-from unique_matcher.matcher.exceptions import CannotFindUniqueItemError
+from unique_matcher.matcher.exceptions import (
+    CannotFindUniqueItemError,
+    CannotIdentifyUniqueItemError,
+)
 from unique_matcher.matcher.items import Item, ItemLoader
 from unique_matcher.matcher.matcher import Matcher, MatchResult
 
@@ -78,7 +81,7 @@ def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
                 elapsed=t_end - t_start,
                 result=result,
             )
-        except CannotFindUniqueItemError:
+        except (CannotFindUniqueItemError, CannotIdentifyUniqueItemError):
             t_end = time.perf_counter()
             res = CheckResult(
                 item=item,

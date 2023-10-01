@@ -1,3 +1,6 @@
+from loguru import logger
+
+from unique_matcher.matcher.exceptions import CannotIdentifyUniqueItemError
 from unique_matcher.matcher.plugins.base import BaseMatcher
 from unique_matcher.matcher.result import (
     CroppedItemInfo,
@@ -5,6 +8,10 @@ from unique_matcher.matcher.result import (
     MatchResult,
     get_best_result,
 )
+
+# Threshold at which we must discard the result because it's inconclusive
+# even amongst the already filtered bases.
+THRESHOLD_DISCARD = 0.96
 
 
 class DefaultMatcher(BaseMatcher):
@@ -15,4 +22,14 @@ class DefaultMatcher(BaseMatcher):
         return True
 
     def match(self, results_all: list[MatchResult], cropped_item: CroppedItemInfo) -> MatchResult:
-        return get_best_result(results_all, MatchingAlgorithm.DEFAULT)
+        best_result = get_best_result(results_all, MatchingAlgorithm.DEFAULT)
+
+        if best_result.min_val > THRESHOLD_DISCARD:
+            logger.error(
+                "Couldn't identify a unique item, even the best result "
+                "was above THRESHOLD_DISCARD (min_val={})",
+                best_result.min_val,
+            )
+            raise CannotIdentifyUniqueItemError
+
+        return best_result

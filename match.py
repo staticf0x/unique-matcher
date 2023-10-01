@@ -15,7 +15,8 @@ from rich.table import Table
 
 from unique_matcher.constants import ROOT_DIR
 from unique_matcher.matcher.exceptions import BaseUMError
-from unique_matcher.matcher.matcher import THRESHOLD_DISCARD, Matcher
+from unique_matcher.matcher.matcher import Matcher
+from unique_matcher.matcher.plugins.default import THRESHOLD_DISCARD
 
 logger.remove()
 logger.add(

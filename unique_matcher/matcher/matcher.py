@@ -1,6 +1,6 @@
 """Module for matching unique items."""
 from pathlib import Path
-from typing import Any, ClassVar
+from typing import Any
 
 import cv2
 import numpy as np
@@ -17,7 +17,6 @@ from unique_matcher.constants import (
 from unique_matcher.matcher import utils
 from unique_matcher.matcher.exceptions import (
     CannotFindUniqueItemError,
-    CannotIdentifyUniqueItemError,
     InvalidTemplateDimensionsError,
     NotInFullHDError,
 )
@@ -33,10 +32,6 @@ from unique_matcher.matcher.result import (
     get_best_result,
 )
 from unique_matcher.matcher.title import TitleParser
-
-# Threshold at which we must discard the result because it's inconclusive
-# even amongst the already filtered bases.
-THRESHOLD_DISCARD = 0.96
 
 # Threshold for the control guides (item title decorations).
 # Has to be low enough to not allow other clutter to get in.
@@ -437,14 +432,6 @@ class Matcher:
 
         plugin = self.plugin_loader.load(cropped_item)
         best_result = plugin.match(results_all, cropped_item)
-
-        if best_result.min_val > THRESHOLD_DISCARD and best_result.hist_val == 0:
-            logger.error(
-                "Couldn't identify a unique item, even the best result "
-                "was above THRESHOLD_DISCARD (min_val={})",
-                result.min_val,
-            )
-            raise CannotIdentifyUniqueItemError
 
         if aliases := self.item_loader.item_aliases(best_result.item):
             logger.warning(
