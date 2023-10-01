@@ -38,7 +38,7 @@ fn main() {
 
     // Prepare image path
     let local_time = Local::now();
-    let filename = String::from(local_time.format("%Y-%m-%d-%H-%M-%S").to_string())
+    let filename = String::from(local_time.format("%Y-%m-%d-%H-%M-%S-%3f").to_string())
         + String::from(".png").as_str();
     let image_path_buf = screen_dir.join(filename);
     let image_path = image_path_buf.as_path();
