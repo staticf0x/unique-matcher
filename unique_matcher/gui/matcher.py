@@ -38,6 +38,8 @@ class QmlMatcher(QObject):
         self.timer.setInterval(250)
         self.timer.start()
 
+        self._errors = []
+
     @Property(int, notify=items_changed)  # type: ignore[operator, arg-type]
     def items(self) -> int:
         """Return the number of items in the DB."""
@@ -108,19 +110,28 @@ class QmlMatcher(QObject):
             self.errors_length_changed.emit()
             logger.exception("Error during processing: {}", str(e))
         except Exception as e:
-            self.newResult.emit(
-                {
-                    "n": self._cnt,
-                    "item": "Error",
-                    "base": "-",
-                    "matched_by": "Unexpected error",
-                },
-            )
-            self._cnt += 1
+            if file in self._errors:
+                # If the file already failed once to process,
+                # mark it as failed and move to errors folder.
+                self.newResult.emit(
+                    {
+                        "n": self._cnt,
+                        "item": "Error",
+                        "base": "-",
+                        "matched_by": "Unexpected error",
+                    },
+                )
+                self._cnt += 1
 
-            shutil.move(QUEUE_DIR / file, ERROR_DIR / file)
-            self.errors_length_changed.emit()
-            logger.exception("Unexpected error during processing: {}", str(e))
+                shutil.move(QUEUE_DIR / file, ERROR_DIR / file)
+                self.errors_length_changed.emit()
+                logger.exception("Unexpected error during processing: {}", str(e))
+
+                # No need to store them forever
+                self._errors.remove(file)
+            else:
+                logger.error("Couldn't read file {}, retrying", file)
+                self._errors.append(file)
 
         self.queue_length_changed.emit()
         self.timer.start()
