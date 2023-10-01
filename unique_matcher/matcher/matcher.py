@@ -533,6 +533,7 @@ class Matcher:
 
             logger.success("Found identified item by name")
             logger.info("Found item: {}", item.name)
+
             return MatchResult(
                 item=item,
                 loc=(0, 0),
@@ -552,6 +553,7 @@ class Matcher:
             item = filtered_bases[0]
             logger.success("Only one possible unique for base {}", item.base)
             logger.info("Found item: {}", item.name)
+
             return MatchResult(
                 item=item,
                 loc=(0, 0),
