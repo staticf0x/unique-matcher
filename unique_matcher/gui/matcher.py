@@ -8,7 +8,7 @@ from PySide6.QtCore import Property, QObject, QTimer, Signal, Slot
 from unique_matcher.constants import DONE_DIR, ERROR_DIR, QUEUE_DIR, RESULT_DIR
 from unique_matcher.gui.results import ResultFile
 from unique_matcher.matcher.exceptions import BaseUMError
-from unique_matcher.matcher.matcher import Matcher, MatchResult
+from unique_matcher.matcher.matcher import Matcher
 from unique_matcher.matcher.utils import is_csv_empty
 
 
@@ -38,7 +38,7 @@ class QmlMatcher(QObject):
         self.timer.setInterval(250)
         self.timer.start()
 
-        self._errors = []
+        self._errors: list[str] = []
 
     @Property(int, notify=items_changed)  # type: ignore[operator, arg-type]
     def items(self) -> int:
