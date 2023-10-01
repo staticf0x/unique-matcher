@@ -1,0 +1,6 @@
+[report]
+fail_under = 25
+exclude_also =
+    if __name__ == "__main__":
+omit =
+    unique_matcher/gui/__init__.py
