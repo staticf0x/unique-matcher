@@ -1,3 +1,18 @@
+# v0.6.0
+
+## Changes
+
+### App
+
+- [New] Menu shortcuts are now displayed next to the menu entries
+- [Fixed] Missing icon in the app window should now be visible
+
+### Item detection
+
+- [New] Flamesight, Galesight and Thundersight can now identified correctly
+- [Fixed] Items where the algorithm cannot determine the correct one
+  with sufficient accuracy are now marked as errors instead of just picking one
+
 # v0.5.4
 
 ## Changes
