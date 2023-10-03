@@ -52,6 +52,7 @@ class CheckResult:
     """A result of a single check (1 item in 1 screenshot)."""
 
     item: Item
+    file: Path
     found: bool
     elapsed: float
     result: MatchResult | None = None
@@ -77,6 +78,7 @@ def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
 
             res = CheckResult(
                 item=item,
+                file=screen,
                 found=result.item == item,
                 elapsed=t_end - t_start,
                 result=result,
@@ -85,6 +87,7 @@ def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
             t_end = time.perf_counter()
             res = CheckResult(
                 item=item,
+                file=screen,
                 found=False,
                 elapsed=t_end - t_start,
             )
@@ -194,6 +197,13 @@ class Benchmark:
         times = [result.elapsed for result in all_results]
         accuracy = found / total
 
+        with open(f"benchmark-{data_set}.log", "w") as fwrite:
+            for result in all_results:
+                if result.found:
+                    continue
+
+                fwrite.write(f"Error: {result.file.relative_to(ROOT_DIR)}\n")
+
         # Draw the result table
         if self.display:
             self.print_result_table(all_results)
@@ -212,10 +222,9 @@ class Benchmark:
                 f"Found:       {found}",
                 f"Accuracy:    [bold {color}]{accuracy:.2%}[/bold {color}]",
                 "",
-                f"Average time: {np.mean(times)*1e3:6.2f} ms",
+                f"Average time: {np.mean(times)*1e3:6.2f} ± {np.std(times)*1e3:6.2f} ms",
                 f"Fastest:      {np.min(times)*1e3:6.2f} ms",
                 f"Slowest:      {np.max(times)*1e3:6.2f} ms",
-                f"Std:          {np.std(times)*1e3:6.2f} ms",
             ]
 
             panel = Panel("\n".join(lines), title="Summary")
