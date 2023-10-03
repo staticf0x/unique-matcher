@@ -187,10 +187,10 @@ class Benchmark:
 
                     time.sleep(0.1)
 
-        all_results = []
+        all_results: list[CheckResult] = []
 
-        for result in [f.result() for f in futures]:
-            all_results.extend(result)
+        for check_results in [f.result() for f in futures]:
+            all_results.extend(check_results)
 
         found = sum(result.found for result in all_results)
         total = len(all_results)
