@@ -222,7 +222,7 @@ class Benchmark:
                 f"Found:       {found}",
                 f"Accuracy:    [bold {color}]{accuracy:.2%}[/bold {color}]",
                 "",
-                f"Average time: {np.mean(times)*1e3:6.2f} ± {np.std(times)*1e3:6.2f} ms",
+                f"Average time: {np.mean(times)*1e3:6.2f} ms ± {np.std(times)*1e3:.2f} ms",
                 f"Fastest:      {np.min(times)*1e3:6.2f} ms",
                 f"Slowest:      {np.max(times)*1e3:6.2f} ms",
             ]
