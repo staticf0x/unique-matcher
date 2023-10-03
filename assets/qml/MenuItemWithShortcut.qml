@@ -8,7 +8,7 @@ MenuItem {
         anchors.centerIn: parent
 
         Text {
-            text: control.text
+            text: control.text.replace(/&(\w)/, "<u>$1</u>")
             anchors.left: parent.left
         }
 
