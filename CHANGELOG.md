@@ -9,7 +9,7 @@
 
 ### Item detection
 
-- [New] Flamesight, Galesight and Thundersight can now identified correctly
+- [New] Flamesight, Galesight and Thundersight can now be identified correctly
 - [Fixed] Items where the algorithm cannot determine the correct one
   with sufficient accuracy are now marked as errors instead of just picking one
 
