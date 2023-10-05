@@ -15,7 +15,8 @@ from rich.table import Table
 
 from unique_matcher.constants import ROOT_DIR
 from unique_matcher.matcher.exceptions import BaseUMError
-from unique_matcher.matcher.matcher import THRESHOLD_DISCARD, Matcher
+from unique_matcher.matcher.matcher import Matcher
+from unique_matcher.matcher.plugins.default import THRESHOLD_DISCARD
 
 logger.remove()
 logger.add(
@@ -74,10 +75,7 @@ if result and "results_all" in matcher.debug_info:
     table.add_column("min_val")
     table.add_column("hist_val")
 
-    if result.item.base in matcher.FORCE_HISTOGRAM_MATCHING:
-        sort_lambda = lambda r: r.hist_val  # noqa: E731
-    else:
-        sort_lambda = lambda r: r.min_val  # noqa: E731
+    sort_lambda = lambda r: r.min_val  # noqa: E731
 
     for i, res in enumerate(sorted(matcher.debug_info["results_all"], key=sort_lambda)):
         style = None

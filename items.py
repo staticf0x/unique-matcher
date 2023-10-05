@@ -98,8 +98,8 @@ if args.action == "list":
             line["base"],
             f"{line['sockets']}/{line['columns']}",
             f"{line['width']}x{line['height']}",
-            "Yes" if line["enabled"] == "1" else "No",
-            "Yes" if line["global"] == "1" else "No",
+            "[green]Yes[/green]" if line["enabled"] == "1" else "[red]No[/red]",
+            "[green]Yes[/green]" if line["global"] == "1" else "[red]No[/red]",
             f"[link={url}]link[/link]",
         )
 

@@ -16,7 +16,10 @@ from rich.table import Table
 from simple_term_menu import TerminalMenu  # type: ignore[import]
 
 from unique_matcher.constants import ROOT_DIR
-from unique_matcher.matcher.exceptions import CannotFindUniqueItemError
+from unique_matcher.matcher.exceptions import (
+    CannotFindUniqueItemError,
+    CannotIdentifyUniqueItemError,
+)
 from unique_matcher.matcher.items import Item, ItemLoader
 from unique_matcher.matcher.matcher import Matcher, MatchResult
 
@@ -49,6 +52,7 @@ class CheckResult:
     """A result of a single check (1 item in 1 screenshot)."""
 
     item: Item
+    file: Path
     found: bool
     elapsed: float
     result: MatchResult | None = None
@@ -74,14 +78,16 @@ def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
 
             res = CheckResult(
                 item=item,
+                file=screen,
                 found=result.item == item,
                 elapsed=t_end - t_start,
                 result=result,
             )
-        except CannotFindUniqueItemError:
+        except (CannotFindUniqueItemError, CannotIdentifyUniqueItemError):
             t_end = time.perf_counter()
             res = CheckResult(
                 item=item,
+                file=screen,
                 found=False,
                 elapsed=t_end - t_start,
             )
@@ -181,15 +187,22 @@ class Benchmark:
 
                     time.sleep(0.1)
 
-        all_results = []
+        all_results: list[CheckResult] = []
 
-        for result in [f.result() for f in futures]:
-            all_results.extend(result)
+        for check_results in [f.result() for f in futures]:
+            all_results.extend(check_results)
 
         found = sum(result.found for result in all_results)
         total = len(all_results)
         times = [result.elapsed for result in all_results]
         accuracy = found / total
+
+        with open(f"benchmark-{data_set}.log", "w") as fwrite:
+            for result in all_results:
+                if result.found:
+                    continue
+
+                fwrite.write(f"Error: {result.file.relative_to(ROOT_DIR)}\n")
 
         # Draw the result table
         if self.display:
@@ -209,10 +222,9 @@ class Benchmark:
                 f"Found:       {found}",
                 f"Accuracy:    [bold {color}]{accuracy:.2%}[/bold {color}]",
                 "",
-                f"Average time: {np.mean(times)*1e3:6.2f} ms",
+                f"Average time: {np.mean(times)*1e3:6.2f} ms ± {np.std(times)*1e3:.2f} ms",
                 f"Fastest:      {np.min(times)*1e3:6.2f} ms",
                 f"Slowest:      {np.max(times)*1e3:6.2f} ms",
-                f"Std:          {np.std(times)*1e3:6.2f} ms",
             ]
 
             panel = Panel("\n".join(lines), title="Summary")

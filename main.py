@@ -3,7 +3,7 @@
 import sys
 
 from loguru import logger
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtGui import QGuiApplication, QIcon
 from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 
 from unique_matcher.constants import DONE_DIR, ERROR_DIR, LOG_DIR, QUEUE_DIR, VERSION
@@ -41,6 +41,8 @@ if __name__ == "__main__":
     # Init app
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
+
+    app.setWindowIcon(QIcon("um.ico"))
 
     # Properties
     engine.rootContext().setContextProperty("VERSION", VERSION)

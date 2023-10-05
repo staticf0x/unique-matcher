@@ -186,6 +186,7 @@ ApplicationWindow {
         Menu {
             id: fileMenu
             title: "&File"
+            delegate: MenuItemWithShortcut {}
 
             Action {
                 text: "Start AHK script"
@@ -207,6 +208,7 @@ ApplicationWindow {
         Menu {
             id: editMenu
             title: "&Edit"
+            delegate: MenuItemWithShortcut {}
 
             Action {
                 text: "&Change screenshot shortcut"
@@ -220,6 +222,7 @@ ApplicationWindow {
         Menu {
             id: resultsMenu
             title: "&Results"
+            delegate: MenuItemWithShortcut {}
 
             Action {
                 text: "&Open CSV"
@@ -279,6 +282,7 @@ ApplicationWindow {
         Menu {
             id: helpMenu
             title: "&Help"
+            delegate: MenuItemWithShortcut {}
 
             Action {
                 text: "Usage guide"

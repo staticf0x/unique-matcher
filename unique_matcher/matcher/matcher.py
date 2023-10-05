@@ -1,9 +1,6 @@
 """Module for matching unique items."""
-import math
-from dataclasses import dataclass
-from enum import Enum
 from pathlib import Path
-from typing import Any, ClassVar
+from typing import Any
 
 import cv2
 import numpy as np
@@ -20,104 +17,37 @@ from unique_matcher.constants import (
 from unique_matcher.matcher import utils
 from unique_matcher.matcher.exceptions import (
     CannotFindUniqueItemError,
-    CannotIdentifyUniqueItemError,
     InvalidTemplateDimensionsError,
     NotInFullHDError,
 )
 from unique_matcher.matcher.generator import ItemGenerator
 from unique_matcher.matcher.items import SOCKET_COLORS, Item, ItemLoader
+from unique_matcher.matcher.plugins import PluginLoader
+from unique_matcher.matcher.result import (
+    CroppedItemInfo,
+    ItemTemplate,
+    MatchedBy,
+    MatchingAlgorithm,
+    MatchResult,
+    get_best_result,
+)
 from unique_matcher.matcher.title import TitleParser
-
-# Threshold at which we must discard the result because it's inconclusive
-# even amongst the already filtered bases.
-THRESHOLD_DISCARD = 0.96
 
 # Threshold for the control guides (item title decorations).
 # Has to be low enough to not allow other clutter to get in.
 # Typically the min_val of guides is ~0.06.
 THRESHOLD_CONTROL = 0.16
 
-# Threshold for discarding results based on the distance
-# in either min_val or hist_val between the best result
-# and the second best result.
-# If the distance is too low (lower than THRESHOLD_RESULT_DISTANCE),
-# the result will be discarded for the detection not being accurate enough.
-THRESHOLD_RESULT_DISTANCE = 0.02
-
-
-@dataclass
-class ItemTemplate:
-    """Helper class for the image template."""
-
-    image: Image.Image
-    sockets: int
-
-
-@dataclass
-class CroppedItemInfo:
-    """Helper class for the cropped out part with unique item info."""
-
-    image: Image.Image
-    base: str
-    name: str
-    identified: bool
-
-
-class MatchedBy(Enum):
-    """How the item was matched."""
-
-    TEMPLATE_MATCH = 0
-    HISTOGRAM_MATCH = 1
-    ONLY_UNIQUE_FOR_BASE = 2
-    ITEM_NAME = 3
-
-    def __str__(self) -> str:
-        match self:
-            case self.TEMPLATE_MATCH:
-                return "Template matching"
-            case self.HISTOGRAM_MATCH:
-                return "Histogram comparison"
-            case self.ONLY_UNIQUE_FOR_BASE:
-                return "Only unique for the base"
-            case self.ITEM_NAME:
-                return "Item name"
-            case _:
-                raise ValueError
-
-
-@dataclass
-class MatchResult:
-    """A class for the item/screenshot match result."""
-
-    item: Item
-    loc: tuple[int, int]
-    identified: bool | None
-    matched_by: MatchedBy
-    min_val: float
-    hist_val: float = 0.0
-    template: ItemTemplate | None = None
-
-
-class MatchingAlgorithm(Enum):
-    """Enum for matching algorithm during get_best_result."""
-
-    DEFAULT = 0
-    VARIANTS_ONLY = 1
-    HISTOGRAM = 2
-
 
 class Matcher:
     """Main class for matching items in a screenshot."""
-
-    FORCE_HISTOGRAM_MATCHING: ClassVar[list[str]] = [
-        "Two-Stone Ring",
-    ]
 
     def __init__(self) -> None:
         self.generator = ItemGenerator()
         self.item_loader = ItemLoader()
         self.item_loader.load()
         self.title_parser = TitleParser(self.item_loader)
+        self.plugin_loader = PluginLoader(self.item_loader)
 
         self.unique_one_line = Image.open(str(TEMPLATES_DIR / "unique-one-line-fullhd.png"))
         self.unique_one_line_end = Image.open(str(TEMPLATES_DIR / "unique-one-line-end-fullhd.png"))
@@ -133,78 +63,6 @@ class Matcher:
         )
 
         self.debug_info: dict[str, Any] = {}
-
-    def _get_distance_from_best(self, results: list[MatchResult]) -> tuple[float, float]:
-        """Get the distance in min_val and hist_val between 1st and 2nd result.
-
-        If there is <= 1 result, return (1.0, 1.0).
-        """
-        if len(results) <= 1:
-            return 1.0, 1.0
-
-        # Sort the results lowest to highest
-        min_val = sorted(results, key=lambda res: res.min_val)
-        hist_val = sorted(results, key=lambda res: res.min_val)
-
-        # Calculate distances between 1st and 2nd result
-        dist_min_val = abs(min_val[0].min_val - min_val[1].min_val)
-        dist_hist_val = abs(hist_val[0].hist_val - hist_val[1].hist_val)
-
-        # Warn if under threshold
-        if dist_min_val < THRESHOLD_RESULT_DISTANCE:
-            logger.warning("min_val distance too low: {}", dist_min_val)
-
-        if dist_hist_val < THRESHOLD_RESULT_DISTANCE:
-            logger.warning("hist_val distance too low: {}", dist_hist_val)
-
-        # Compare which method is more accurate
-        if dist_min_val < dist_hist_val:
-            logger.debug("Histogram comparison seems to be more precise than template matching")
-        else:
-            logger.debug("Template matching seems to be more precise than histogram comparison")
-
-        return dist_min_val, dist_hist_val
-
-    def get_best_result(
-        self,
-        results: list[MatchResult],
-        algorithm: MatchingAlgorithm = MatchingAlgorithm.DEFAULT,
-    ) -> MatchResult:
-        """Find the best result (min(min_val) or min(hist_val))."""
-        logger.debug("Matching algorithm: {}", algorithm)
-
-        dist_min_val, dist_hist_val = self._get_distance_from_best(results)
-
-        if math.isclose(dist_min_val, 0) and algorithm == MatchingAlgorithm.DEFAULT:
-            # If neither result is good by min_val, try to switch to histogram matching
-            if dist_hist_val < THRESHOLD_RESULT_DISTANCE:
-                # But if the hist_val distance is too low as well, terminate here
-                # because we value data correctness rather than guessing
-                msg = "Neither template matching nor histogram comparison is accurate enough"
-                logger.error(msg)
-                raise CannotIdentifyUniqueItemError(msg)
-
-            logger.warning("Switching matching algorithm to HISTOGRAM because dist_min_val=0")
-            algorithm = MatchingAlgorithm.HISTOGRAM
-
-        match algorithm:
-            case MatchingAlgorithm.VARIANTS_ONLY:
-                if any(res.template.sockets > 0 for res in results):  # type: ignore[union-attr]
-                    # Socketable items will always have min_val matching first
-                    # NOTE: Ignoring union-attr because mypy doesn't know that
-                    #       with VARIANTS_ONLY the template is *always* present
-                    return min(results, key=lambda res: res.min_val)
-
-                logger.warning("Using VARIANTS_ONLY when sockets=0 defaults to DEFAULT")
-
-            case MatchingAlgorithm.HISTOGRAM:
-                return min(results, key=lambda res: res.hist_val)
-
-            case MatchingAlgorithm.DEFAULT:
-                return min(results, key=lambda res: res.min_val)
-
-        # Same as DEFAULT
-        return min(results, key=lambda res: res.min_val)
 
     def get_item_variants(self, item: Item) -> list[ItemTemplate]:
         """Get a list of images for all socket variants of an item."""
@@ -302,7 +160,7 @@ class Matcher:
             )
             results.append(match_result)
 
-        return self.get_best_result(results, MatchingAlgorithm.VARIANTS_ONLY)
+        return get_best_result(results, MatchingAlgorithm.VARIANTS_ONLY)
 
     def load_screen(self, screenshot: str | Path) -> np.ndarray:
         """Load a screenshot from file into OpenCV format."""
@@ -564,28 +422,16 @@ class Matcher:
                 template=None,
             )
 
+        # Check all bases
         for item in filtered_bases:
             result = self.check_one(cropped_item.image, item)
-
             results_all.append(result)
 
         if DEBUG:
             self.debug_info["results_all"] = results_all
 
-        if cropped_item.base in self.FORCE_HISTOGRAM_MATCHING:
-            # Force histogram matching on these bases
-            best_result = self.get_best_result(results_all, MatchingAlgorithm.HISTOGRAM)
-            best_result.matched_by = MatchedBy.HISTOGRAM_MATCH
-        else:
-            best_result = self.get_best_result(results_all, MatchingAlgorithm.DEFAULT)
-
-        if best_result.min_val > THRESHOLD_DISCARD and best_result.hist_val == 0:
-            logger.error(
-                "Couldn't identify a unique item, even the best result "
-                "was above THRESHOLD_DISCARD (min_val={})",
-                result.min_val,
-            )
-            raise CannotIdentifyUniqueItemError
+        plugin = self.plugin_loader.load(cropped_item)
+        best_result = plugin.match(results_all, cropped_item)
 
         if aliases := self.item_loader.item_aliases(best_result.item):
             logger.warning(
