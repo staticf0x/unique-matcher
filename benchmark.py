@@ -305,7 +305,7 @@ def run() -> None:
             f"{total_items/items_in_db:<8.2%}",
             f"{total_screenshots:<11d}",
             f"{total_found:<5d}",
-            f"**{total_accuracy:.2%}**" + " " if total_accuracy < 1 else "",
+            f"**{total_accuracy:.2%}**" + (" " if total_accuracy < 1 else ""),
         ]
 
         print(f"| {' | '.join(columns)} |")
