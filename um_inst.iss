@@ -1,6 +1,6 @@
 [Setup]
 AppName=Unique Matcher
-AppVersion=0.5.4
+AppVersion=0.6.0
 DefaultDirName=UniqueMatcher
 OutputBaseFilename=UniqueMatcherInstall
 SetupIconFile=um.ico
