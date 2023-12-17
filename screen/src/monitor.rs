@@ -1,5 +1,41 @@
 use ini::Ini;
-use std::path::{Path, PathBuf};
+use screenshots::Screen;
+use std::{
+    fmt::Display,
+    path::{Path, PathBuf},
+};
+
+#[derive(Debug)]
+pub enum Error {
+    InvalidScreenId { id: usize, total: usize },
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Error::InvalidScreenId { id, total } => write!(
+                f,
+                "Error: Cannot use screen {}, you only have {} screen(s) (IDs go from 0 to {})",
+                id,
+                total,
+                total - 1
+            ),
+        }
+    }
+}
+
+pub fn poe_screen(workdir: &Path) -> Result<Screen, Error> {
+    let id = get_poe_monitor_id(&workdir);
+
+    // Get all screens
+    let screens = Screen::all().unwrap();
+
+    let total = screens.len();
+    match id >= total {
+        true => Err(Error::InvalidScreenId { id, total }),
+        false => Ok(screens[id]),
+    }
+}
 
 pub fn get_poe_monitor_id(workdir: &Path) -> usize {
     if cfg!(windows) {
