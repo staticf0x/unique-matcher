@@ -13,7 +13,7 @@ fn main() {
         std::fs::create_dir_all(&screenshots_dir).unwrap();
     }
 
-    let screen = monitor::poe_screen(workdir).unwrap();
+    let screen = monitor::poe_screen(&workdir).unwrap();
 
     // Prepare image path
     let filename = format!("{}.png", Local::now().format("%Y-%m-%d-%H-%M-%S-%3f"));
