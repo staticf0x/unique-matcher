@@ -9,17 +9,24 @@ fn main() {
     // Prepare paths
     let cur_dir = env::current_dir().unwrap();
     let workdir = cur_dir.as_path();
-    let screen_dir = workdir.join("data").join("queue");
+
+    let screenshots_dir = workdir.join("data").join("queue");
+    if !screenshots_dir.exists() {
+        std::fs::create_dir_all(&screenshots_dir).unwrap();
+    }
+
     let cfg_path = workdir.join("config.ini");
-    let config_path_str = cfg_path.as_path().to_str().unwrap();
+    if !cfg_path.exists() {
+        std::fs::write(&cfg_path, "[screenshot]\nscreen = -1\nshortcut = Win+S").unwrap();
+    }
 
     // Load config
-    let mut screen_id: i32 = match Ini::load_from_file(config_path_str) {
+    let mut screen_id: i32 = match Ini::load_from_file(&cfg_path) {
         Ok(ini_file) => ini_file
             .get_from_or(Some("screenshot"), "screen", "0")
-            .parse::<i32>()
+            .parse()
             .unwrap(),
-        Err(_) => 0 as i32,
+        Err(_) => 0,
     };
 
     if screen_id == -1 {
@@ -38,10 +45,8 @@ fn main() {
 
     // Prepare image path
     let local_time = Local::now();
-    let filename = String::from(local_time.format("%Y-%m-%d-%H-%M-%S-%3f").to_string())
-        + String::from(".png").as_str();
-    let image_path_buf = screen_dir.join(filename);
-    let image_path = image_path_buf.as_path();
+    let filename = format!("{}.png", local_time.format("%Y-%m-%d-%H-%M-%S-%3f"));
+    let image_path = screenshots_dir.join(filename);
 
     // Get all screens
     let screens = Screen::all().unwrap();
@@ -59,9 +64,9 @@ fn main() {
 
         // Make screenshot
         let image = screen.capture().unwrap();
-        image.save(image_path).unwrap();
+        image.save(&image_path).unwrap();
 
-        println!("Screenshot saved to: {}", &image_path.to_str().unwrap());
+        println!("Screenshot saved to: {}", image_path.display());
     }
 }
 
