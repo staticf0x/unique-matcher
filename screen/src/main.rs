@@ -14,7 +14,7 @@ fn main() {
         std::fs::create_dir_all(&screenshots_dir).unwrap();
     }
 
-    let screen_id = monitor::get_poe_monitor(&workdir);
+    let screen_id = monitor::get_poe_monitor_id(&workdir);
 
     println!("Using screen ID: {}", screen_id);
 
