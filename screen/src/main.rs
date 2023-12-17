@@ -5,8 +5,7 @@ pub mod monitor;
 
 fn main() {
     // Prepare paths
-    let cur_dir = env::current_dir().unwrap();
-    let workdir = cur_dir.as_path();
+    let workdir = env::current_dir().unwrap();
 
     let screenshots_dir = workdir.join("data").join("queue");
     if !screenshots_dir.exists() {
