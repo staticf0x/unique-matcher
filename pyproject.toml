@@ -10,7 +10,7 @@ packages = [{include = "unique_matcher"}]
 python = "~3.11"
 numpy = "^1.25.1"
 opencv-python = "^4.8.0.74"
-pillow = "^10.0.0"
+pillow = "^10.2.0"
 rich = "^13.5.2"
 loguru = "^0.7.0"
 pytesseract = "^0.3.10"
