@@ -158,6 +158,17 @@ class Benchmark:
 
         self.console.print(table)
 
+    def log_errors(self, data_set: str, results: list[CheckResult]) -> None:
+        """Log errors if there are any."""
+        errors = [result for result in results if not result.found]
+
+        if not errors:
+            return
+
+        with Path(f"benchmark-logs/benchmark-{data_set}.log").open("w") as fwrite:
+            for result in errors:
+                fwrite.write(f"Error: {result.file.relative_to(ROOT_DIR)}\n")
+
     def run(self, data_set: str) -> SuiteResult:
         """Run the whole benchmark suite."""
         self._report = []
@@ -197,12 +208,8 @@ class Benchmark:
         times = [result.elapsed for result in all_results]
         accuracy = found / total
 
-        with open(f"benchmark-{data_set}.log", "w") as fwrite:
-            for result in all_results:
-                if result.found:
-                    continue
-
-                fwrite.write(f"Error: {result.file.relative_to(ROOT_DIR)}\n")
+        # Log errors, if any
+        self.log_errors(data_set, all_results)
 
         # Draw the result table
         if self.display:
@@ -312,4 +319,5 @@ def run() -> None:
 
 
 if __name__ == "__main__":
+    Path("benchmark-logs/").mkdir(exist_ok=True)
     run()
