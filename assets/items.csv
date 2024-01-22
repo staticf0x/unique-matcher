@@ -17,8 +17,8 @@ Ahkeli's Valley,Ahkelis_Valley,,0,0,Ruby Ring,1,0,1,1
 Ahn's Contempt,Ahns_Contempt,,4,2,Praetor Crown,1,1,2,2
 Ahn's Heritage,Ahns_Heritage,,3,2,Colossal Tower Shield,1,1,2,4
 Ahn's Might,Ahns_Might,,3,2,Midnight Blade,1,1,2,3
-Ahuana's Bite,Ahuanas_Bite,,0,0,Sharktooth Arrow Quiver,1,0,2,3
-Akoya's Gaze,Akoyas_Gaze,,4,2,Regicide Mask,1,0,2,2
+Ahuana's Bite,Ahuanas_Bite,,0,0,Sharktooth Arrow Quiver,1,1,2,3
+Akoya's Gaze,Akoyas_Gaze,,4,2,Regicide Mask,1,1,2,2
 Al Dhih,Al_Dhih,,4,2,Timeworn Claw,1,1,2,2
 Alberon's Warpath,Alberons_Warpath,,4,2,Soldier Boots,1,1,2,2
 Algor Mortis,Algor_Mortis,,4,2,Carnal Mitts,1,1,2,2
@@ -115,7 +115,7 @@ Bloodsoaked Medallion,Bloodsoaked_Medallion,,0,0,Amber Amulet,1,1,1,1
 Blunderbore,Blunderbore,,6,2,Astral Plate,1,1,2,3
 Bones of Ullr,Bones_of_Ullr,,4,2,Silk Slippers,1,1,2,2
 Bottled Faith,Bottled_Faith,,0,0,Sulphur Flask,1,0,1,2
-Bound Fate,Bound_Fate,,0,0,Cloth Belt,1,0,2,1
+Bound Fate,Bound_Fate,,0,0,Cloth Belt,1,1,2,1
 Brain Rattler,Brain_Rattler,,6,2,Meatgrinder,1,1,2,4
 Bramblejack,Bramblejack,,6,2,Plate Vest,1,1,2,3
 Brawn,Brawn,,0,0,Crimson Jewel,0,0,1,1
@@ -225,7 +225,7 @@ Darkray Vectors,Darkray_Vectors,,4,2,Dragonscale Boots,1,1,2,2
 Darkscorn,Darkscorn,,6,2,Assassin Bow,1,1,2,4
 Dawnbreaker,Dawnbreaker,,3,2,Colossal Tower Shield,1,0,2,4
 Dawnstrider,Dawnstrider,,4,2,Vaal Greaves,1,0,2,2
-Dead Reckoning,Dead_Reckoning,,0,0,Cobalt Jewel,1,0,1,1
+Dead Reckoning,Dead_Reckoning,,0,0,Cobalt Jewel,1,1,1,1
 Death and Taxes,Death_and_Taxes,,0,0,Necropolis Map,1,1,1,1
 Death Rush,Death_Rush,,0,0,Amethyst Ring,1,1,1,1
 Death's Door,Deaths_Door,,4,2,Crusader Boots,1,0,2,2
@@ -235,7 +235,7 @@ Death's Oath,Deaths_Oath,,6,2,Astral Plate,1,1,2,3
 Death's Opus,Deaths_Opus,,6,2,Death Bow,0,0,2,4
 Debeon's Dirge,Debeons_Dirge,,6,2,Despot Axe,1,1,2,4
 Deerstalker,Deerstalker,,4,2,Deerskin Boots,1,1,2,2
-Defiance of Destiny,Defiance_of_Destiny,,0,0,Paua Amulet,1,0,1,1
+Defiance of Destiny,Defiance_of_Destiny,,0,0,Paua Amulet,1,1,1,1
 Deidbell,Deidbell,,4,2,Gilded Sallet,1,1,2,2
 Deidbellow,Deidbellow,,4,2,Gilded Sallet,0,0,2,2
 Demigod's Authority,Demigods_Authority,,3,1,Golden Blade,1,0,2,3
@@ -441,7 +441,7 @@ Hyrri's Truth,Hyrris_Truth,,0,0,Jade Amulet,1,1,1,1
 Icefang Orbit,Icefang_Orbit,,0,0,Iron Ring,1,1,1,1
 Icetomb,Icetomb,,6,2,Latticed Ringmail,1,1,2,3
 Ichimonji,Ichimonji,,3,1,Corsair Sword,1,1,1,3
-Ikiaho's Promise,Ikiahos_Promise,,0,0,Coral Amulet,1,0,1,1
+Ikiaho's Promise,Ikiahos_Promise,,0,0,Coral Amulet,1,1,1,1
 Immortal Flesh,Immortal_Flesh,,0,0,Leather Belt,1,1,2,1
 Immutable Force,Immutable_Force,,0,0,Crimson Jewel,1,1,1,1
 Impossible Escape,Impossible_Escape,,0,0,Viridian Jewel,1,0,1,1
@@ -466,12 +466,12 @@ Izaro's Turmoil,Izaros_Turmoil,,0,0,Crimson Jewel,0,0,1,1
 "Jack, the Axe",Jack_the_Axe,,3,2,Vaal Hatchet,1,1,2,3
 Jaws of Agony,Jaws_of_Agony,,3,2,Supreme Spiked Shield,1,1,2,2
 Jorrhast's Blacksteel,Jorrhasts_Blacksteel,,6,2,Steelhead,1,1,2,4
-Kahuturoa's Certainty,Kahuturoas_Certainty,,4,2,Ancient Greaves,1,0,2,2
+Kahuturoa's Certainty,Kahuturoas_Certainty,,4,2,Ancient Greaves,1,1,2,2
 Kalandra's Touch,Kalandras_Touch,,0,0,Ring,1,1,1,1
 Kalisa's Grace,Kalisas_Grace,,4,2,Samite Gloves,1,1,2,2
 Kaltenhalt,Kaltenhalt,,3,2,Painted Buckler,1,1,2,2
 Kaltensoul,Kaltensoul,,3,2,Painted Buckler,0,0,2,2
-Kaom's Binding,Kaoms_Binding,,0,0,Heavy Belt,1,0,2,1
+Kaom's Binding,Kaoms_Binding,,0,0,Heavy Belt,1,1,2,1
 Kaom's Heart,Kaoms_Heart,,6,2,Glorious Plate,1,1,2,3
 Kaom's Primacy,Kaoms_Primacy,,6,2,Karui Chopper,1,1,2,4
 Kaom's Roots,Kaoms_Roots,,4,2,Titan Greaves,1,1,2,2
@@ -482,7 +482,7 @@ Karui Charge,Karui_Charge,,0,0,Jade Amulet,0,0,1,1
 Karui Ward,Karui_Ward,,0,0,Jade Amulet,1,1,1,1
 Kiara's Determination,Kiaras_Determination,,0,0,Silver Flask,1,1,1,2
 Kikazaru,Kikazaru,,0,0,Topaz Ring,1,1,1,1
-Kiloava's Bluster,Kiloavas_Bluster,,3,2,Ironwood Buckler,1,0,1,2
+Kiloava's Bluster,Kiloavas_Bluster,,3,2,Ironwood Buckler,1,1,1,2
 Kingmaker,Kingmaker,,6,2,Despot Axe,1,0,2,4
 Kingsguard,Kingsguard,,6,2,Conquest Chainmail,1,1,2,3
 Kintsugi,Kintsugi,,6,2,Exquisite Leather,1,1,2,3
@@ -522,7 +522,7 @@ Lord of Steel,Lord_of_Steel,,0,0,Viridian Jewel,0,0,1,1
 Loreweave,Loreweave,,6,2,Elegant Ringmail,1,0,2,3
 Lori's Lantern,Loris_Lantern,,0,0,Prismatic Ring,1,1,1,1
 Lycosidae,Lycosidae,,3,2,Rawhide Tower Shield,1,1,2,4
-Maata's Teaching,Maatas_Teaching,,3,2,Karui Sceptre,1,0,2,3
+Maata's Teaching,Maatas_Teaching,,3,2,Karui Sceptre,1,1,2,3
 Machina Mitts,Machina_Mitts,,4,2,Murder Mitts,1,1,2,2
 Maelström of Chaos,Maelstrom_of_Chaos,,0,0,Atoll Map,1,1,1,1
 Mageblood,Mageblood,,0,0,Heavy Belt,1,1,2,1
@@ -672,7 +672,7 @@ Quickening Covenant,Quickening_Covenant,,0,0,Viridian Jewel,1,0,1,1
 Quill Rain,Quill_Rain,,6,2,Short Bow,1,1,2,3
 Rain of Splinters,Rain_of_Splinters,,0,0,Crimson Jewel,1,0,1,1
 Rainbowstride,Rainbowstride,,4,2,Conjurer Boots,1,1,2,2
-Rakiata's Dance,Rakiatas_Dance,,6,2,Engraved Greatsword,1,0,2,4
+Rakiata's Dance,Rakiatas_Dance,,6,2,Engraved Greatsword,1,1,2,4
 Ralakesh's Impatience,Ralakeshs_Impatience,,4,2,Riveted Boots,1,1,2,2
 Rapid Expansion,Rapid_Expansion,,0,0,Crimson Jewel,0,0,1,1
 Rashkaldor's Patience,Rashkaldors_Patience,,0,0,Jade Amulet,1,1,1,1
@@ -839,7 +839,7 @@ Taryn's Shiver,Taryns_Shiver,,6,2,Maelström Staff,1,1,2,4
 Tasalio's Sign,Tasalios_Sign,,0,0,Sapphire Ring,1,1,1,1
 Taste of Hate,Taste_of_Hate,,0,0,Sapphire Flask,1,1,1,2
 Tavukai,Tavukai,,0,0,Coral Amulet,1,1,1,1
-Tawhanuku's Timing,Tawhanukus_Timing,,0,0,Moonstone Ring,1,0,1,1
+Tawhanuku's Timing,Tawhanukus_Timing,,0,0,Moonstone Ring,1,1,1,1
 Tear of Entropy,Tear_of_Entropy,,4,2,Iron Hat,1,0,2,2
 Tear of Purity,Tear_of_Purity,,0,0,Lapis Amulet,1,1,1,1
 Tecrod's Gaze,Tecrods_Gaze,,0,0,Murderous Eye Jewel,1,0,1,1
@@ -1023,7 +1023,7 @@ Unnatural Instinct,Unnatural_Instinct,,0,0,Viridian Jewel,1,1,1,1
 Unstable Payload,Unstable_Payload,,0,0,Cobalt Jewel,0,0,1,1
 Unyielding Flame,Unyielding_Flame,,3,2,Archon Kite Shield,1,0,2,3
 Usurper's Penance,Usurpers_Penance,,4,2,Eternal Burgonet,1,1,2,2
-Utula's Hunger,Utulas_Hunger,,6,2,Majestic Plate,1,0,2,3
+Utula's Hunger,Utulas_Hunger,,6,2,Majestic Plate,1,1,2,3
 Uul-Netol's Embrace,Uul-Netols_Embrace,,6,2,Vaal Axe,1,0,2,4
 Uul-Netol's Kiss,Uul-Netols_Kiss,,6,2,Vaal Axe,1,0,2,4
 Uul-Netol's Vow,Uul-Netols_Vow,,0,0,Unset Amulet,1,0,1,1
