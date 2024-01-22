@@ -1,3 +1,15 @@
+# v0.6.1
+
+## Changes
+
+### App
+
+- [New] The screenshot tool now detects the correct screen with PoE at runtime, thanks to @shonya3
+
+### Item detection
+
+- [New] Enabled ToTA uniques from [3.23 update](https://www.poewiki.net/wiki/Version_3.23.0#New_Content_and_Features)
+
 # v0.6.0
 
 ## Changes
