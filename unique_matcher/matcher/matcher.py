@@ -12,6 +12,7 @@ from unique_matcher.constants import (
     ITEM_MAX_SIZE,
     OPT_ALLOW_NON_FULLHD,
     OPT_FIND_ITEM_BY_NAME,
+    OPT_USE_MASK,
     TEMPLATES_DIR,
 )
 from unique_matcher.matcher import utils
@@ -37,6 +38,15 @@ from unique_matcher.matcher.title import TitleParser
 # Has to be low enough to not allow other clutter to get in.
 # Typically the min_val of guides is ~0.06.
 THRESHOLD_CONTROL = 0.16
+
+# These item bases will be excluded from using masks during template matching,
+# even when OPT_USE_MASK is True due to incorrect matching.
+EXCLUDE_MASKING = [
+    "Death Bow",
+    "Eternal Sword",
+    "Spiraled Wand",
+    "Ezomyte Axe",
+]
 
 
 class Matcher:
@@ -101,6 +111,31 @@ class Matcher:
 
         return variants
 
+    def get_mask(self, item: Item) -> np.ndarray:
+        """Create a mask for template matching."""
+        mask_img = Image.open(item.icon)
+
+        if item.is_smaller_than_full():
+            mask_img.thumbnail(
+                (
+                    int(ITEM_MAX_SIZE[0] * (item.width / 2)),
+                    int(ITEM_MAX_SIZE[1] * (item.height / 4)),
+                ),
+                Image.Resampling.BILINEAR,
+            )
+        else:
+            # TODO: This is a hack to make large items work. Find a better solution.
+            mask_img.thumbnail((100, 200), Image.Resampling.BILINEAR)
+
+        mask = np.array(mask_img)
+
+        for x in range(mask.shape[0]):
+            for y in range(mask.shape[1]):
+                if mask[x][y][3] != 0:
+                    mask[x][y] = [255, 255, 255, 255]
+
+        return cv2.cvtColor(mask, cv2.COLOR_RGBA2GRAY)
+
     def check_one(self, image: Image.Image, item: Item) -> MatchResult:
         """Check one screenshot against one item."""
         results = []
@@ -117,6 +152,14 @@ class Matcher:
 
         screen = utils.image_to_cv(image)
         hist_base = utils.calc_normalized_histogram(image)
+
+        # Mask
+        if OPT_USE_MASK and item.base not in EXCLUDE_MASKING:
+            mask = self.get_mask(item)
+
+            if DEBUG:
+                self.debug_info.setdefault("masks", [])
+                self.debug_info["masks"].append(Image.fromarray(mask))
 
         for template in item_variants:
             if template.image.width > image.width or template.image.height > image.height:
@@ -144,7 +187,11 @@ class Matcher:
             template_cv = cv2.cvtColor(template_cv, cv2.COLOR_RGBA2GRAY)
 
             # Match against the screenshot
-            result = cv2.matchTemplate(screen, template_cv, cv2.TM_SQDIFF_NORMED)
+            if OPT_USE_MASK and item.base not in EXCLUDE_MASKING:
+                result = cv2.matchTemplate(screen, template_cv, cv2.TM_SQDIFF_NORMED, mask=mask)
+            else:
+                result = cv2.matchTemplate(screen, template_cv, cv2.TM_SQDIFF_NORMED)
+
             min_val, _, min_loc, _ = cv2.minMaxLoc(result)
 
             logger.debug("Sockets: {}, min_val: {}", template.sockets, min_val)

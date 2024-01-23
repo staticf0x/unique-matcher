@@ -1,4 +1,5 @@
 """Run benchmark on testing data sets."""
+import argparse
 import math
 import os
 import time
@@ -8,6 +9,7 @@ from multiprocessing import cpu_count
 from pathlib import Path
 
 import numpy as np
+import tabulate
 from loguru import logger
 from rich.console import Console
 from rich.panel import Panel
@@ -33,6 +35,18 @@ ACCURACY_WARN_THRESHOLD = 0.99
 
 # These data sets will be excluded from the total count for the wiki page
 EXCLUDE_FROM_TOTAL = ["example", "download"]
+
+# These datasets are those displayed at
+# https://github.com/staticf0x/unique-matcher/wiki/Test-data-and-benchmarking
+GITHUB_DATASETS = [
+    "3.23",
+    "Elinvynia",
+    "Krolya",
+    "gathered",
+    "reported",
+    "staticf0x",
+    "staticf0xElin",
+]
 
 
 @dataclass
@@ -158,6 +172,17 @@ class Benchmark:
 
         self.console.print(table)
 
+    def log_errors(self, data_set: str, results: list[CheckResult]) -> None:
+        """Log errors if there are any."""
+        errors = [result for result in results if not result.found]
+
+        if not errors:
+            return
+
+        with Path(f"benchmark-logs/benchmark-{data_set}.log").open("w") as fwrite:
+            for result in errors:
+                fwrite.write(f"Error: {result.file.relative_to(ROOT_DIR)}\n")
+
     def run(self, data_set: str) -> SuiteResult:
         """Run the whole benchmark suite."""
         self._report = []
@@ -197,12 +222,8 @@ class Benchmark:
         times = [result.elapsed for result in all_results]
         accuracy = found / total
 
-        with open(f"benchmark-{data_set}.log", "w") as fwrite:
-            for result in all_results:
-                if result.found:
-                    continue
-
-                fwrite.write(f"Error: {result.file.relative_to(ROOT_DIR)}\n")
+        # Log errors, if any
+        self.log_errors(data_set, all_results)
 
         # Draw the result table
         if self.display:
@@ -240,39 +261,45 @@ class Benchmark:
         )
 
 
-def run() -> None:
+def run(*, github: bool = False) -> None:
     """Run the benchmark."""
-    data_sets = sorted(os.listdir(DATA_DIR))
-
-    # Make the user choose a data set
-    menu = TerminalMenu(
-        data_sets,
-        multi_select=True,
-        show_multi_select_hint=True,
-    )
-    choices = menu.show()
-
-    if choices is None:
-        return
-
-    run_multiple = len(choices) > 1
-
     results: list[SuiteResult] = []
+    run_multiple = True
+
+    if github:
+        # Run the data sets for the github wiki
+        for data_set in GITHUB_DATASETS:
+            benchmark = Benchmark(display=False)
+            result = benchmark.run(data_set)
+            results.append(result)
+    else:
+        # Make the user choose the data sets
+        data_sets = sorted(os.listdir(DATA_DIR))
+
+        menu = TerminalMenu(
+            data_sets,
+            multi_select=True,
+            show_multi_select_hint=True,
+        )
+        choices = menu.show()
+
+        if choices is None:
+            return
+
+        run_multiple = len(choices) > 1
+
+        for choice in choices:
+            benchmark = Benchmark(display=not run_multiple)
+            result = benchmark.run(data_sets[choice])
+            results.append(result)
+
     _il = ItemLoader()
     _il.load()
     items_in_db = len(_il.items)
 
-    for choice in choices:
-        benchmark = Benchmark(display=not run_multiple)
-        result = benchmark.run(data_sets[choice])
-        results.append(result)
-
     if run_multiple:
         # Display a table used for the wiki page
-        print()
-        print("| Data set      | Items | Coverage | Screenshots | Found | Accuracy    |")
-        print("| ------------- | ----- | -------- | ----------- | ----- | ----------- |")
-
+        table = []
         tested_items = set()
 
         for res in results:
@@ -281,16 +308,15 @@ def run() -> None:
 
             tested_items |= res.item_names
 
-            columns = [
-                f"{res.data_set:<13s}",
-                f"{res.items:<5d}",
-                f"{res.items/items_in_db:<8.2%}",
-                f"{res.screenshots:<11d}",
-                f"{res.found:<5d}",
-                f"{res.accuracy:<11.2%}",
-            ]
-
-            print(f"| {' | '.join(columns)} |")
+            table.append(
+                [
+                    res.data_set,
+                    res.items,
+                    f"{res.items/items_in_db:.2%}",
+                    f"{res.found} / {res.screenshots}",
+                    f"{res.accuracy:.2%}",
+                ],
+            )
 
         total_items = len(tested_items)
         total_found = sum(res.found for res in results if res.data_set not in EXCLUDE_FROM_TOTAL)
@@ -299,17 +325,32 @@ def run() -> None:
         )
         total_accuracy = total_found / total_screenshots
 
-        columns = [
-            "**Total**    ",
-            f"{total_items:<5d}",
-            f"{total_items/items_in_db:<8.2%}",
-            f"{total_screenshots:<11d}",
-            f"{total_found:<5d}",
-            f"**{total_accuracy:.2%}**" + (" " if total_accuracy < 1 else ""),
-        ]
+        table.append(
+            [
+                "**Total**",
+                f"{total_items} / {items_in_db}",
+                f"{total_items/items_in_db:.2%}",
+                f"{total_found} / {total_screenshots}",
+                f"**{total_accuracy:.2%}**",
+            ],
+        )
 
-        print(f"| {' | '.join(columns)} |")
+        print()
+        print(
+            tabulate.tabulate(
+                table,
+                headers=("Data set", "Items", "Coverage", "Identified", "Accuracy"),
+                tablefmt="github",
+            ),
+        )
 
 
 if __name__ == "__main__":
-    run()
+    Path("benchmark-logs/").mkdir(exist_ok=True)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--github", action="store_true")
+
+    args = parser.parse_args()
+
+    run(github=args.github)
