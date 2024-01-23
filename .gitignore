@@ -16,3 +16,5 @@ tests/test_data/bases/*
 data/
 screen/target
 screenshot.ahk
+.benchmark/
+*.ipynb
