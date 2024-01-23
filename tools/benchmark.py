@@ -1,10 +1,12 @@
 """Run benchmark on testing data sets."""
 import argparse
+import json
 import math
 import os
 import time
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
+from datetime import datetime
 from multiprocessing import cpu_count
 from pathlib import Path
 
@@ -71,6 +73,25 @@ class CheckResult:
     elapsed: float
     result: MatchResult | None = None
 
+    def json(self) -> dict:
+        return {
+            "item": {
+                "name": self.item.name,
+                "file": self.item.file,
+                "base": self.item.base,
+                "sockets": self.item.sockets,
+            },
+            "file": str(self.file),
+            "found": self.found,
+            "elapsed": self.elapsed,
+            "result": {
+                "identified": self.result.identified,
+                "matched_by": self.result.matched_by.name,
+                "min_val": self.result.min_val,
+                "hist_val": self.result.hist_val,
+            },
+        }
+
 
 def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
     """Run benchmark for one item on a list of screenshots.
@@ -114,13 +135,14 @@ def _run_one(item: Item, test_set: list[Path]) -> list[CheckResult]:
 class Benchmark:
     """Class for running the whole benchmark suite."""
 
-    def __init__(self, *, display: bool = True) -> None:
+    def __init__(self, *, display: bool = True, save_json: bool = False) -> None:
         self.matcher = Matcher()
         self.to_benchmark: list[Item] = []
         self._report: list[bool] = []
         self._times: list[float] = []
         self.console = Console()
         self.display = display
+        self.save_json = save_json
 
     def add(self, name: str) -> None:
         """Add item to benchmark suite."""
@@ -179,9 +201,17 @@ class Benchmark:
         if not errors:
             return
 
-        with Path(f"benchmark-logs/benchmark-{data_set}.log").open("w") as fwrite:
+        date = datetime.now().strftime("%Y%m%d-%H%M%S")
+
+        with Path(f".benchmark/benchmark-{data_set}-{date}.log").open("w") as fwrite:
             for result in errors:
                 fwrite.write(f"Error: {result.file.relative_to(ROOT_DIR)}\n")
+
+    def save_json_stats(self, data_set: str, results: list[CheckResult]) -> None:
+        date = datetime.now().strftime("%Y%m%d-%H%M%S")
+
+        with Path(f".benchmark/benchmark-{data_set}-{date}.json").open("w") as fwrite:
+            json.dump([res.json() for res in results], fwrite)
 
     def run(self, data_set: str) -> SuiteResult:
         """Run the whole benchmark suite."""
@@ -225,6 +255,9 @@ class Benchmark:
         # Log errors, if any
         self.log_errors(data_set, all_results)
 
+        if self.save_json:
+            self.save_json_stats(data_set, all_results)
+
         # Draw the result table
         if self.display:
             self.print_result_table(all_results)
@@ -261,7 +294,7 @@ class Benchmark:
         )
 
 
-def run(*, github: bool = False) -> None:
+def run(*, github: bool = False, save_json: bool = False) -> None:
     """Run the benchmark."""
     results: list[SuiteResult] = []
     run_multiple = True
@@ -269,7 +302,7 @@ def run(*, github: bool = False) -> None:
     if github:
         # Run the data sets for the github wiki
         for data_set in GITHUB_DATASETS:
-            benchmark = Benchmark(display=False)
+            benchmark = Benchmark(display=False, save_json=save_json)
             result = benchmark.run(data_set)
             results.append(result)
     else:
@@ -289,7 +322,7 @@ def run(*, github: bool = False) -> None:
         run_multiple = len(choices) > 1
 
         for choice in choices:
-            benchmark = Benchmark(display=not run_multiple)
+            benchmark = Benchmark(display=not run_multiple, save_json=save_json)
             result = benchmark.run(data_sets[choice])
             results.append(result)
 
@@ -346,11 +379,20 @@ def run(*, github: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    Path("benchmark-logs/").mkdir(exist_ok=True)
+    Path(".benchmark/").mkdir(exist_ok=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--github", action="store_true")
+    parser.add_argument(
+        "--github",
+        action="store_true",
+        help="Preselect the data sets for github wiki page",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Save benchmark results as JSON",
+    )
 
     args = parser.parse_args()
 
-    run(github=args.github)
+    run(github=args.github, save_json=args.json)
