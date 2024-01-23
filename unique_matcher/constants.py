@@ -42,3 +42,7 @@ OPT_IGNORE_NON_GLOBAL_ITEMS: bool = True
 # WARNING: This is a debugging tool that should be False in production
 # Default: False
 OPT_FIND_BY_NAME_RAISE: bool = False
+
+# Whether to generate and use masks for template matching
+# Default: True
+OPT_USE_MASK: bool = True

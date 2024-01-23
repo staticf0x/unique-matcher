@@ -121,6 +121,11 @@ if result and "results_all" in matcher.debug_info:
                 matcher.debug_info["cropped_uniques"][0].save(f"{cropped_unique_tmp.name}.png")
                 context["cropped_unique"] = f"{cropped_unique_tmp.name}.png"
 
+        if "masks" in matcher.debug_info:
+            with tempfile.NamedTemporaryFile("w", delete=False) as mask_tmp:
+                matcher.debug_info["masks"][0].save(f"{mask_tmp.name}.png")
+                context["mask"] = f"{mask_tmp.name}.png"
+
         if result.template:
             with tempfile.NamedTemporaryFile("w", delete=False) as template_tmp:
                 result.template.image.save(f"{template_tmp.name}.png")

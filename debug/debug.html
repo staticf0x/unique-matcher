@@ -95,11 +95,13 @@
                 <tr>
                     <td>Unique item to match</td>
                     <td>Cropped unique</td>
+                    <td>Mask</td>
                     <td>Best result template</td>
                 </tr>
                 <tr>
                     <td><img src="file:///{{ unique_image }}" alt="Unique image"></td>
                     <td>{% if cropped_unique %}<img src="file:///{{ cropped_unique }}" alt="Cropped unique">{% else %}-{% endif %}</td>
+                    <td>{% if mask %}<img src="file:///{{ mask }}" alt="Mask">{% else %}-{% endif %}</td>
                     <td>{% if template %}<img src="file:///{{ template }}" alt="Best result template">{% else %}-{% endif %}</td>
                 </tr>
             </table>
