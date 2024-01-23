@@ -90,7 +90,7 @@ def create_ahk_script(*, overwrite: bool = False) -> None:
 class QmlConfig(QObject):
     """Class for managing config.ini from QML."""
 
-    shortcutLoaded = Signal(str, str, arguments="mod_key,key")
+    shortcutLoaded = Signal(str, str, arguments=["mod_key", "key"])
 
     def __init__(self) -> None:
         QObject.__init__(self)

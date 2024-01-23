@@ -13,9 +13,9 @@ from unique_matcher.matcher.utils import is_csv_empty
 class QmlResultCombinator(QObject):
     """Class for combining result CSVs."""
 
-    resultsLoaded = Signal(list, arguments="files")  # noqa: N815
-    previewLoaded = Signal(list, arguments="items")  # noqa: N815
-    combinedChanged = Signal(list, arguments="items")  # noqa: N815
+    resultsLoaded = Signal(list, arguments=["files"])  # noqa: N815
+    previewLoaded = Signal(list, arguments=["items"])  # noqa: N815
+    combinedChanged = Signal(list, arguments=["items"])  # noqa: N815
 
     def __init__(self) -> None:
         QObject.__init__(self)

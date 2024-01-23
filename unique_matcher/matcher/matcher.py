@@ -198,7 +198,7 @@ class Matcher:
 
             match_result = MatchResult(
                 item=item,
-                loc=min_loc,
+                loc=min_loc,  # type: ignore[arg-type]
                 identified=None,
                 matched_by=MatchedBy.TEMPLATE_MATCH,
                 min_val=min_val,
@@ -226,7 +226,7 @@ class Matcher:
         )
         min_val, _, min_loc, _ = cv2.minMaxLoc(result)
 
-        return min_val, min_loc
+        return min_val, min_loc  # type: ignore[return-value]
 
     def _find_unique_control_start(self, screen: np.ndarray) -> tuple[tuple[int, int], bool] | None:
         """Find the start control point of a unique item.
