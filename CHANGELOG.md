@@ -1,3 +1,12 @@
+# v0.7.0
+
+## Changes
+
+### Item detection
+
+- [New] Improved accuracy (99.99%) using item masks
+- [Fixed] Fixed detection of Reach of the Council in some cases
+
 # v0.6.1
 
 ## Changes
