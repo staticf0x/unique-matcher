@@ -1,6 +1,8 @@
 [Setup]
 AppName=Unique Matcher
 AppVersion=0.7.1
+AppPublisher=staticf0x
+AppPublisherURL=https://github.com/staticf0x/unique-matcher
 DefaultDirName=UniqueMatcher
 OutputBaseFilename=UniqueMatcherInstall
 SetupIconFile=um.ico
