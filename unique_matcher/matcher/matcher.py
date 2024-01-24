@@ -128,11 +128,7 @@ class Matcher:
             mask_img.thumbnail((100, 200), Image.Resampling.BILINEAR)
 
         mask = np.array(mask_img)
-
-        for x in range(mask.shape[0]):
-            for y in range(mask.shape[1]):
-                if mask[x][y][3] != 0:
-                    mask[x][y] = [255, 255, 255, 255]
+        mask[mask[:, :, 3] != 0, :] = 255
 
         return cv2.cvtColor(mask, cv2.COLOR_RGBA2GRAY)
 
