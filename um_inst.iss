@@ -4,6 +4,7 @@ AppVersion=0.7.0
 DefaultDirName=UniqueMatcher
 OutputBaseFilename=UniqueMatcherInstall
 SetupIconFile=um.ico
+PrivilegesRequired=lowest
 
 [Files]
 Source: "assets\*"; DestDir: "{app}\assets"; Flags: recursesubdirs
