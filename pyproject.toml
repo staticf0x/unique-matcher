@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "unique-matcher"
-version = "0.7.0"
+version = "0.7.1"
 description = ""
 authors = ["staticf0x <staticf0x@pm.me>"]
 readme = "README.md"
@@ -11,7 +11,7 @@ python = "~3.11"
 numpy = "^1.25.1"
 opencv-python = "^4.8.0.74"
 pillow = "^10.0.0"
-loguru = "^0.7.0"
+loguru = "^0.7.1"
 pytesseract = "^0.3.10"
 jinja2 = "^3.1.3"
 pyside6 = "^6.5.2"
