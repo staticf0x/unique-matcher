@@ -1,3 +1,11 @@
+# v0.7.1
+
+## Changes
+
+### App
+
+- [Fixed] Set lowest privileges for the installer
+
 # v0.7.0
 
 ## Changes
