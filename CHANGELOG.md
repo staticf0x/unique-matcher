@@ -1,3 +1,16 @@
+# v0.7.2
+
+## Changes
+
+### App
+
+- [Changed] The installer won't try to find previous installation's path,
+  which could help satisfy Windows Defender
+
+### Item detection
+
+- [New] 4% faster detection by using vectorized math in masking
+
 # v0.7.1
 
 ## Changes
