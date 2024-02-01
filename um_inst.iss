@@ -1,6 +1,6 @@
 [Setup]
 AppName=Unique Matcher
-AppVersion=0.7.1
+AppVersion=0.7.2
 AppPublisher=staticf0x
 AppPublisherURL=https://github.com/staticf0x/unique-matcher
 DefaultDirName=UniqueMatcher
