@@ -1,4 +1,5 @@
 """Parse item titles."""
+
 import re
 import sys
 from typing import ClassVar

@@ -1,4 +1,5 @@
 """Module for handling the result CSV files from GUI."""
+
 import csv
 import time
 from typing import TYPE_CHECKING, ClassVar

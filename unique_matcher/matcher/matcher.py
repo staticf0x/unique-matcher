@@ -1,4 +1,5 @@
 """Module for matching unique items."""
+
 from pathlib import Path
 from typing import Any
 

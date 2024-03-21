@@ -1,4 +1,5 @@
 """Module for combining the result CSVs in QML."""
+
 import csv
 import sys
 from pathlib import Path

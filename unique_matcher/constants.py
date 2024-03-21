@@ -1,4 +1,5 @@
 """Constants and configuration."""
+
 from pathlib import Path
 
 VERSION = "0.7.2"
