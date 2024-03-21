@@ -1,4 +1,5 @@
 """Module for generating item sockets."""
+
 import math
 
 from loguru import logger

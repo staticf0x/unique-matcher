@@ -1,4 +1,5 @@
 """Item handling."""
+
 import csv
 from collections.abc import Iterator
 from dataclasses import dataclass

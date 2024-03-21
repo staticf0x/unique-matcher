@@ -1,4 +1,5 @@
 """Module for everything related to match results."""
+
 import math
 from dataclasses import dataclass
 from enum import Enum

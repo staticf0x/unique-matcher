@@ -1,4 +1,5 @@
 """Base class for matcher plugins."""
+
 from unique_matcher.matcher.items import ItemLoader
 from unique_matcher.matcher.result import CroppedItemInfo, MatchResult
 
