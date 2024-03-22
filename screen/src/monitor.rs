@@ -58,6 +58,30 @@ fn get_poe_monitor_id_common(workdir: &Path) -> usize {
     }
 }
 
+#[derive(Debug)]
+pub struct Rectangle {
+    pub left: i32,
+    pub right: i32,
+    pub top: i32,
+    pub bottom: i32,
+}
+
+pub fn get_poe_window() -> Option<Rectangle> {
+    if cfg!(windows) {
+        return match winapi::poe_window_rect() {
+            Some(rect) => Some(Rectangle {
+                left: rect.left,
+                right: rect.right,
+                top: rect.top,
+                bottom: rect.bottom,
+            }),
+            None => None,
+        };
+    }
+
+    None
+}
+
 /// Read value from local config.ini
 /// ```ini
 /// [screenshot]
@@ -188,6 +212,45 @@ mod winapi {
                                     })
                                 })
                             });
+                    }
+
+                    TRUE
+                });
+
+            // Set the global mutable variable to hold the closure
+            CLOSURE = Some(closure);
+
+            // Pass the wrapper function's reference to EnumWindows
+            EnumWindows(Some(extern_system_wrapper), LPARAM(0)).unwrap();
+        }
+
+        let vec = vec.borrow();
+
+        match vec.len() {
+            0 => None,
+            _ => vec.get(0).copied(),
+        }
+    }
+
+    pub fn poe_window_rect() -> Option<RECT> {
+        let vec: Rc<RefCell<Vec<RECT>>> = Rc::new(RefCell::new(Vec::new()));
+
+        unsafe {
+            let vec = vec.clone();
+            let closure: Box<dyn Fn(HWND, LPARAM) -> BOOL> =
+                Box::new(move |window: HWND, _: LPARAM| -> BOOL {
+                    let mut text: [u16; 512] = [0; 512];
+                    let len = GetWindowTextW(window, &mut text);
+                    let text = String::from_utf16_lossy(&text[..len as usize]);
+
+                    let mut info = WINDOWINFO::default();
+                    GetWindowInfo(window, &mut info).unwrap();
+
+                    if text == "Path of Exile"
+                        && info.dwStyle.contains(WS_VISIBLE)
+                        && !info.dwStyle.contains(WS_MINIMIZE)
+                    {
+                        vec.borrow_mut().push(info.rcClient);
                     }
 
                     TRUE
