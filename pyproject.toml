@@ -14,7 +14,7 @@ pillow = "^10.0.0"
 loguru = "^0.7.1"
 pytesseract = "^0.3.10"
 jinja2 = "^3.1.3"
-pyside6 = "^6.5.2"
+pyside6 = "~6.5.2"
 
 [tool.poetry.group.dev.dependencies]
 devtools = {extras = ["pygments"], version = "^0.12.2"}
