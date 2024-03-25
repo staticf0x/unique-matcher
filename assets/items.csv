@@ -590,6 +590,7 @@ Mutewind Pennant,Mutewind_Pennant,,3,2,Enameled Buckler,1,0,2,2
 Mutewind Seal,Mutewind_Seal,,1,1,Unset Ring,1,0,1,1
 Mutewind Whispersteps,Mutewind_Whispersteps,,4,2,Serpentscale Boots,1,0,2,2
 Nadir Mode,Nadir_Mode,,0,0,Cobalt Jewel,1,0,1,1
+Nametaker,Nametaker,,6,2,Graceful Sword,1,1,2,3
 Natural Affinity,Natural_Affinity,,0,0,Small Cluster Jewel,1,0,1,1
 Natural Hierarchy,Natural_Hierarchy,,0,0,Rotfeather Talisman,1,1,1,1
 Nebulis,Nebulis,,3,2,Void Sceptre,0,0,2,3
@@ -645,6 +646,7 @@ Poacher's Aim,Poachers_Aim,,0,0,Viridian Jewel,0,0,1,1
 Polaric Devastation,Polaric_Devastation,,0,0,Opal Ring,1,0,1,1
 Poorjoy's Asylum,Poorjoys_Asylum,,0,0,Temple Map,1,1,1,1
 Powerlessness,Powerlessness,,0,0,Cobalt Jewel,1,0,1,1
+Pragmatism,Pragmatism,,6,2,Colosseum Plate,1,1,2,3
 Praxis,Praxis,,0,0,Paua Ring,1,1,1,1
 Precursor's Emblem,Precursors_Emblem,,0,0,Topaz Ring,1,0,1,1
 Presence of Chayula,Presence_of_Chayula,,0,0,Onyx Amulet,1,0,1,1
@@ -814,7 +816,7 @@ Storm Prison,Storm_Prison,,3,1,Spiraled Wand,1,1,1,3
 Storm Secret,Storm_Secret,,0,0,Topaz Ring,1,1,1,1
 Stormcharger,Stormcharger,,4,2,Plated Greaves,1,1,2,2
 Stormfire,Stormfire,,0,0,Opal Ring,1,1,1,1
-Storm's Gift,Storms_Gift,,4,2,Assassin's Mitts,0,0,2,2
+Storm's Gift,Storms_Gift,,4,2,Assassin's Mitts,1,1,2,2
 Stormseeker,Stormseeker,,4,2,Ambush Mitts,1,1,2,2
 Stormshroud,Stormshroud,,0,0,Viridian Jewel,1,1,1,1
 Story of the Vaal,Story_of_the_Vaal,,3,1,Gemstone Sword,1,0,1,3
@@ -869,6 +871,7 @@ The Brass Dome,The_Brass_Dome,,6,2,Gladiator Plate,1,1,2,3
 The Brine Crown,The_Brine_Crown,,4,2,Prophet Crown,1,1,2,2
 The Bringer of Rain,The_Bringer_of_Rain,,4,2,Nightmare Bascinet,1,1,2,2
 The Broken Crown,The_Broken_Crown,,4,2,Prophet Crown,1,1,2,2
+The Burden of Shadows,The_Burden_of_Shadows,,6,2,Primordial Staff,1,1,2,4
 The Burden of Truth,The_Burden_of_Truth,,0,0,Crystal Belt,1,0,2,1
 The Cauteriser,The_Cauteriser,,6,2,Woodsplitter,0,0,2,4
 The Coming Calamity,The_Coming_Calamity,,6,2,Destroyer Regalia,1,1,2,3
@@ -890,6 +893,7 @@ The Eternal Apple,The_Eternal_Apple,,3,2,Chiming Spirit Shield,1,1,2,2
 The Eternal Struggle,The_Eternal_Struggle,,0,0,Onyx Amulet,1,0,1,1
 The Eternity Shroud,The_Eternity_Shroud,,6,2,Blood Raiment,1,0,2,3
 The Felbog Fang,The_Felbog_Fang,,0,0,Citrine Amulet,1,0,1,1
+The Flawed Refuge,The_Flawed_Refuge,,3,2,Maple Round Shield,1,1,2,3
 The Fledgling,The_Fledgling,,4,2,Lacquered Helmet,1,0,2,2
 The Flow Untethered,The_Flow_Untethered,,0,0,Cloth Belt,1,0,2,1
 The Formless Flame,The_Formless_Flame,,4,2,Royal Burgonet,1,0,2,2
@@ -969,8 +973,10 @@ The Tempestuous Steel,The_Tempestuous_Steel,,3,1,War Sword,1,1,2,3
 The Three Dragons,The_Three_Dragons,,4,2,Golden Mask,1,1,2,2
 The Torrent's Reclamation,The_Torrents_Reclamation,,0,0,Cloth Belt,1,0,2,1
 The Tower of Ordeals,The_Tower_of_Ordeals,,0,0,Engraved Ultimatum,1,0,1,1
+The Trickster's Smile,The_Tricksters_Smile,,4,2,Visored Sallet,1,1,2,2
 The Twilight Temple,The_Twilight_Temple,,0,0,Moon Temple Map,1,1,1,1
 The Unshattered Will,The_Unshattered_Will,,3,2,Archon Kite Shield,1,0,2,3
+The Untouched Soul,The_Untouched_Soul,,0,0,Gold Amulet,1,1,1,1
 The Vertex,The_Vertex,,4,2,Vaal Mask,1,0,2,2
 The Vigil,The_Vigil,,0,0,Crimson Jewel,0,0,1,1
 The Vinktar Square,The_Vinktar_Square,,0,0,Courtyard Map,1,0,1,1
