@@ -262,8 +262,8 @@ Doedre's Scorn,Doedres_Scorn,,4,2,Lunaris Circlet,1,1,2,2
 Doedre's Skin,Doedres_Skin,,6,2,Widowsilk Robe,1,1,2,3
 Doedre's Tenure,Doedres_Tenure,,4,2,Velvet Gloves,1,1,2,2
 Doedre's Tongue,Doedres_Tongue,,0,0,Lapis Amulet,1,1,1,1
-Doomfletch,Doomfletch,,6,2,Royal Bow,1,1,2,4
 Doomfletch's Prism,Doomfletchs_Prism,,6,2,Royal Bow,0,0,2,4
+Doomfletch,Doomfletch,,6,2,Royal Bow,1,1,2,4
 Doomsower,Doomsower,,6,2,Lion Sword,1,1,2,4
 Doon Cuebiyari,Doon_Cuebiyari,,3,2,Vaal Sceptre,1,1,2,3
 Doppelgänger Guise,Doppelganger_Guise,,6,2,Sadist Garb,1,0,2,3
@@ -348,8 +348,8 @@ Fireborn,Fireborn,,0,0,Crimson Jewel,0,0,1,1
 Firesong,Firesong,,0,0,Crimson Jewel,1,1,1,1
 First Snow,First_Snow,,0,0,Cobalt Jewel,0,0,1,1
 Flamesight,Flamesight,,4,2,Solaris Circlet,1,1,2,2
-Flesh-Eater,Flesh-Eater,,3,2,Dream Mace,1,1,2,3
 Flesh and Spirit,Flesh_and_Spirit,,4,2,Ironscale Gauntlets,1,1,2,2
+Flesh-Eater,Flesh-Eater,,3,2,Dream Mace,1,1,2,3
 Fleshcrafter,Fleshcrafter,,6,2,Necromancer Silks,1,1,2,3
 Fluid Motion,Fluid_Motion,,0,0,Viridian Jewel,1,0,1,1
 Font of Thunder,Font_of_Thunder,,3,2,Mirrored Spiked Shield,1,0,2,2
@@ -511,12 +511,12 @@ Lightbane Raiment,Lightbane_Raiment,,6,2,Ornate Ringmail,1,1,2,3
 Lightning Coil,Lightning_Coil,,6,2,Desert Brigandine,1,1,2,3
 Lightpoacher,Lightpoacher,,4,2,Great Crown,1,0,2,2
 Limbsplit,Limbsplit,,6,2,Woodsplitter,1,1,2,4
+Lion's Roar,Lions_Roar,,0,0,Granite Flask,1,1,1,2
 Lioneye's Fall,Lioneyes_Fall,,0,0,Viridian Jewel,1,1,1,1
 Lioneye's Glare,Lioneyes_Glare,,6,2,Imperial Bow,1,1,2,4
 Lioneye's Paws,Lioneyes_Paws,,4,2,Bronzescale Boots,1,1,2,2
 Lioneye's Remorse,Lioneyes_Remorse,,3,2,Pinnacle Tower Shield,1,1,2,4
 Lioneye's Vision,Lioneyes_Vision,,6,2,Crusader Plate,1,1,2,3
-Lion's Roar,Lions_Roar,,0,0,Granite Flask,1,1,1,2
 Lochtonial Caress,Lochtonial_Caress,,4,2,Iron Gauntlets,1,1,2,2
 Lord of Steel,Lord_of_Steel,,0,0,Viridian Jewel,0,0,1,1
 Loreweave,Loreweave,,6,2,Elegant Ringmail,1,0,2,3
@@ -598,8 +598,8 @@ Nebuloch,Nebuloch,,3,2,Nightmare Mace,1,0,2,3
 Ngamahu Tiki,Ngamahu_Tiki,,0,0,Coral Amulet,0,0,1,1
 Ngamahu's Flame,Ngamahus_Flame,,6,2,Abyssal Axe,1,1,2,4
 Ngamahu's Sign,Ngamahus_Sign,,0,0,Ruby Ring,1,1,1,1
-Nightgrip,Nightgrip,,4,2,Runic Gages,1,0,2,2
 Night's Hold,Nights_Hold,,0,0,Black Maw Talisman,1,1,1,1
+Nightgrip,Nightgrip,,4,2,Runic Gages,1,0,2,2
 Nimis,Nimis,,0,0,Topaz Ring,1,0,1,1
 Nomic's Storm,Nomics_Storm,,4,2,Strapped Boots,1,1,2,2
 Null and Void,Null_and_Void,,4,2,Legion Gloves,1,1,2,2
@@ -678,9 +678,9 @@ Rakiata's Dance,Rakiatas_Dance,,6,2,Engraved Greatsword,1,1,2,4
 Ralakesh's Impatience,Ralakeshs_Impatience,,4,2,Riveted Boots,1,1,2,2
 Rapid Expansion,Rapid_Expansion,,0,0,Crimson Jewel,0,0,1,1
 Rashkaldor's Patience,Rashkaldors_Patience,,0,0,Jade Amulet,1,1,1,1
+Rat's Nest,Rats_Nest,,4,2,Ursine Pelt,1,1,2,2
 Rathpith Globe,Rathpith_Globe,,3,2,Titanium Spirit Shield,1,1,2,2
 Rational Doctrine,Rational_Doctrine,,0,0,Cobalt Jewel,1,0,1,1
-Rat's Nest,Rats_Nest,,4,2,Ursine Pelt,1,1,2,2
 Razor of the Seventh Sun,Razor_of_the_Seventh_Sun,,3,2,Midnight Blade,1,1,2,3
 Reach of the Council,Reach_of_the_Council,,6,2,Spine Bow,1,1,2,4
 Realm Ender,Realm_Ender,,6,2,Iron Staff,0,0,2,4
@@ -761,8 +761,8 @@ Sign of the Sin Eater,Sign_of_the_Sin_Eater,,3,2,Tyrant's Sekhem,1,1,2,3
 Silverbough,Silverbough,,6,2,Crude Bow,0,0,2,3
 Silverbranch,Silverbranch,,6,2,Crude Bow,1,1,2,3
 Sin Trek,Sin_Trek,,4,2,Stealth Boots,1,1,2,2
-Singularity,Singularity,,3,2,Platinum Sceptre,1,1,2,3
 Sin's Rebirth,Sins_Rebirth,,0,0,Stibnite Flask,1,1,1,2
+Singularity,Singularity,,3,2,Platinum Sceptre,1,1,2,3
 Sinvicta's Mettle,Sinvictas_Mettle,,6,2,Ezomyte Axe,1,1,2,4
 Sire of Shards,Sire_of_Shards,,6,2,Serpentine Staff,1,1,2,4
 Skin of the Lords,Skin_of_the_Lords,,6,2,Simple Robe,1,0,2,3
@@ -786,8 +786,8 @@ Soul Ripper,Soul_Ripper,,0,0,Quartz Flask,1,0,1,2
 Soul Strike,Soul_Strike,,0,0,Spike-Point Arrow Quiver,1,1,2,3
 Soul Taker,Soul_Taker,,3,2,Siege Axe,1,1,2,3
 Soul Tether,Soul_Tether,,0,0,Cloth Belt,1,1,2,1
-Soulbound,Soulbound,,0,0,Paua Ring,1,1,1,1
 Soul's Wick,Souls_Wick,,0,0,Cobalt Jewel,1,0,1,1
+Soulbound,Soulbound,,0,0,Paua Ring,1,1,1,1
 Soulthirst,Soulthirst,,0,0,Cloth Belt,1,1,2,1
 Soulwrest,Soulwrest,,6,2,Ezomyte Staff,1,1,2,4
 Southbound,Southbound,,4,2,Soldier Gloves,1,1,2,2
@@ -814,9 +814,9 @@ Stone of Lazhwar,Stone_of_Lazhwar,,0,0,Lapis Amulet,1,1,1,1
 Storm Cloud,Storm_Cloud,,6,2,Long Bow,1,1,2,4
 Storm Prison,Storm_Prison,,3,1,Spiraled Wand,1,1,1,3
 Storm Secret,Storm_Secret,,0,0,Topaz Ring,1,1,1,1
+Storm's Gift,Storms_Gift,,4,2,Assassin's Mitts,1,1,2,2
 Stormcharger,Stormcharger,,4,2,Plated Greaves,1,1,2,2
 Stormfire,Stormfire,,0,0,Opal Ring,1,1,1,1
-Storm's Gift,Storms_Gift,,4,2,Assassin's Mitts,1,1,2,2
 Stormseeker,Stormseeker,,4,2,Ambush Mitts,1,1,2,2
 Stormshroud,Stormshroud,,0,0,Viridian Jewel,1,1,1,1
 Story of the Vaal,Story_of_the_Vaal,,3,1,Gemstone Sword,1,0,1,3
@@ -966,9 +966,9 @@ The Supreme Truth,The_Supreme_Truth,,3,2,Crystal Sceptre,1,1,2,3
 The Surging Thoughts,The_Surging_Thoughts,,3,1,Legion Sword,1,0,2,3
 The Surrender,The_Surrender,,3,2,Ezomyte Tower Shield,1,0,2,4
 The Taming,The_Taming,,0,0,Prismatic Ring,1,0,1,1
-The Tempest,The_Tempest,,6,2,Long Bow,0,0,2,4
 The Tempest's Binding,The_Tempests_Binding,,4,2,Callous Mask,1,0,2,2
 The Tempest's Liberation,The_Tempests_Liberation,,4,2,Callous Mask,1,0,2,2
+The Tempest,The_Tempest,,6,2,Long Bow,0,0,2,4
 The Tempestuous Steel,The_Tempestuous_Steel,,3,1,War Sword,1,1,2,3
 The Three Dragons,The_Three_Dragons,,4,2,Golden Mask,1,1,2,2
 The Torrent's Reclamation,The_Torrents_Reclamation,,0,0,Cloth Belt,1,0,2,1
@@ -1068,10 +1068,10 @@ Voidheart,Voidheart,,0,0,Iron Ring,0,0,1,1
 Voidhome,Voidhome,,6,2,Dread Maul,1,1,2,4
 Voidwalker,Voidwalker,,4,2,Murder Boots,1,0,2,2
 Volkuur's Guidance,Volkuurs_Guidance,,4,2,Zealot Gloves,1,1,2,2
-Volley Fire,Volley_Fire,,0,0,Viridian Jewel,0,0,1,1
 Voll's Devotion,Volls_Devotion,,0,0,Agate Amulet,1,1,1,1
 Voll's Protector,Volls_Protector,,6,2,Holy Chainmail,1,1,2,3
 Voll's Vision,Volls_Vision,,4,2,Praetor Crown,1,1,2,2
+Volley Fire,Volley_Fire,,0,0,Viridian Jewel,0,0,1,1
 Voltaxic Rift,Voltaxic_Rift,,6,2,Spine Bow,1,1,2,3
 Vorana's March,Voranas_March,,4,2,Runic Sabatons,1,0,2,2
 Vorana's Preparation,Voranas_Preparation,,0,0,Iron Flask,1,0,1,2
@@ -1102,8 +1102,8 @@ Winds of Change,Winds_of_Change,,4,2,Ancient Gauntlets,1,0,2,2
 Windscream,Windscream,,4,2,Reinforced Greaves,1,1,2,2
 Wings of Entropy,Wings_of_Entropy,,6,2,Ezomyte Axe,1,1,2,4
 Winter Burial,Winter_Burial,,0,0,Crimson Jewel,0,0,1,1
-Winterheart,Winterheart,,0,0,Gold Amulet,1,1,1,1
 Winter's Bounty,Winters_Bounty,,0,0,Cobalt Jewel,0,0,1,1
+Winterheart,Winterheart,,0,0,Gold Amulet,1,1,1,1
 Winterweave,Winterweave,,0,0,Coral Ring,1,1,1,1
 Witchbane,Witchbane,,0,0,Cobalt Jewel,1,1,1,1
 Witchfire Brew,Witchfire_Brew,,0,0,Stibnite Flask,1,1,1,2
