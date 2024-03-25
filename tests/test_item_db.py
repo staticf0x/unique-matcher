@@ -5,8 +5,22 @@ there are some exceptions to what might look like rules and patterns.
 """
 
 import warnings
+from pathlib import Path
 
 from PIL import Image
+
+
+def test_complete_data(item_loader):
+    """Test basic item data consistency."""
+    for item in item_loader:
+        assert item.name
+        assert item.file
+        assert Path(item.icon).exists()
+        assert 1 <= item.width <= item.MAX_WIDTH
+        assert 1 <= item.height <= item.MAX_HEIGHT
+        assert 0 <= item.sockets <= item.MAX_SOCKETS
+        assert 0 <= item.cols <= 2
+        assert item.base
 
 
 def test_item_base_dimensions(item_loader):
