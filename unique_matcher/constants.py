@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-VERSION = "0.7.2"
+VERSION = "0.7.3"
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 
 # Directory definitions

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "unique-matcher"
-version = "0.7.2"
+version = "0.7.3"
 description = ""
 authors = ["staticf0x <staticf0x@pm.me>"]
 readme = "README.md"
