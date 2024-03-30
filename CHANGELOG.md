@@ -1,3 +1,17 @@
+# v0.7.3
+
+## Changes
+
+### App
+
+- [New] If you're playing PoE on screens larger than 1080p, but in windowed
+  mode at 1080p, the screenshots will now be taken only of the PoE window, so
+  the desktop around the window won't be visible
+
+### Item detection
+
+- [New] Added 3.24 unique items
+
 # v0.7.2
 
 ## Changes
