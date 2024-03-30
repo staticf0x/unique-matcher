@@ -60,3 +60,5 @@ def test_dimensions_from_image(item_loader):
                 f"  Dimension in the DB:            {actual}"
             )
             warnings.warn(msg, stacklevel=1)
+
+        img.close()
