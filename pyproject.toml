@@ -19,7 +19,7 @@ pyside6 = "~6.5.2"
 [tool.poetry.group.dev.dependencies]
 devtools = {extras = ["pygments"], version = "^0.12.2"}
 types-pillow = "^10.0.0.2"
-pytest = "^8.1.1"
+pytest = ">=8.1.1,<10.0.0"
 mypy = "^1.5.1"
 pytest-xdist = {extras = ["psutil"], version = "^3.3.1"}
 black = "^26.3.1"
